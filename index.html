@@ -2,6 +2,8 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
+    <!-- เมื่อเปิดผ่าน Google Apps Script ลิงก์จะเปิดเต็มหน้าต่าง ไม่ติดอยู่ใน iframe -->
+    <base target="_top">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ศูนย์ฝึกประสบการณ์วิชาชีพครู - คณะครุศาสตร์ มหาวิทยาลัยราชภัฏเลย</title>
     <link rel="icon" type="image/png" href="data:image/png;base64,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">
@@ -101,6 +103,8 @@
         /* โลโก้คณะครุศาสตร์ มหาวิทยาลัยราชภัฏเลย (ฝังในไฟล์ ใช้ได้ทั้งเว็บภายนอกและ Apps Script) */
         .edu-logo { background: url("data:image/webp;base64,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") center / contain no-repeat; }
     </style>
+    <!-- Google Apps Script จะแทนที่บรรทัดนี้ด้วยข้อมูลล่าสุด (window.__INITIAL_DATA__) เพื่อให้หน้าเว็บแสดงผลทันที -->
+    <!--INITIAL_DATA-->
 </head>
 <body class="bg-themeBg text-themeText min-h-screen flex flex-col">
 
@@ -581,6 +585,9 @@
                 <button type="button" onclick="switchAdminTab('links')" id="admin-tab-links" class="admin-tab-btn py-2.5 px-4 font-bold text-sm text-themeMuted flex items-center gap-2 whitespace-nowrap transition-all duration-150">
                     <i data-lucide="users-round" class="w-4 h-4"></i> ผู้ประเมินและลิงก์แบบประเมิน
                 </button>
+                <button type="button" onclick="switchAdminTab('maintenance')" id="admin-tab-maintenance" class="admin-tab-btn py-2.5 px-4 font-bold text-sm text-themeMuted flex items-center gap-2 whitespace-nowrap transition-all duration-150">
+                    <i data-lucide="wrench" class="w-4 h-4"></i> ซ่อมบำรุงฐานข้อมูล
+                </button>
             </div>
 
             <!-- SUB-SECTION 1: Manage Schools -->
@@ -668,6 +675,68 @@
 
                     <!-- รายการผู้ประเมินของชั้นปีที่เลือก -->
                     <div id="linkManagerBody" class="p-5 sm:p-6 space-y-6"></div>
+                </div>
+            </div>
+
+            <!-- SUB-SECTION 4: ซ่อมบำรุงฐานข้อมูล Google Sheets -->
+            <div id="admin-sub-maintenance" class="admin-sub-content hidden space-y-6">
+                <div class="bg-themeCard rounded-2xl shadow-md border border-themeBorder overflow-hidden">
+                    <div class="p-5 sm:p-6 border-b border-themeBorder flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                        <div class="flex items-start gap-3">
+                            <div id="maintStatusIcon" class="p-2.5 bg-themePrimary/10 text-themePrimary rounded-xl shrink-0">
+                                <i data-lucide="database" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-themeText text-base">ซ่อมบำรุงฐานข้อมูล Google Sheets</h3>
+                                <p class="text-xs text-themeMuted mt-0.5" id="maintSubtitle">ตรวจโครงสร้างชีต หาแถวว่าง/id ซ้ำ/ค่าผิดรูปแบบ และลดขนาดชีตให้อ่านเร็วขึ้น — ระบบสำรองไฟล์ก่อนซ่อมทุกครั้ง</p>
+                            </div>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            <button type="button" id="maintCheckBtn" onclick="runDatabaseCheck()" class="bg-themePrimary hover:bg-themePrimaryHover text-white text-xs font-bold py-2 px-3.5 rounded-lg flex items-center gap-1.5 transition shadow-sm disabled:opacity-50">
+                                <i data-lucide="stethoscope" class="w-3.5 h-3.5"></i> ตรวจสอบฐานข้อมูล
+                            </button>
+                            <button type="button" id="maintRepairBtn" onclick="runDatabaseRepair()" class="bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold py-2 px-3.5 rounded-lg flex items-center gap-1.5 transition shadow-sm disabled:opacity-50">
+                                <i data-lucide="wrench" class="w-3.5 h-3.5"></i> ซ่อมแซมอัตโนมัติ
+                            </button>
+                            <button type="button" id="maintCacheBtn" onclick="runRebuildCache()" class="bg-themeBg hover:bg-themePrimary/10 text-themeText text-xs font-bold py-2 px-3.5 rounded-lg border border-themeBorder flex items-center gap-1.5 transition disabled:opacity-50">
+                                <i data-lucide="zap" class="w-3.5 h-3.5"></i> รีเฟรชแคช
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- สรุปผล -->
+                    <div id="maintSummary" class="grid grid-cols-2 md:grid-cols-4 gap-px bg-themeBorder border-b border-themeBorder">
+                        <div class="bg-themeCard px-5 py-4"><p class="text-[11px] font-semibold text-themeMuted">สถานะ</p><p class="mt-1 text-lg font-extrabold text-themeMuted" id="maintStatusText">ยังไม่ได้ตรวจ</p></div>
+                        <div class="bg-themeCard px-5 py-4"><p class="text-[11px] font-semibold text-themeMuted">ข้อผิดพลาด</p><p class="mt-1 text-lg font-extrabold text-themeText tabular-nums" id="maintErrors">–</p></div>
+                        <div class="bg-themeCard px-5 py-4"><p class="text-[11px] font-semibold text-themeMuted">คำเตือน / ข้อแนะนำ</p><p class="mt-1 text-lg font-extrabold text-themeText tabular-nums" id="maintWarnings">–</p></div>
+                        <div class="bg-themeCard px-5 py-4"><p class="text-[11px] font-semibold text-themeMuted">เซลล์ทั้งไฟล์</p><p class="mt-1 text-lg font-extrabold text-themeText tabular-nums" id="maintCells">–</p></div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-5 divide-y lg:divide-y-0 lg:divide-x divide-themeBorder">
+                        <!-- ตารางชีต -->
+                        <div class="lg:col-span-2 p-5 sm:p-6">
+                            <h4 class="text-xs font-bold text-themeMuted uppercase tracking-wider mb-3">ชีตในฐานข้อมูล</h4>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-xs text-themeText">
+                                    <thead class="text-themeMuted"><tr class="text-left"><th class="py-1.5 pr-2 font-semibold">ชีต</th><th class="py-1.5 px-2 font-semibold text-right">ข้อมูล</th><th class="py-1.5 px-2 font-semibold text-right">ขนาดชีต</th><th class="py-1.5 pl-2 font-semibold text-center">ผล</th></tr></thead>
+                                    <tbody id="maintSheetsBody" class="divide-y divide-themeBorder">
+                                        <tr><td colspan="4" class="py-6 text-center text-themeMuted">กด "ตรวจสอบฐานข้อมูล" เพื่อเริ่ม</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <!-- รายการปัญหา / บันทึกการซ่อม -->
+                        <div class="lg:col-span-3 p-5 sm:p-6">
+                            <h4 class="text-xs font-bold text-themeMuted uppercase tracking-wider mb-3" id="maintListTitle">ผลการตรวจ</h4>
+                            <ul id="maintIssues" class="space-y-2 max-h-96 overflow-y-auto pr-1">
+                                <li class="text-xs text-themeMuted">ยังไม่มีผลการตรวจ</li>
+                            </ul>
+                            <div id="maintRepairLog" class="hidden mt-4 bg-themeBg rounded-xl border border-themeBorder p-3">
+                                <h5 class="text-xs font-bold text-themeText mb-2 flex items-center gap-1.5"><i data-lucide="clipboard-list" class="w-3.5 h-3.5"></i> บันทึกการซ่อมล่าสุด</h5>
+                                <ul id="maintRepairLogList" class="space-y-1 text-xs text-themeText font-mono break-all"></ul>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -2120,6 +2189,11 @@
                 activeBtn.classList.remove('text-themeMuted');
                 activeBtn.classList.add('text-themePrimary', 'border-b-2', 'border-themePrimary');
             }
+            // เปิดแท็บซ่อมบำรุงครั้งแรก: ตรวจสุขภาพฐานข้อมูลให้อัตโนมัติ
+            if (subTabId === 'maintenance' && !window.__maintChecked && adminToken) {
+                window.__maintChecked = true;
+                runDatabaseCheck();
+            }
         }
 
         function renderAdminDashboard() {
@@ -2637,6 +2711,133 @@
             }
         }
 
+        // =========================================================================
+        // ซ่อมบำรุงฐานข้อมูล (แท็บแอดมิน)
+        // =========================================================================
+        const maintLevelStyle = {
+            error: { icon: 'x-circle', cls: 'text-red-600 dark:text-red-400', bg: 'bg-red-500/10 border-red-500/20', label: 'ข้อผิดพลาด' },
+            warn:  { icon: 'alert-triangle', cls: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-500/10 border-amber-500/20', label: 'คำเตือน' },
+            info:  { icon: 'info', cls: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-500/10 border-blue-500/20', label: 'ข้อแนะนำ' }
+        };
+
+        function setMaintBusy(busy, label) {
+            ['maintCheckBtn', 'maintRepairBtn', 'maintCacheBtn'].forEach(id => {
+                const b = document.getElementById(id);
+                if (b) b.disabled = busy;
+            });
+            const t = document.getElementById('maintStatusText');
+            if (busy && t) {
+                t.textContent = label || 'กำลังทำงาน...';
+                t.className = 'mt-1 text-lg font-extrabold text-themeMuted animate-pulse';
+            }
+        }
+
+        function renderMaintenanceReport(report) {
+            if (!report) return;
+            const status = {
+                ok: ['ปกติดี', 'text-emerald-600 dark:text-emerald-400', 'bg-emerald-500/10 text-emerald-600', 'shield-check'],
+                warn: ['ควรซ่อมบำรุง', 'text-amber-600 dark:text-amber-400', 'bg-amber-500/10 text-amber-600', 'alert-triangle'],
+                error: ['พบปัญหา', 'text-red-600 dark:text-red-400', 'bg-red-500/10 text-red-600', 'x-circle']
+            }[report.status] || ['–', 'text-themeMuted', 'bg-themePrimary/10 text-themePrimary', 'database'];
+
+            const statusText = document.getElementById('maintStatusText');
+            statusText.textContent = status[0];
+            statusText.className = 'mt-1 text-lg font-extrabold ' + status[1];
+            document.getElementById('maintStatusIcon').className = 'p-2.5 rounded-xl shrink-0 ' + status[2];
+            document.getElementById('maintStatusIcon').innerHTML = `<i data-lucide="${status[3]}" class="w-5 h-5"></i>`;
+            document.getElementById('maintErrors').textContent = report.summary.errors;
+            document.getElementById('maintWarnings').textContent = `${report.summary.warnings} / ${report.summary.infos}`;
+            document.getElementById('maintCells').textContent = Number(report.totalCells || 0).toLocaleString('th-TH');
+            const checked = new Date(report.checkedAt);
+            document.getElementById('maintSubtitle').textContent =
+                `ไฟล์ "${report.spreadsheetName}" · ตรวจล่าสุด ${checked.toLocaleString('th-TH', { dateStyle: 'medium', timeStyle: 'short' })} · ใช้เวลา ${(report.durationMs / 1000).toFixed(1)} วินาที` +
+                (report.summary.fixable ? ` · ซ่อมอัตโนมัติได้ ${report.summary.fixable} รายการ` : '');
+
+            // ตารางชีต
+            const bySheet = {};
+            report.issues.forEach(i => { (bySheet[i.sheet] = bySheet[i.sheet] || []).push(i); });
+            document.getElementById('maintSheetsBody').innerHTML = report.sheets.map(s => {
+                const list = bySheet[s.name] || [];
+                const worst = list.some(i => i.level === 'error') ? 'error' : list.some(i => i.level === 'warn') ? 'warn' : list.length ? 'info' : 'ok';
+                const badge = worst === 'ok'
+                    ? '<span class="text-emerald-600 dark:text-emerald-400 font-bold">✓</span>'
+                    : `<span class="${maintLevelStyle[worst].cls} font-bold">${list.length}</span>`;
+                return `<tr>
+                    <td class="py-2 pr-2 font-semibold">${escapeHtml(s.name)}</td>
+                    <td class="py-2 px-2 text-right tabular-nums">${s.exists ? s.rows.toLocaleString('th-TH') + ' แถว' : '<span class="text-red-500">ไม่มีชีต</span>'}</td>
+                    <td class="py-2 px-2 text-right tabular-nums text-themeMuted">${s.exists ? s.maxRows.toLocaleString('th-TH') + '×' + s.maxCols : '–'}</td>
+                    <td class="py-2 pl-2 text-center">${badge}</td>
+                </tr>`;
+            }).join('');
+
+            // รายการปัญหา เรียงจากรุนแรงมากไปน้อย
+            const order = { error: 0, warn: 1, info: 2 };
+            const issues = report.issues.slice().sort((a, b) => order[a.level] - order[b.level]);
+            document.getElementById('maintListTitle').textContent = issues.length ? `ผลการตรวจ (${issues.length} รายการ)` : 'ผลการตรวจ';
+            document.getElementById('maintIssues').innerHTML = issues.length
+                ? issues.map(i => {
+                    const st = maintLevelStyle[i.level] || maintLevelStyle.info;
+                    return `<li class="flex items-start gap-2.5 p-2.5 rounded-lg border ${st.bg}">
+                        <i data-lucide="${st.icon}" class="w-4 h-4 mt-0.5 shrink-0 ${st.cls}"></i>
+                        <div class="min-w-0 text-xs">
+                            <span class="font-bold text-themeText">${escapeHtml(i.sheet)}</span>
+                            <span class="text-themeText">· ${escapeHtml(i.msg)}</span>
+                            <span class="block mt-0.5 text-[10px] ${i.fixable ? 'text-emerald-600 dark:text-emerald-400' : 'text-themeMuted'}">${i.fixable ? '✓ ซ่อมอัตโนมัติได้' : 'ต้องแก้ไขด้วยตนเอง'}</span>
+                        </div>
+                    </li>`;
+                }).join('')
+                : `<li class="flex items-center gap-2 p-3 rounded-lg border bg-emerald-500/10 border-emerald-500/20 text-xs text-emerald-700 dark:text-emerald-300"><i data-lucide="shield-check" class="w-4 h-4"></i> โครงสร้างฐานข้อมูลสมบูรณ์ ไม่พบปัญหา</li>`;
+            safeCreateIcons();
+        }
+
+        async function runDatabaseCheck() {
+            setMaintBusy(true, 'กำลังตรวจ...');
+            try {
+                const report = await callApi('checkDatabase');
+                renderMaintenanceReport(report);
+            } catch (err) {
+                showToast('ตรวจสอบไม่สำเร็จ: ' + err.message, 'error');
+                document.getElementById('maintStatusText').textContent = 'ตรวจไม่สำเร็จ';
+            } finally {
+                setMaintBusy(false);
+            }
+        }
+
+        async function runDatabaseRepair() {
+            if (!confirm('เริ่มซ่อมแซมฐานข้อมูลอัตโนมัติ?\n\nระบบจะสำรองไฟล์ Google Sheets ลงโฟลเดอร์สำรองก่อน แล้วจึง:\n• เติมคอลัมน์/ id ที่ขาด และแก้ id ซ้ำ\n• ลบแถวว่าง และแถว/คอลัมน์ว่างส่วนเกิน\n• ปรับค่าสถานะ/ประเภทให้เป็นรูปแบบมาตรฐาน\n• คำนวณพิกัดแผนที่ และสร้างแคชใหม่\n\n(ไม่ลบข้อมูลโรงเรียนหรือผู้ประเมินที่มีอยู่)')) return;
+            setMaintBusy(true, 'กำลังซ่อม...');
+            try {
+                const res = await callApi('repairDatabase');
+                renderMaintenanceReport(res.report);
+                const box = document.getElementById('maintRepairLog');
+                box.classList.remove('hidden');
+                document.getElementById('maintRepairLogList').innerHTML = res.log.map(l => `<li>${escapeHtml(l)}</li>`).join('') +
+                    `<li class="text-themeMuted">ใช้เวลา ${(res.durationMs / 1000).toFixed(1)} วินาที</li>`;
+                safeCreateIcons();
+                showToast('ซ่อมบำรุงฐานข้อมูลเสร็จแล้ว');
+                fetchLatestData(); // โหลดข้อมูลที่ซ่อมแล้วมาแสดง
+            } catch (err) {
+                showToast('ซ่อมไม่สำเร็จ: ' + err.message, 'error');
+                document.getElementById('maintStatusText').textContent = 'ซ่อมไม่สำเร็จ';
+            } finally {
+                setMaintBusy(false);
+            }
+        }
+
+        async function runRebuildCache() {
+            setMaintBusy(true, 'กำลังสร้างแคช...');
+            try {
+                await callApi('rebuildCache');
+                showToast('สร้างแคชใหม่แล้ว หน้าเว็บจะแสดงข้อมูลล่าสุดจากชีตทันที');
+                await fetchLatestData();
+                document.getElementById('maintStatusText').textContent = 'แคชใหม่พร้อม';
+            } catch (err) {
+                showToast('สร้างแคชไม่สำเร็จ: ' + err.message, 'error');
+            } finally {
+                setMaintBusy(false);
+            }
+        }
+
         // แจ้งเตือนแบบสั้นมุมจอ (ไม่ขวางการทำงาน)
         function showToast(message, type = 'success') {
             let wrap = document.getElementById('toastWrap');
@@ -2973,8 +3174,16 @@
         // เริ่มทำงานทันทีที่ HTML พร้อม (สคริปต์อยู่ท้าย body) ไม่ต้องรอฟอนต์/รูปภาพโหลดเสร็จแบบ window.onload
         (function init() {
             initTheme(); // คืนค่าธีมหลักและโหมดความสว่างเดิม
-            loadCachedData();   // 1) แสดงข้อมูลล่าสุดที่จำไว้ในเครื่องทันที
-            fetchLatestData();  // 2) ดึงข้อมูลใหม่จาก Google Sheets เบื้องหลัง
+            const initial = window.__INITIAL_DATA__;
+            if (initial && !adminToken) {
+                // เปิดผ่าน Google Apps Script: เซิร์ฟเวอร์ฝังข้อมูลล่าสุดมาในหน้าแล้ว ไม่ต้องเรียก API ซ้ำ
+                applyData(initial);
+                storageSet(DATA_CACHE_KEY, JSON.stringify({ savedAt: Date.now(), data: initial }));
+                setSyncState('ok');
+            } else {
+                loadCachedData();   // 1) แสดงข้อมูลล่าสุดที่จำไว้ในเครื่องทันที
+                fetchLatestData();  // 2) ดึงข้อมูลใหม่จาก Google Sheets เบื้องหลัง
+            }
             initMajorsUI();
             safeCreateIcons();
 
