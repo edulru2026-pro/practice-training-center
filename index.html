@@ -13,28 +13,30 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
     
     <!-- นำเข้า Lucide Icons สำหรับแสดงผลไอคอนสวยงาม -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- นำเข้า Chart.js สำหรับการวาดกราฟวงกลมสรุปผลพรีเมียม -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- ระบุเวอร์ชันตายตัว ป้องกันเว็บพังเมื่อไลบรารีออกเวอร์ชันใหม่ -->
+    <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
     <!-- นำเข้า Leaflet JS สำหรับแผนที่ -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     
     <!-- กำหนดโครงสร้าง Tailwind ให้เชื่อมกับ CSS variables เพื่อรองรับ Dynamic Theme และ Dark Mode -->
     <script>
+        // ใช้ color-mix เพื่อให้คลาสแบบโปร่งแสง เช่น bg-themePrimary/10 ทำงานได้กับ CSS variables
+        const themeColor = (v) => `color-mix(in srgb, var(${v}) calc(<alpha-value> * 100%), transparent)`;
         tailwind.config = {
+            darkMode: 'class', // ให้คลาส dark: ทำงานตามปุ่มสลับโหมด ไม่ใช่ตามระบบเครื่องเพียงอย่างเดียว
             theme: {
                 extend: {
                     colors: {
-                        themePrimary: 'var(--primary)',
-                        themePrimaryHover: 'var(--primary-hover)',
-                        themePrimaryDark: 'var(--primary-dark)',
-                        themeAccent: 'var(--accent)',
-                        themeAccentHover: 'var(--accent-hover)',
-                        themeBg: 'var(--bg-main)',
-                        themeCard: 'var(--bg-card)',
-                        themeText: 'var(--text-main)',
-                        themeMuted: 'var(--text-muted)',
-                        themeBorder: 'var(--border-color)',
+                        themePrimary: themeColor('--primary'),
+                        themePrimaryHover: themeColor('--primary-hover'),
+                        themePrimaryDark: themeColor('--primary-dark'),
+                        themeAccent: themeColor('--accent'),
+                        themeAccentHover: themeColor('--accent-hover'),
+                        themeBg: themeColor('--bg-main'),
+                        themeCard: themeColor('--bg-card'),
+                        themeText: themeColor('--text-main'),
+                        themeMuted: themeColor('--text-muted'),
+                        themeBorder: themeColor('--border-color'),
                     }
                 }
             }
@@ -44,7 +46,7 @@
     <style>
         body { font-family: 'Prompt', sans-serif; transition: background-color 0.3s ease, color 0.3s ease; }
         ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-track { background: var(--bg-main); }
         ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--primary-hover); }
         
@@ -69,6 +71,17 @@
             --text-main: #0f172a;
             --text-muted: #475569;
             --border-color: #e2e8f0;
+
+            /* สีประจำระดับการศึกษา (ใช้ทั้งสถิติ หมุดแผนที่ และป้ายบนการ์ด) */
+            --series-1: #2a78d6; /* ประถมศึกษา */
+            --series-2: #eb6834; /* มัธยมศึกษา */
+            --series-3: #1baf7a; /* ขยายโอกาส */
+        }
+        /* โหมดมืด: ปรับความสว่างให้เหมาะกับพื้นหลังเข้ม */
+        html.dark {
+            --series-1: #3987e5;
+            --series-2: #d95926;
+            --series-3: #199e70;
         }
 
         /* เอฟเฟกต์เฟดเปิดเมนูธีม */
@@ -106,74 +119,41 @@
                         <button type="button" onclick="switchTab('schools')" class="hover:bg-white/10 px-4 py-2.5 rounded-xl text-sm font-medium transition duration-200 flex items-center gap-1.5">
                             <i data-lucide="school" class="w-4 h-4"></i> โรงเรียนเครือข่าย
                         </button>
-<!-- ระบบบันทึกข้อความ Dropdown -->
-<div class="relative">
-    <button type="button"
-        onclick="toggleMemoDropdown()"
-        class="hover:bg-white/10 px-4 py-2.5 rounded-xl text-sm font-medium transition duration-200 flex items-center gap-1.5">
-        
-        <i data-lucide="file-text" class="w-4 h-4"></i>
-        ระบบบันทึกข้อความ
-        
-        <i data-lucide="chevron-down" class="w-4 h-4 ml-1"></i>
-    </button>
 
-    <!-- Dropdown Menu -->
-    <div id="memoDropdown"
-        class="hidden absolute left-0 mt-2 w-64 bg-white rounded-xl shadow-xl border border-gray-200 z-50 overflow-hidden">
+                        <!-- ระบบบันทึกข้อความ Dropdown -->
+                        <div class="relative" id="memoDropdownContainer">
+                            <button type="button" onclick="toggleMemoDropdown()" aria-haspopup="true" class="hover:bg-white/10 px-4 py-2.5 rounded-xl text-sm font-medium transition duration-200 flex items-center gap-1.5">
+                                <i data-lucide="file-text" class="w-4 h-4"></i> ระบบบันทึกข้อความ
+                                <i data-lucide="chevron-down" class="w-4 h-4 ml-1"></i>
+                            </button>
+                            <div id="memoDropdown" class="hidden absolute left-0 mt-2 w-64 bg-themeCard text-themeText rounded-xl shadow-xl border border-themeBorder z-50 overflow-hidden animate-fadeIn">
+                                <a href="https://edulru2026-pro.github.io/recording-system01/" target="_blank" rel="noopener noreferrer" class="flex items-center gap-3 px-4 py-3 text-sm hover:bg-themePrimary/10 transition duration-200">
+                                    <div class="w-9 h-9 rounded-lg bg-blue-100 dark:bg-blue-950 flex items-center justify-center">
+                                        <i data-lucide="file-text" class="w-5 h-5 text-blue-600"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-medium">บันทึกข้อความภายใน</div>
+                                        <div class="text-xs text-themeMuted">หนังสือภายในหน่วยงาน</div>
+                                    </div>
+                                </a>
+                                <a href="https://edulru2026-pro.github.io/recording-system02/" target="_blank" rel="noopener noreferrer" class="flex items-center gap-3 px-4 py-3 text-sm hover:bg-themePrimary/10 transition duration-200">
+                                    <div class="w-9 h-9 rounded-lg bg-green-100 dark:bg-green-950 flex items-center justify-center">
+                                        <i data-lucide="file-text" class="w-5 h-5 text-green-600"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-medium">หนังสือราชการภายนอก</div>
+                                        <div class="text-xs text-themeMuted">หนังสือติดต่อหน่วยงานภายนอก</div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
 
-        <!-- บันทึกข้อความภายใน -->
-        <a href="https://edulru2026-pro.github.io/recording-system01/"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 transition duration-200">
-            
-            <div class="w-9 h-9 rounded-lg bg-blue-100 flex items-center justify-center">
-                <i data-lucide="file-text" class="w-5 h-5 text-blue-600"></i>
-            </div>
+                        <button type="button" onclick="openLoginModal()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-semibold px-5 py-2.5 rounded-xl text-sm transition duration-200 shadow-md flex items-center gap-2">
+                            <i data-lucide="shield-alert" class="w-4 h-4"></i> Admin
+                        </button>
+                    </nav>
 
-            <div>
-                <div class="font-medium">บันทึกข้อความภายใน</div>
-                <div class="text-xs text-gray-400">หนังสือภายในหน่วยงาน</div>
-            </div>
-        </a>
-
-        <!-- หนังสือราชการภายนอก -->
-        <a href="https://edulru2026-pro.github.io/recording-system02/"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-green-50 transition duration-200">
-            
-            <div class="w-9 h-9 rounded-lg bg-green-100 flex items-center justify-center">
-                <i data-lucide="file-text" class="w-5 h-5 text-green-600"></i>
-            </div>
-
-            <div>
-                <div class="font-medium">หนังสือราชการภายนอก</div>
-                <div class="text-xs text-gray-400">หนังสือราชการภายนอก</div>
-            </div>
-        </a>
-
-    </div>
-</div>
-
-<script>
-function toggleMemoDropdown() {
-    const dropdown = document.getElementById('memoDropdown');
-    dropdown.classList.toggle('hidden');
-}
-
-// คลิกพื้นที่อื่นเพื่อปิด Dropdown
-document.addEventListener('click', function(event) {
-    const dropdown = document.getElementById('memoDropdown');
-    const button = event.target.closest('button');
-
-    if (!event.target.closest('.relative')) {
-        dropdown.classList.add('hidden');
-    }
-});
-</script>
-                    <!-- ปุ่มควบคุมจานสีธีมและการแสดงผล -->
+                    <!-- ปุ่มควบคุมจานสีธีมและการแสดงผล (อยู่นอก nav เพื่อให้ใช้งานบนมือถือได้ด้วย) -->
                     <div class="relative text-left" id="themeDropdownContainer">
                         <button type="button" onclick="toggleThemeDropdown()" class="hover:bg-white/10 p-2.5 rounded-xl transition duration-200 flex items-center gap-1.5 text-sm font-semibold focus:outline-none bg-white/5 border border-white/10 shadow-inner">
                             <i data-lucide="palette" class="w-5 h-5 text-white"></i>
@@ -215,13 +195,9 @@ document.addEventListener('click', function(event) {
                             </div>
                         </div>
                     </div>
-                        <button type="button" onclick="openLoginModal()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-semibold px-5 py-2.5 rounded-xl text-sm transition duration-200 shadow-md flex items-center gap-2">
-                            <i data-lucide="shield-alert" class="w-4 h-4"></i> Admin
-                        </button>
-                    </nav>
 
                     <div class="md:hidden">
-                        <button type="button" id="mobileMenuBtn" class="p-2.5 rounded-xl hover:bg-white/10 bg-white/5 border border-white/10 shadow-inner focus:outline-none">
+                        <button type="button" id="mobileMenuBtn" aria-label="เปิดเมนู" class="p-2.5 rounded-xl hover:bg-white/10 bg-white/5 border border-white/10 shadow-inner focus:outline-none">
                             <i data-lucide="menu" id="menuIcon" class="w-6 h-6"></i>
                         </button>
                     </div>
@@ -230,11 +206,16 @@ document.addEventListener('click', function(event) {
         </div>
 
         <!-- Mobile Menu -->
-        <div id="mobileMenu" class="hidden md:hidden bg-blue-900 px-4 pt-2 pb-4 space-y-2 border-t border-blue-800">
-            <button type="button" onclick="switchTab('home')" class="w-full text-left block px-3 py-2.5 rounded-md text-base font-medium hover:bg-blue-800 transition">หน้าแรก</button>
-            <button type="button" onclick="switchTab('schools')" class="w-full text-left block px-3 py-2.5 rounded-md text-base font-medium hover:bg-blue-800 transition">โรงเรียนเครือข่าย</button>
-            <div class="border-t border-blue-800 my-2 pt-2">
-                <button type="button" onclick="openLoginModal()" class="w-full text-left flex items-center px-5 py-2.5 rounded-md text-sm hover:bg-blue-800 text-amber-300 font-bold transition">
+        <div id="mobileMenu" class="hidden md:hidden bg-themePrimaryDark text-white px-4 pt-2 pb-4 space-y-2 border-t border-white/10">
+            <button type="button" onclick="switchTab('home')" class="w-full text-left flex items-center gap-2 px-3 py-2.5 rounded-md text-base font-medium hover:bg-white/10 transition"><i data-lucide="home" class="w-4 h-4"></i> หน้าแรก</button>
+            <button type="button" onclick="switchTab('schools')" class="w-full text-left flex items-center gap-2 px-3 py-2.5 rounded-md text-base font-medium hover:bg-white/10 transition"><i data-lucide="school" class="w-4 h-4"></i> โรงเรียนเครือข่าย</button>
+            <div class="border-t border-white/10 my-2 pt-2">
+                <span class="block px-3 pb-1 text-xs text-white/60">ระบบบันทึกข้อความ</span>
+                <a href="https://edulru2026-pro.github.io/recording-system01/" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 px-3 py-2.5 rounded-md text-sm hover:bg-white/10 transition"><i data-lucide="file-text" class="w-4 h-4"></i> บันทึกข้อความภายใน</a>
+                <a href="https://edulru2026-pro.github.io/recording-system02/" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 px-3 py-2.5 rounded-md text-sm hover:bg-white/10 transition"><i data-lucide="file-text" class="w-4 h-4"></i> หนังสือราชการภายนอก</a>
+            </div>
+            <div class="border-t border-white/10 my-2 pt-2">
+                <button type="button" onclick="openLoginModal()" class="w-full text-left flex items-center px-3 py-2.5 rounded-md text-sm hover:bg-white/10 text-amber-300 font-bold transition">
                     <i data-lucide="shield-alert" class="w-4 h-4 mr-2"></i> Admin
                 </button>
             </div>
@@ -299,40 +280,67 @@ document.addEventListener('click', function(event) {
                 </div>
             </div>
 
-            <!-- SECTION: STATISTICS PIE CHART & DATA OVERVIEW -->
+            <!-- SECTION: ภาพรวมสถิติโรงเรียนเครือข่าย (รวมทุกข้อมูลไว้ในแผงเดียว) -->
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-4">
-                <div class="bg-themeCard rounded-3xl p-6 shadow-sm border border-themeBorder mb-8 flex flex-col md:flex-row items-start md:items-center gap-4">
-                    <div class="p-3 bg-themePrimary/10 text-themePrimary rounded-2xl shrink-0">
-                        <i data-lucide="pie-chart" class="w-6 h-6"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-lg font-bold text-themeText">ภาพรวมสถิติโรงเรียนเครือข่ายความร่วมมือ</h3>
-                        <p class="text-sm text-themeMuted mt-1">สรุปข้อมูลโรงเรียนที่ได้รับการอนุมัติแล้ว จำแนกตามระดับการศึกษาและสังกัดหน่วยงาน เพื่อประกอบการพิจารณาจัดสรรโควตานักศึกษาครู</p>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <!-- Chart 1: ประเภทการศึกษา -->
-                    <div class="bg-themeCard rounded-3xl p-6 shadow-md border border-themeBorder flex flex-col items-center justify-center">
-                        <h4 class="text-sm font-bold text-themeText mb-4 uppercase tracking-wider w-full text-center">สัดส่วนตามระดับการศึกษา</h4>
-                        <div class="relative w-full h-64">
-                            <canvas id="schoolsPieChartCanvas"></canvas>
+                <div class="bg-themeCard rounded-3xl shadow-sm border border-themeBorder overflow-hidden">
+                    <!-- หัวแผง -->
+                    <div class="px-6 pt-6 pb-5 flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+                        <div class="flex items-start gap-3">
+                            <div class="p-2.5 bg-themePrimary/10 text-themePrimary rounded-xl shrink-0">
+                                <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold text-themeText leading-tight">ภาพรวมสถิติโรงเรียนเครือข่ายความร่วมมือ</h3>
+                                <p class="text-xs text-themeMuted mt-1">เฉพาะโรงเรียนที่ได้รับการอนุมัติแล้ว ใช้ประกอบการพิจารณาจัดสรรโควตานักศึกษาครู</p>
+                            </div>
                         </div>
-                        <div class="w-full flex justify-center gap-6 mt-4 text-xs font-medium border-t border-themeBorder pt-4">
-                            <div class="flex items-center gap-1.5 text-themeText"><span class="w-3 h-3 rounded-full bg-amber-500"></span> ประถม: <span id="labelElementary">0</span></div>
-                            <div class="flex items-center gap-1.5 text-themeText"><span class="w-3 h-3 rounded-full bg-blue-500"></span> มัธยม: <span id="labelSecondary">0</span></div>
-                            <div class="flex items-center gap-1.5 text-themeText"><span class="w-3 h-3 rounded-full bg-indigo-500"></span> ขยายโอกาส: <span id="labelVocational">0</span></div>
-                        </div>
+                        <button type="button" onclick="switchTab('schools')" class="text-xs font-semibold text-themePrimary hover:underline flex items-center gap-1 shrink-0">
+                            ดูทำเนียบโรงเรียนทั้งหมด <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                        </button>
                     </div>
 
-                    <!-- Chart 2: สังกัดหน่วยงาน -->
-                    <div class="bg-themeCard rounded-3xl p-6 shadow-md border border-themeBorder flex flex-col items-center justify-center">
-                        <h4 class="text-sm font-bold text-themeText mb-4 uppercase tracking-wider w-full text-center">สัดส่วนตามสังกัดหน่วยงาน</h4>
-                        <div class="relative w-full h-64">
-                            <canvas id="affiliationPieChartCanvas"></canvas>
+                    <!-- ตัวเลขสรุปหลัก -->
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-px bg-themeBorder border-y border-themeBorder">
+                        <div class="bg-themeCard px-6 py-5">
+                            <p class="text-xs font-semibold text-themeMuted flex items-center gap-1.5"><i data-lucide="school" class="w-3.5 h-3.5"></i> โรงเรียนที่อนุมัติ</p>
+                            <p class="mt-1.5 text-3xl font-extrabold text-themeText tabular-nums"><span id="kpiSchools">0</span> <span class="text-sm font-medium text-themeMuted">แห่ง</span></p>
                         </div>
-                        <div id="affiliationLabelsContainer" class="w-full flex flex-wrap justify-center gap-x-4 gap-y-2 mt-4 text-xs font-medium border-t border-themeBorder pt-4 text-themeText">
-                            <!-- Labels dynamic from JS -->
+                        <div class="bg-themeCard px-6 py-5">
+                            <p class="text-xs font-semibold text-themeMuted flex items-center gap-1.5"><i data-lucide="users" class="w-3.5 h-3.5"></i> โควตารับนักศึกษารวม</p>
+                            <p class="mt-1.5 text-3xl font-extrabold text-themeText tabular-nums"><span id="kpiQuota">0</span> <span class="text-sm font-medium text-themeMuted">อัตรา</span></p>
+                        </div>
+                        <div class="bg-themeCard px-6 py-5">
+                            <p class="text-xs font-semibold text-themeMuted flex items-center gap-1.5"><i data-lucide="landmark" class="w-3.5 h-3.5"></i> สังกัดหน่วยงาน</p>
+                            <p class="mt-1.5 text-3xl font-extrabold text-themeText tabular-nums"><span id="kpiAffiliations">0</span> <span class="text-sm font-medium text-themeMuted">หน่วยงาน</span></p>
+                        </div>
+                        <div class="bg-themeCard px-6 py-5">
+                            <p class="text-xs font-semibold text-themeMuted flex items-center gap-1.5"><i data-lucide="graduation-cap" class="w-3.5 h-3.5"></i> สาขาวิชาที่มีที่ฝึก</p>
+                            <p class="mt-1.5 text-3xl font-extrabold text-themeText tabular-nums"><span id="kpiMajors">0</span> <span class="text-sm font-medium text-themeMuted">/ 17 สาขา</span></p>
+                        </div>
+                    </div>
+
+                    <!-- รายละเอียด 3 มุมมอง -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 divide-y lg:divide-y-0 lg:divide-x divide-themeBorder">
+                        <!-- 1) ระดับการศึกษา -->
+                        <div class="p-6">
+                            <h4 class="text-sm font-bold text-themeText">ระดับการศึกษา</h4>
+                            <p class="text-xs text-themeMuted mt-0.5 mb-4">สัดส่วนจำนวนโรงเรียน</p>
+                            <div id="levelStackBar" class="flex h-3 w-full gap-[2px] rounded-full overflow-hidden bg-themeBg" role="img" aria-label="สัดส่วนโรงเรียนตามระดับการศึกษา"></div>
+                            <ul id="levelLegend" class="mt-5 space-y-3 text-sm"></ul>
+                        </div>
+
+                        <!-- 2) สังกัดหน่วยงาน -->
+                        <div class="p-6">
+                            <h4 class="text-sm font-bold text-themeText">สังกัดหน่วยงาน</h4>
+                            <p class="text-xs text-themeMuted mt-0.5 mb-4">จำนวนโรงเรียน เรียงจากมากไปน้อย</p>
+                            <ul id="affiliationBars" class="space-y-3"></ul>
+                        </div>
+
+                        <!-- 3) โควตาตามสาขาวิชา -->
+                        <div class="p-6">
+                            <h4 class="text-sm font-bold text-themeText">โควตาที่เปิดรับตามสาขาวิชา</h4>
+                            <p class="text-xs text-themeMuted mt-0.5 mb-4">จำนวนอัตรารวมทุกโรงเรียน</p>
+                            <ul id="majorBars" class="space-y-3 max-h-72 overflow-y-auto pr-1"></ul>
                         </div>
                     </div>
                 </div>
@@ -360,36 +368,9 @@ document.addEventListener('click', function(event) {
                             <h3 class="font-bold text-themeText text-lg mb-2">เรียนรู้งานครู (สังเกตชั้นเรียน)</h3>
                             <p class="text-xs text-themeMuted leading-relaxed mb-4">เรียนรู้ สังเกตชั้นเรียน สังเกตกิจกรรม และเข้าใจภาพรวมการสอนเบื้องต้น</p>
                             
-                            <span class="text-[11px] font-bold text-themeMuted block mb-2 border-b border-themeBorder pb-1">1. ประเมินผลรายวิชาปฏิบัติการ:</span>
-                            <div class="space-y-2.5 mb-4">
-                                <button type="button" onclick="goToAppsScript('mentor', 1)" class="w-full py-2 px-3 text-left hover:bg-themePrimary/10 border border-themeBorder rounded-xl text-xs font-medium text-themeText transition flex items-center justify-between group/btn">
-                                    <span class="flex items-center gap-1.5"><i data-lucide="contact" class="w-3.5 h-3.5 text-purple-500"></i> ครูพี่เลี้ยง</span>
-                                    <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-300 group-hover/btn:translate-x-1 transition"></i>
-                                </button>
-                                <button type="button" onclick="goToAppsScript('major_supervisor', 1)" class="w-full py-2 px-3 text-left hover:bg-themePrimary/10 border border-themeBorder rounded-xl text-xs font-medium text-themeText transition flex items-center justify-between group/btn">
-                                    <span class="flex items-center gap-1.5"><i data-lucide="clipboard-check" class="w-3.5 h-3.5 text-emerald-500"></i> นิเทศก์วิชาเอก</span>
-                                    <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-300 group-hover/btn:translate-x-1 transition"></i>
-                                </button>
-                                <button type="button" onclick="goToAppsScript('pedagogy_supervisor', 1)" class="w-full py-2 px-3 text-left hover:bg-themePrimary/10 border border-themeBorder rounded-xl text-xs font-medium text-themeText transition flex items-center justify-between group/btn">
-                                    <span class="flex items-center gap-1.5"><i data-lucide="award" class="w-3.5 h-3.5 text-blue-500"></i> นิเทศก์วิชาชีพครู</span>
-                                    <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-300 group-hover/btn:translate-x-1 transition"></i>
-                                </button>
-                                <button type="button" onclick="goToAppsScript('course_instructor', 1)" class="w-full py-2 px-3 text-left hover:bg-themePrimary/10 border border-themeBorder rounded-xl text-xs font-medium text-themeText transition flex items-center justify-between group/btn">
-                                    <span class="flex items-center gap-1.5"><i data-lucide="user-check" class="w-3.5 h-3.5 text-amber-500"></i> ผู้สอนรายวิชา</span>
-                                    <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-300 group-hover/btn:translate-x-1 transition"></i>
-                                </button>
-                            </div>
-
-                            <span class="text-[11px] font-bold text-themeMuted block mb-2 border-b border-themeBorder pb-1">2. ประเมินสมรรถนะ:</span>
-                            <div class="space-y-2.5">
-                                <button type="button" onclick="goToAppsScript('competency_performance', 1)" class="w-full py-2.5 px-4 text-left bg-gradient-to-r from-rose-50 to-white dark:from-slate-800 dark:to-slate-900 hover:from-rose-600 hover:to-orange-500 border border-rose-100 dark:border-slate-700 rounded-2xl text-xs font-bold text-rose-700 dark:text-rose-400 hover:text-white transition-all duration-300 flex items-center justify-between shadow-sm hover:shadow-md group/btn">
-                                    <span class="flex items-center gap-2"><i data-lucide="activity" class="w-4 h-4"></i> ประเมินสมรรถนะวิชาชีพครู</span>
-                                    <i data-lucide="arrow-up-right" class="w-3.5 h-3.5 text-rose-400 group-hover:text-white group-hover/btn:translate-x-1 group-hover/btn:translate-y-[-1px] transition"></i>
-                                </button>
-                                <button type="button" onclick="goToAppsScript('competency_conduct', 1)" class="w-full py-2.5 px-4 text-left bg-gradient-to-r from-cyan-50 to-white dark:from-slate-800 dark:to-slate-900 hover:from-cyan-600 hover:to-teal-500 border border-cyan-100 dark:border-slate-700 rounded-2xl text-xs font-bold text-cyan-700 dark:text-cyan-400 hover:text-white transition-all duration-300 flex items-center justify-between shadow-sm hover:shadow-md group/btn">
-                                    <span class="flex items-center gap-2"><i data-lucide="heart" class="w-4 h-4"></i> ประเมินสมรรถนะ PTRU Model</span>
-                                    <i data-lucide="arrow-up-right" class="w-3.5 h-3.5 text-cyan-400 group-hover:text-white group-hover/btn:translate-x-1 group-hover/btn:translate-y-[-1px] transition"></i>
-                                </button>
+                            <!-- ปุ่มผู้ประเมินสร้างจากชีต Evaluators (แอดมินเพิ่ม/ลบ/แก้/เปิด-ปิดได้) -->
+                            <div class="eval-year-buttons space-y-4" data-year="1">
+                                <div class="space-y-2 animate-pulse"><div class="h-9 rounded-xl bg-themeBg"></div><div class="h-9 rounded-xl bg-themeBg"></div><div class="h-9 rounded-xl bg-themeBg"></div></div>
                             </div>
                         </div>
                     </div>
@@ -407,36 +388,9 @@ document.addEventListener('click', function(event) {
                             <h3 class="font-bold text-themeText text-lg mb-2">ผู้ช่วยครู (ผู้ช่วยสอน)</h3>
                             <p class="text-xs text-themeMuted leading-relaxed mb-4">โฮมรูม ช่วยตรวจงาน การบ้าน</p>
                             
-                            <span class="text-[11px] font-bold text-themeMuted block mb-2 border-b border-themeBorder pb-1">1. ประเมินผลรายวิชาปฏิบัติการ:</span>
-                            <div class="space-y-2.5 mb-4">
-                                <button type="button" onclick="goToAppsScript('mentor', 2)" class="w-full py-2 px-3 text-left hover:bg-themePrimary/10 border border-themeBorder rounded-xl text-xs font-medium text-themeText transition flex items-center justify-between group/btn">
-                                    <span class="flex items-center gap-1.5"><i data-lucide="contact" class="w-3.5 h-3.5 text-purple-500"></i> ครูพี่เลี้ยง</span>
-                                    <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-300 group-hover/btn:translate-x-1 transition"></i>
-                                </button>
-                                <button type="button" onclick="goToAppsScript('major_supervisor', 2)" class="w-full py-2 px-3 text-left hover:bg-themePrimary/10 border border-themeBorder rounded-xl text-xs font-medium text-themeText transition flex items-center justify-between group/btn">
-                                    <span class="flex items-center gap-1.5"><i data-lucide="clipboard-check" class="w-3.5 h-3.5 text-emerald-500"></i> นิเทศก์วิชาเอก</span>
-                                    <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-300 group-hover/btn:translate-x-1 transition"></i>
-                                </button>
-                                <button type="button" onclick="goToAppsScript('pedagogy_supervisor', 2)" class="w-full py-2 px-3 text-left hover:bg-themePrimary/10 border border-themeBorder rounded-xl text-xs font-medium text-themeText transition flex items-center justify-between group/btn">
-                                    <span class="flex items-center gap-1.5"><i data-lucide="award" class="w-3.5 h-3.5 text-blue-500"></i> นิเทศก์วิชาชีพครู</span>
-                                    <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-300 group-hover/btn:translate-x-1 transition"></i>
-                                </button>
-                                <button type="button" onclick="goToAppsScript('course_instructor', 2)" class="w-full py-2 px-3 text-left hover:bg-themePrimary/10 border border-themeBorder rounded-xl text-xs font-medium text-themeText transition flex items-center justify-between group/btn">
-                                    <span class="flex items-center gap-1.5"><i data-lucide="user-check" class="w-3.5 h-3.5 text-amber-500"></i> ผู้สอนรายวิชา</span>
-                                    <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-300 group-hover/btn:translate-x-1 transition"></i>
-                                </button>
-                            </div>
-
-                            <span class="text-[11px] font-bold text-themeMuted block mb-2 border-b border-themeBorder pb-1">2. ประเมินสมรรถนะ:</span>
-                            <div class="space-y-2.5">
-                                <button type="button" onclick="goToAppsScript('competency_performance', 2)" class="w-full py-2.5 px-4 text-left bg-gradient-to-r from-rose-50 to-white dark:from-slate-800 dark:to-slate-900 hover:from-rose-600 hover:to-orange-500 border border-rose-100 dark:border-slate-700 rounded-2xl text-xs font-bold text-rose-700 dark:text-rose-400 hover:text-white transition-all duration-300 flex items-center justify-between shadow-sm hover:shadow-md group/btn">
-                                    <span class="flex items-center gap-2"><i data-lucide="activity" class="w-4 h-4"></i> ประเมินสมรรถนะวิชาชีพครู</span>
-                                    <i data-lucide="arrow-up-right" class="w-3.5 h-3.5 text-rose-400 group-hover:text-white group-hover/btn:translate-x-1 group-hover/btn:translate-y-[-1px] transition"></i>
-                                </button>
-                                <button type="button" onclick="goToAppsScript('competency_conduct', 2)" class="w-full py-2.5 px-4 text-left bg-gradient-to-r from-cyan-50 to-white dark:from-slate-800 dark:to-slate-900 hover:from-cyan-600 hover:to-teal-500 border border-cyan-100 dark:border-slate-700 rounded-2xl text-xs font-bold text-cyan-700 dark:text-cyan-400 hover:text-white transition-all duration-300 flex items-center justify-between shadow-sm hover:shadow-md group/btn">
-                                    <span class="flex items-center gap-2"><i data-lucide="heart" class="w-4 h-4"></i> ประเมินสมรรถนะ PTRU Model</span>
-                                    <i data-lucide="arrow-up-right" class="w-3.5 h-3.5 text-cyan-400 group-hover:text-white group-hover/btn:translate-x-1 group-hover/btn:translate-y-[-1px] transition"></i>
-                                </button>
+                            <!-- ปุ่มผู้ประเมินสร้างจากชีต Evaluators (แอดมินเพิ่ม/ลบ/แก้/เปิด-ปิดได้) -->
+                            <div class="eval-year-buttons space-y-4" data-year="2">
+                                <div class="space-y-2 animate-pulse"><div class="h-9 rounded-xl bg-themeBg"></div><div class="h-9 rounded-xl bg-themeBg"></div><div class="h-9 rounded-xl bg-themeBg"></div></div>
                             </div>
                         </div>
                     </div>
@@ -454,36 +408,9 @@ document.addEventListener('click', function(event) {
                             <h3 class="font-bold text-themeText text-lg mb-2">ผู้ร่วมสอน (สอนจุลภาค)</h3>
                             <p class="text-xs text-themeMuted leading-relaxed mb-4">สอน 3-4 แผน ช่วยงานผู้สอน</p>
                             
-                            <span class="text-[11px] font-bold text-themeMuted block mb-2 border-b border-themeBorder pb-1">1. ประเมินผลรายวิชาปฏิบัติการ:</span>
-                            <div class="space-y-2.5 mb-4">
-                                <button type="button" onclick="goToAppsScript('mentor', 3)" class="w-full py-2 px-3 text-left hover:bg-themePrimary/10 border border-themeBorder rounded-xl text-xs font-medium text-themeText transition flex items-center justify-between group/btn">
-                                    <span class="flex items-center gap-1.5"><i data-lucide="contact" class="w-3.5 h-3.5 text-purple-500"></i> ครูพี่เลี้ยง</span>
-                                    <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-300 group-hover/btn:translate-x-1 transition"></i>
-                                </button>
-                                <button type="button" onclick="goToAppsScript('major_supervisor', 3)" class="w-full py-2 px-3 text-left hover:bg-themePrimary/10 border border-themeBorder rounded-xl text-xs font-medium text-themeText transition flex items-center justify-between group/btn">
-                                    <span class="flex items-center gap-1.5"><i data-lucide="clipboard-check" class="w-3.5 h-3.5 text-emerald-500"></i> นิเทศก์วิชาเอก</span>
-                                    <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-300 group-hover/btn:translate-x-1 transition"></i>
-                                </button>
-                                <button type="button" onclick="goToAppsScript('pedagogy_supervisor', 3)" class="w-full py-2 px-3 text-left hover:bg-themePrimary/10 border border-themeBorder rounded-xl text-xs font-medium text-themeText transition flex items-center justify-between group/btn">
-                                    <span class="flex items-center gap-1.5"><i data-lucide="award" class="w-3.5 h-3.5 text-blue-500"></i> นิเทศก์วิชาชีพครู</span>
-                                    <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-300 group-hover/btn:translate-x-1 transition"></i>
-                                </button>
-                                <button type="button" onclick="goToAppsScript('course_instructor', 3)" class="w-full py-2 px-3 text-left hover:bg-themePrimary/10 border border-themeBorder rounded-xl text-xs font-medium text-themeText transition flex items-center justify-between group/btn">
-                                    <span class="flex items-center gap-1.5"><i data-lucide="user-check" class="w-3.5 h-3.5 text-amber-500"></i> ผู้สอนรายวิชา</span>
-                                    <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-300 group-hover/btn:translate-x-1 transition"></i>
-                                </button>
-                            </div>
-
-                            <span class="text-[11px] font-bold text-themeMuted block mb-2 border-b border-themeBorder pb-1">2. ประเมินสมรรถนะ:</span>
-                            <div class="space-y-2.5">
-                                <button type="button" onclick="goToAppsScript('competency_performance', 3)" class="w-full py-2.5 px-4 text-left bg-gradient-to-r from-rose-50 to-white dark:from-slate-800 dark:to-slate-900 hover:from-rose-600 hover:to-orange-500 border border-rose-100 dark:border-slate-700 rounded-2xl text-xs font-bold text-rose-700 dark:text-rose-400 hover:text-white transition-all duration-300 flex items-center justify-between shadow-sm hover:shadow-md group/btn">
-                                    <span class="flex items-center gap-2"><i data-lucide="activity" class="w-4 h-4"></i> ประเมินสมรรถนะวิชาชีพครู</span>
-                                    <i data-lucide="arrow-up-right" class="w-3.5 h-3.5 text-rose-400 group-hover:text-white group-hover/btn:translate-x-1 group-hover/btn:translate-y-[-1px] transition"></i>
-                                </button>
-                                <button type="button" onclick="goToAppsScript('competency_conduct', 3)" class="w-full py-2.5 px-4 text-left bg-gradient-to-r from-cyan-50 to-white dark:from-slate-800 dark:to-slate-900 hover:from-cyan-600 hover:to-teal-500 border border-cyan-100 dark:border-slate-700 rounded-2xl text-xs font-bold text-cyan-700 dark:text-cyan-400 hover:text-white transition-all duration-300 flex items-center justify-between shadow-sm hover:shadow-md group/btn">
-                                    <span class="flex items-center gap-2"><i data-lucide="heart" class="w-4 h-4"></i> ประเมินสมรรถนะ PTRU Model</span>
-                                    <i data-lucide="arrow-up-right" class="w-3.5 h-3.5 text-cyan-400 group-hover:text-white group-hover/btn:translate-x-1 group-hover/btn:translate-y-[-1px] transition"></i>
-                                </button>
+                            <!-- ปุ่มผู้ประเมินสร้างจากชีต Evaluators (แอดมินเพิ่ม/ลบ/แก้/เปิด-ปิดได้) -->
+                            <div class="eval-year-buttons space-y-4" data-year="3">
+                                <div class="space-y-2 animate-pulse"><div class="h-9 rounded-xl bg-themeBg"></div><div class="h-9 rounded-xl bg-themeBg"></div><div class="h-9 rounded-xl bg-themeBg"></div></div>
                             </div>
                         </div>
                     </div>
@@ -501,56 +428,9 @@ document.addEventListener('click', function(event) {
                             <h3 class="font-bold text-themeText text-lg mb-2">ผู้สอนมืออาชีพ (สอนและปฏิบัติงานครู)</h3>
                             <p class="text-xs text-themeMuted leading-relaxed mb-4">การปฏิบัติการสอนในสถานศึกษาเต็มรูปแบบในชั้นเรียนจริง ณ โรงเรียนความร่วมมือที่อนุมัติ</p>
                             
-                            <span class="text-[11px] font-bold text-themeMuted block mb-2 border-b border-themeBorder pb-1">1. ประเมินผลปฏิบัติการสอนในสถานศึกษา 1:</span>
-                            <div class="space-y-2.5 mb-4">
-                                <button type="button" onclick="goToAppsScript('mentor', 4)" class="w-full py-2 px-3 text-left hover:bg-amber-50 border border-slate-100 rounded-xl text-xs font-medium text-slate-700 transition flex items-center justify-between group/btn">
-                                    <span class="flex items-center gap-1.5"><i data-lucide="contact" class="w-3.5 h-3.5 text-purple-500"></i> ครูพี่เลี้ยง</span>
-                                    <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-300 group-hover/btn:translate-x-1 transition"></i>
-                                </button>
-                                <button type="button" onclick="goToAppsScript('major_supervisor', 4)" class="w-full py-2 px-3 text-left hover:bg-amber-50 border border-slate-100 rounded-xl text-xs font-medium text-slate-700 transition flex items-center justify-between group/btn">
-                                    <span class="flex items-center gap-1.5"><i data-lucide="clipboard-check" class="w-3.5 h-3.5 text-emerald-500"></i> นิเทศก์วิชาเอก</span>
-                                    <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-300 group-hover/btn:translate-x-1 transition"></i>
-                                </button>
-                                <button type="button" onclick="goToAppsScript('pedagogy_supervisor', 4)" class="w-full py-2 px-3 text-left hover:bg-amber-50 border border-slate-100 rounded-xl text-xs font-medium text-slate-700 transition flex items-center justify-between group/btn">
-                                    <span class="flex items-center gap-1.5"><i data-lucide="award" class="w-3.5 h-3.5 text-blue-500"></i> นิเทศก์วิชาชีพครู</span>
-                                    <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-300 group-hover/btn:translate-x-1 transition"></i>
-                                </button>
-                                <button type="button" onclick="goToAppsScript('course_instructor', 4)" class="w-full py-2 px-3 text-left hover:bg-amber-50 border border-slate-100 rounded-xl text-xs font-medium text-slate-700 transition flex items-center justify-between group/btn">
-                                    <span class="flex items-center gap-1.5"><i data-lucide="user-check" class="w-3.5 h-3.5 text-amber-500"></i> ผู้สอนรายวิชา</span>
-                                    <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-300 group-hover/btn:translate-x-1 transition"></i>
-                                </button>
-                            </div>
-                            
-                            <span class="text-[11px] font-bold text-themeMuted block mb-2 border-b border-themeBorder pb-1">2. ประเมินผลปฏิบัติการสอนในสถานศึกษา 2:</span>
-                            <div class="space-y-2.5 mb-4">
-                                <button type="button" onclick="goToAppsScript('mentor2', 4)" class="w-full py-2 px-3 text-left hover:bg-amber-50 border border-slate-100 rounded-xl text-xs font-medium text-slate-700 transition flex items-center justify-between group/btn">
-                                    <span class="flex items-center gap-1.5"><i data-lucide="contact" class="w-3.5 h-3.5 text-purple-500"></i> ครูพี่เลี้ยง</span>
-                                    <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-300 group-hover/btn:translate-x-1 transition"></i>
-                                </button>
-                                <button type="button" onclick="goToAppsScript('major_supervisor2', 4)" class="w-full py-2 px-3 text-left hover:bg-amber-50 border border-slate-100 rounded-xl text-xs font-medium text-slate-700 transition flex items-center justify-between group/btn">
-                                    <span class="flex items-center gap-1.5"><i data-lucide="clipboard-check" class="w-3.5 h-3.5 text-emerald-500"></i> นิเทศก์วิชาเอก</span>
-                                    <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-300 group-hover/btn:translate-x-1 transition"></i>
-                                </button>
-                                <button type="button" onclick="goToAppsScript('pedagogy_supervisor2', 4)" class="w-full py-2 px-3 text-left hover:bg-amber-50 border border-slate-100 rounded-xl text-xs font-medium text-slate-700 transition flex items-center justify-between group/btn">
-                                    <span class="flex items-center gap-1.5"><i data-lucide="award" class="w-3.5 h-3.5 text-blue-500"></i> นิเทศก์วิชาชีพครู</span>
-                                    <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-300 group-hover/btn:translate-x-1 transition"></i>
-                                </button>
-                                <button type="button" onclick="goToAppsScript('course_instructor2', 4)" class="w-full py-2 px-3 text-left hover:bg-amber-50 border border-slate-100 rounded-xl text-xs font-medium text-slate-700 transition flex items-center justify-between group/btn">
-                                    <span class="flex items-center gap-1.5"><i data-lucide="user-check" class="w-3.5 h-3.5 text-amber-500"></i> ผู้สอนรายวิชา</span>
-                                    <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-300 group-hover/btn:translate-x-1 transition"></i>
-                                </button>
-                            </div>
-
-                            <span class="text-[11px] font-bold text-themeMuted block mb-2 border-b border-themeBorder pb-1">3. ประเมินสมรรถนะ:</span>
-                            <div class="space-y-2.5">
-                                <button type="button" onclick="goToAppsScript('competency_performance', 4)" class="w-full py-2.5 px-4 text-left bg-gradient-to-r from-rose-50 to-white dark:from-slate-800 dark:to-slate-900 hover:from-rose-600 hover:to-orange-500 border border-rose-100 dark:border-slate-700 rounded-2xl text-xs font-bold text-rose-700 dark:text-rose-400 hover:text-white transition-all duration-300 flex items-center justify-between shadow-sm hover:shadow-md group/btn">
-                                    <span class="flex items-center gap-2"><i data-lucide="activity" class="w-4 h-4"></i> ประเมินสมรรถนะวิชาชีพครู</span>
-                                    <i data-lucide="arrow-up-right" class="w-3.5 h-3.5 text-rose-400 group-hover:text-white group-hover/btn:translate-x-1 group-hover/btn:translate-y-[-1px] transition"></i>
-                                </button>
-                                <button type="button" onclick="goToAppsScript('competency_conduct', 4)" class="w-full py-2.5 px-4 text-left bg-gradient-to-r from-cyan-50 to-white dark:from-slate-800 dark:to-slate-900 hover:from-cyan-600 hover:to-teal-500 border border-cyan-100 dark:border-slate-700 rounded-2xl text-xs font-bold text-cyan-700 dark:text-cyan-400 hover:text-white transition-all duration-300 flex items-center justify-between shadow-sm hover:shadow-md group/btn">
-                                    <span class="flex items-center gap-2"><i data-lucide="heart" class="w-4 h-4"></i> ประเมินสมรรถนะ PTRU Model</span>
-                                    <i data-lucide="arrow-up-right" class="w-3.5 h-3.5 text-cyan-400 group-hover:text-white group-hover/btn:translate-x-1 group-hover/btn:translate-y-[-1px] transition"></i>
-                                </button>
+                            <!-- ปุ่มผู้ประเมินสร้างจากชีต Evaluators (แอดมินเพิ่ม/ลบ/แก้/เปิด-ปิดได้) -->
+                            <div class="eval-year-buttons space-y-4" data-year="4">
+                                <div class="space-y-2 animate-pulse"><div class="h-9 rounded-xl bg-themeBg"></div><div class="h-9 rounded-xl bg-themeBg"></div><div class="h-9 rounded-xl bg-themeBg"></div></div>
                             </div>
                         </div>
                     </div>
@@ -656,7 +536,7 @@ document.addEventListener('click', function(event) {
 
             <!-- Admin Dashboard Stats Overview -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 flex items-center justify-between border-l-4 border-l-blue-500">
+                <div class="bg-themeCard rounded-2xl p-6 shadow-sm border border-themeBorder flex items-center justify-between border-l-4 border-l-blue-500">
                     <div>
                         <p class="text-sm font-semibold text-themeMuted">ยื่นสมัครเครือข่ายทั้งหมด</p>
                         <h4 class="text-3xl font-extrabold text-themeText mt-1" id="adminStatTotalSchools">0</h4>
@@ -665,7 +545,7 @@ document.addEventListener('click', function(event) {
                         <i data-lucide="building-2" class="w-6 h-6"></i>
                     </div>
                 </div>
-                <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 flex items-center justify-between border-l-4 border-l-emerald-500">
+                <div class="bg-themeCard rounded-2xl p-6 shadow-sm border border-themeBorder flex items-center justify-between border-l-4 border-l-emerald-500">
                     <div>
                         <p class="text-sm font-semibold text-themeMuted">อนุมัติแล้ว (Active)</p>
                         <h4 class="text-3xl font-extrabold text-emerald-600 mt-1" id="adminStatApprovedSchools">0</h4>
@@ -674,7 +554,7 @@ document.addEventListener('click', function(event) {
                         <i data-lucide="check-circle-2" class="w-6 h-6"></i>
                     </div>
                 </div>
-                <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 flex items-center justify-between border-l-4 border-l-amber-500">
+                <div class="bg-themeCard rounded-2xl p-6 shadow-sm border border-themeBorder flex items-center justify-between border-l-4 border-l-amber-500">
                     <div>
                         <p class="text-sm font-semibold text-themeMuted">รอตรวจสอบ (Pending)</p>
                         <h4 class="text-3xl font-extrabold text-amber-500 mt-1" id="adminStatPendingSchools">0</h4>
@@ -691,14 +571,14 @@ document.addEventListener('click', function(event) {
                     <i data-lucide="school" class="w-4 h-4"></i> จัดการโรงเรียนเครือข่าย
                 </button>
                 <button type="button" onclick="switchAdminTab('links')" id="admin-tab-links" class="admin-tab-btn py-2.5 px-4 font-bold text-sm text-themeMuted flex items-center gap-2 whitespace-nowrap transition-all duration-150">
-                    <i data-lucide="link" class="w-4 h-4"></i> ตั้งค่าลิงก์แบบประเมิน (URL)
+                    <i data-lucide="users-round" class="w-4 h-4"></i> ผู้ประเมินและลิงก์แบบประเมิน
                 </button>
             </div>
 
             <!-- SUB-SECTION 1: Manage Schools -->
             <div id="admin-sub-schools" class="admin-sub-content space-y-6">
-                <div class="bg-themeCard rounded-2xl shadow-md border border-slate-200 overflow-hidden">
-                    <div class="p-5 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
+                <div class="bg-themeCard rounded-2xl shadow-md border border-themeBorder overflow-hidden">
+                    <div class="p-5 border-b border-themeBorder bg-themeBg flex justify-between items-center">
                         <h3 class="font-bold text-themeText flex items-center gap-2"><i data-lucide="sliders" class="text-themePrimary"></i> อนุมัติและจัดการข้อมูลโรงเรียน</h3>
                         <div class="flex gap-2">
                             <button type="button" onclick="openAdminSchoolModal()" class="bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold py-1.5 px-3 rounded-lg flex items-center gap-1 transition">
@@ -729,66 +609,54 @@ document.addEventListener('click', function(event) {
                 </div>
             </div>
 
-            <!-- SUB-SECTION 3: Manage Evaluation Links -->
+            <!-- SUB-SECTION 3: จัดการผู้ประเมินและลิงก์แบบประเมิน (ข้อมูลจากชีต Evaluators) -->
             <div id="admin-sub-links" class="admin-sub-content hidden space-y-6">
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div class="lg:col-span-1 bg-themeCard rounded-2xl p-6 shadow-md border border-slate-200 h-fit">
-                        <h3 class="font-bold text-themeText text-base mb-4 flex items-center gap-1.5"><i data-lucide="plus-circle" class="text-themePrimary"></i> ตั้งค่าลิงก์แบบประเมิน</h3>
-                        <form id="adminLinkForm" onsubmit="event.preventDefault(); handleLinkSubmit(event);" class="space-y-4">
-                            <div>
-                                <label class="block text-xs font-semibold text-themeMuted mb-1">ชั้นปีการศึกษา *</label>
-                                <select id="linkYear" required class="w-full px-2.5 py-2 text-xs border border-themeBorder rounded-lg focus:outline-none focus:ring-2 focus:ring-themePrimary bg-themeBg text-themeText">
-                                    <option value="1">ชั้นปีที่ 1 (วิชาชีพครู 1)</option>
-                                    <option value="2">ชั้นปีที่ 2 (วิชาชีพครู 2)</option>
-                                    <option value="3">ชั้นปีที่ 3 (วิชาชีพครู 3)</option>
-                                    <option value="4">ชั้นปีที่ 4 (ปฏิบัติการสอน1)</option>
-                                    <option value="4">ชั้นปีที่ 4 (ปฏิบัติการสอน2)</option>
-                                </select>
+                <div id="legacyBackendBanner" class="hidden bg-amber-500/10 border border-amber-500/30 rounded-2xl p-4 text-sm text-amber-700 dark:text-amber-300 flex gap-3">
+                    <i data-lucide="alert-triangle" class="w-5 h-5 shrink-0"></i>
+                    <span><b>Google Apps Script ยังเป็นเวอร์ชันเก่า</b> — ตอนนี้แสดงข้อมูลแบบอ่านอย่างเดียว กรุณาอัปเดต Code.gs เป็นเวอร์ชันใหม่แล้ว Deploy ใหม่ จึงจะเพิ่ม/ลบ/แก้ไข/เปิด-ปิดผู้ประเมินได้</span>
+                </div>
+                <div class="bg-themeCard rounded-2xl shadow-md border border-themeBorder overflow-hidden">
+                    <!-- แถบสรุปความพร้อม -->
+                    <div class="p-5 sm:p-6 border-b border-themeBorder flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                        <div class="flex items-start gap-3">
+                            <div class="p-2.5 bg-themePrimary/10 text-themePrimary rounded-xl shrink-0">
+                                <i data-lucide="users-round" class="w-5 h-5"></i>
                             </div>
                             <div>
-                                <label class="block text-xs font-semibold text-themeMuted mb-1">บทบาทผู้ประเมิน *</label>
-                                <select id="linkRole" required class="w-full px-2.5 py-2 text-xs border border-themeBorder rounded-lg focus:outline-none focus:ring-2 focus:ring-themePrimary bg-themeBg text-themeText">
-                                    <option value="mentor">ครูพี่เลี้ยง</option>
-                                    <option value="major_supervisor">อาจารย์นิเทศก์วิชาเอก</option>
-                                    <option value="pedagogy_supervisor">อาจารย์นิเทศก์วิชาชีพครู</option>
-                                    <option value="course_instructor">อาจารย์ผู้สอนรายวิชา</option>
-                                    <option value="mentor2">ครูพี่เลี้ยง2</option>
-                                    <option value="major_supervisor2">อาจารย์นิเทศก์วิชาเอก2</option>
-                                    <option value="pedagogy_supervisor2">อาจารย์นิเทศก์วิชาชีพครู2</option>
-                                    <option value="course_instructor2">อาจารย์ผู้สอนรายวิชา2</option>
-                                    <option value="competency_performance">ประเมินสมรรถนะวิชาชีพครู</option>
-                                    <option value="competency_conduct">ประเมินสมรรถนะ PTRU Model</option>
-                                </select>
+                                <h3 class="font-bold text-themeText text-base">ผู้ประเมินและลิงก์แบบประเมิน</h3>
+                                <p class="text-xs text-themeMuted mt-0.5">1 แถว = 1 ปุ่มในหน้าแรก · เพิ่ม/ลบ/แก้ไขผู้ประเมิน เปิด-ปิดการใช้งาน และวางลิงก์ (URL) ได้ที่นี่ บันทึกลง Google Sheets ทันที</p>
                             </div>
-                            <div>
-                                <label class="block text-xs font-semibold text-themeMuted mb-1">ลิงก์ปลายทางแบบประเมิน (URL) *</label>
-                                <input type="url" id="linkUrl" required class="w-full px-3 py-2 text-xs border border-themeBorder bg-themeBg text-themeText rounded-lg focus:outline-none focus:ring-2 focus:ring-themePrimary" placeholder="https://forms.gle/...">
+                        </div>
+                        <div class="w-full lg:w-72 shrink-0">
+                            <div class="flex justify-between text-xs font-semibold mb-1.5">
+                                <span class="text-themeMuted">พร้อมใช้งาน (เปิดอยู่และมีลิงก์)</span>
+                                <span class="text-themeText tabular-nums" id="linkProgressText">0 / 0</span>
                             </div>
-                            <div class="flex gap-2">
-                                <button type="submit" id="linkSubmitBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 rounded-xl text-xs transition shadow-md">บันทึกลิงก์ขึ้นระบบ</button>
-                                <button type="button" id="linkCancelBtn" onclick="cancelEditLink()" class="hidden w-1/3 bg-slate-200 text-slate-700 font-bold py-2 rounded-xl text-xs transition shadow-md">ยกเลิก</button>
+                            <div class="h-2 rounded-full bg-themeBg overflow-hidden">
+                                <div id="linkProgressBar" class="h-full rounded-full bg-emerald-500 transition-all duration-500" style="width:0%"></div>
                             </div>
-                        </form>
+                        </div>
                     </div>
 
-                    <div class="lg:col-span-2 bg-white rounded-2xl shadow-md border border-slate-200 overflow-hidden">
-                        <div class="p-5 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
-                            <h3 class="font-bold text-slate-900">ตารางลิงก์ประเมินที่ถูกใช้งานอยู่</h3>
-                        </div>
-                        <div class="overflow-x-auto">
-                            <table class="min-w-full divide-y divide-themeBorder text-sm text-left text-themeText">
-                                <thead class="bg-slate-50 text-slate-500 text-xs font-semibold uppercase">
-                                    <tr>
-                                        <th class="px-6 py-4 w-1/6">ชั้นปี</th>
-                                        <th class="px-6 py-4 w-1/4">บทบาท</th>
-                                        <th class="px-6 py-4 w-1/2">ลิงก์ประเมิน (URL)</th>
-                                        <th class="px-6 py-4 w-1/12 text-center">จัดการ</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="adminLinksTableBody" class="divide-y divide-themeBorder bg-themeCard text-xs"></tbody>
-                            </table>
+                    <!-- แท็บชั้นปี + เครื่องมือ -->
+                    <div class="px-5 sm:px-6 pt-4 flex flex-col md:flex-row md:items-center justify-between gap-3">
+                        <div id="linkYearTabs" class="flex gap-1 p-1 bg-themeBg rounded-xl border border-themeBorder overflow-x-auto" role="tablist"></div>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <label class="flex items-center gap-2 text-xs font-semibold text-themeMuted cursor-pointer select-none mr-1">
+                                <input type="checkbox" id="linkOnlyMissing" onchange="renderLinkManager()" class="h-4 w-4 rounded border-themeBorder text-themePrimary focus:ring-themePrimary">
+                                เฉพาะที่ยังไม่พร้อม
+                            </label>
+                            <button type="button" id="linkSaveAllBtn" onclick="saveAllLinkDrafts()" class="hidden bg-themePrimary hover:bg-themePrimaryHover text-white text-xs font-bold py-2 px-3 rounded-lg flex items-center gap-1.5 transition shadow-sm">
+                                <i data-lucide="save-all" class="w-3.5 h-3.5"></i> บันทึกลิงก์ที่แก้ไข (<span id="linkDirtyCount">0</span>)
+                            </button>
+                            <button type="button" onclick="openEvaluatorModal()" class="bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold py-2 px-3 rounded-lg flex items-center gap-1.5 transition shadow-sm">
+                                <i data-lucide="user-plus" class="w-3.5 h-3.5"></i> เพิ่มผู้ประเมิน
+                            </button>
                         </div>
                     </div>
+
+                    <!-- รายการผู้ประเมินของชั้นปีที่เลือก -->
+                    <div id="linkManagerBody" class="p-5 sm:p-6 space-y-6"></div>
                 </div>
             </div>
 
@@ -823,7 +691,7 @@ document.addEventListener('click', function(event) {
                     <input type="password" id="passwordInput" required class="w-full px-4 py-2.5 text-sm border border-themeBorder rounded-xl focus:outline-none focus:ring-2 focus:ring-themePrimary bg-themeBg text-themeText" placeholder="••••••••">
                 </div>
                 <div class="pt-4">
-                    <button type="submit" id="loginSubmitBtn" class="w-full bg-slate-900 dark:bg-slate-750 hover:bg-slate-800 text-white font-semibold py-2.5 rounded-xl transition duration-200 shadow-lg flex items-center justify-center gap-2">
+                    <button type="submit" id="loginSubmitBtn" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold py-2.5 rounded-xl transition duration-200 shadow-lg flex items-center justify-center gap-2">
                         <i data-lucide="log-in" class="w-4 h-4"></i> ยืนยันสิทธิ์แอดมิน
                     </button>
                     <div id="loginLoader" class="hidden flex items-center justify-center gap-2 text-themeMuted text-sm py-2">
@@ -945,15 +813,15 @@ document.addEventListener('click', function(event) {
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div>
                                 <label class="block text-xs font-semibold text-themeText mb-1">ชื่อผู้ประสานงาน (ครูพี่เลี้ยงหลัก) *</label>
-                                <input type="text" id="regCoordinator" required class="w-full px-4 py-2.5 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 bg-themeCard text-themeText" placeholder="คุณครูสวย ใจดี">
+                                <input type="text" id="regCoordinator" required class="w-full px-4 py-2.5 text-sm border border-themeBorder rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 bg-themeCard text-themeText" placeholder="คุณครูสวย ใจดี">
                             </div>
                             <div>
                                 <label class="block text-xs font-semibold text-themeText mb-1">เบอร์ติดต่อประสานงาน *</label>
-                                <input type="tel" id="regPhone" required class="w-full px-4 py-2.5 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 bg-themeCard text-themeText" placeholder="042-XXXXXX">
+                                <input type="tel" id="regPhone" required class="w-full px-4 py-2.5 text-sm border border-themeBorder rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 bg-themeCard text-themeText" placeholder="042-XXXXXX">
                             </div>
                             <div>
                                 <label class="block text-xs font-semibold text-themeText mb-1">ลิงก์แนบหลักฐาน (ใบสมัครโรงเรียนเครือข่ายฯ) *</label>
-                                <input type="url" id="regEvidenceUrl" required class="w-full px-4 py-2.5 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 bg-themeCard text-themeText" placeholder="https://drive.google.com/...">
+                                <input type="url" id="regEvidenceUrl" required class="w-full px-4 py-2.5 text-sm border border-themeBorder rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 bg-themeCard text-themeText" placeholder="https://drive.google.com/...">
                             </div>
                         </div>
                     </div>
@@ -963,6 +831,10 @@ document.addEventListener('click', function(event) {
                         <button type="submit" id="schoolRegBtn" class="px-8 py-3 bg-gradient-to-r from-themePrimary to-themePrimaryHover hover:from-themePrimaryHover hover:to-themePrimaryDark text-white font-bold rounded-xl transition duration-150 shadow-md hover:shadow-lg flex items-center gap-2 text-sm">
                             <i data-lucide="check-circle" class="w-4 h-4"></i> ส่งใบสมัครความร่วมมือ
                         </button>
+                        <div id="schoolRegLoader" class="hidden flex items-center gap-2 px-6 py-3 text-themeMuted text-sm">
+                            <svg class="animate-spin h-5 w-5 text-themePrimary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+                            กำลังส่งใบสมัคร...
+                        </div>
                     </div>
                 </form>
             </div>
@@ -1081,6 +953,80 @@ document.addEventListener('click', function(event) {
         </div>
     </div>
 
+    <!-- MODAL เพิ่ม/แก้ไขผู้ประเมิน -->
+    <div id="evaluatorModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4" style="z-index: 9999; display: none;">
+        <div class="bg-themeCard rounded-3xl max-w-2xl w-full shadow-2xl border border-themeBorder relative flex flex-col max-h-[95vh] text-themeText">
+            <button type="button" onclick="closeEvaluatorModal()" class="absolute top-4 right-4 p-1.5 rounded-full hover:bg-themeBg text-themeMuted transition z-10">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <form id="evaluatorForm" onsubmit="handleEvaluatorSubmit(event)" class="p-6 sm:p-8 overflow-y-auto space-y-5">
+                <div>
+                    <h3 class="text-xl font-bold" id="evaluatorModalTitle">เพิ่มผู้ประเมิน</h3>
+                    <p class="text-xs text-themeMuted mt-1">ผู้ประเมิน 1 รายการ = ปุ่ม 1 ปุ่มในการ์ดชั้นปีที่หน้าแรก</p>
+                </div>
+
+                <!-- ตัวอย่างปุ่มจริง -->
+                <div class="bg-themeBg rounded-2xl border border-themeBorder p-4">
+                    <span class="text-[10px] font-bold text-themeMuted uppercase tracking-wider">ตัวอย่างปุ่มในหน้าแรก</span>
+                    <div id="evaluatorPreview" class="mt-2 max-w-xs"></div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-themeMuted mb-1">ชั้นปี *</label>
+                        <select id="evYear" required onchange="refreshEvaluatorGroups(); updateEvaluatorPreview()" class="w-full px-3 py-2.5 text-sm border border-themeBorder rounded-xl bg-themeBg text-themeText focus:outline-none focus:ring-2 focus:ring-themePrimary">
+                            <option value="1">ชั้นปีที่ 1</option>
+                            <option value="2">ชั้นปีที่ 2</option>
+                            <option value="3">ชั้นปีที่ 3</option>
+                            <option value="4">ชั้นปีที่ 4</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-themeMuted mb-1">หัวข้อกลุ่ม * <span class="font-normal">(พิมพ์ใหม่หรือเลือกที่มีอยู่)</span></label>
+                        <input type="text" id="evGroup" list="evGroupOptions" required maxlength="120" class="w-full px-3 py-2.5 text-sm border border-themeBorder rounded-xl bg-themeBg text-themeText focus:outline-none focus:ring-2 focus:ring-themePrimary" placeholder="เช่น ประเมินผลรายวิชาปฏิบัติการ">
+                        <datalist id="evGroupOptions"></datalist>
+                    </div>
+                    <div class="sm:col-span-2">
+                        <label class="block text-xs font-semibold text-themeMuted mb-1">ชื่อผู้ประเมิน (ข้อความบนปุ่ม) *</label>
+                        <input type="text" id="evName" required maxlength="120" oninput="updateEvaluatorPreview()" class="w-full px-3 py-2.5 text-sm border border-themeBorder rounded-xl bg-themeBg text-themeText focus:outline-none focus:ring-2 focus:ring-themePrimary" placeholder="เช่น ครูพี่เลี้ยง">
+                    </div>
+                    <div class="sm:col-span-2">
+                        <label class="block text-xs font-semibold text-themeMuted mb-1">ลิงก์แบบประเมิน (URL) <span class="font-normal">— เว้นว่างได้ ผู้ใช้จะเห็นว่ายังไม่เปิดรับ</span></label>
+                        <input type="url" id="evUrl" maxlength="2000" class="w-full px-3 py-2.5 text-sm font-mono border border-themeBorder rounded-xl bg-themeBg text-themeText focus:outline-none focus:ring-2 focus:ring-themePrimary" placeholder="https://forms.gle/...">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-themeMuted mb-1">ไอคอน</label>
+                        <div id="evIconPicker" class="grid grid-cols-6 gap-1.5"></div>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-themeMuted mb-1">สี</label>
+                            <div id="evColorPicker" class="flex flex-wrap gap-2"></div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-themeMuted mb-1">รูปแบบปุ่ม</label>
+                            <div class="grid grid-cols-2 gap-1 bg-themeBg p-1 rounded-xl border border-themeBorder text-xs font-bold">
+                                <label class="cursor-pointer"><input type="radio" name="evStyle" value="list" class="peer sr-only" onchange="updateEvaluatorPreview()" checked><span class="block text-center py-2 rounded-lg text-themeMuted peer-checked:bg-themeCard peer-checked:text-themePrimary peer-checked:shadow-sm">ปุ่มปกติ</span></label>
+                                <label class="cursor-pointer"><input type="radio" name="evStyle" value="feature" class="peer sr-only" onchange="updateEvaluatorPreview()"><span class="block text-center py-2 rounded-lg text-themeMuted peer-checked:bg-themeCard peer-checked:text-themePrimary peer-checked:shadow-sm">ปุ่มเด่น</span></label>
+                            </div>
+                        </div>
+                        <label class="flex items-center gap-2 text-sm font-semibold cursor-pointer select-none">
+                            <input type="checkbox" id="evActive" checked class="h-4 w-4 rounded border-themeBorder text-emerald-600 focus:ring-emerald-500">
+                            เปิดใช้งานผู้ประเมินนี้
+                        </label>
+                    </div>
+                </div>
+
+                <div class="flex gap-3 justify-end pt-4 border-t border-themeBorder">
+                    <button type="button" onclick="closeEvaluatorModal()" class="px-6 py-2.5 border border-themeBorder rounded-xl hover:bg-themeBg font-semibold text-sm">ยกเลิก</button>
+                    <button type="submit" id="evaluatorSaveBtn" class="px-6 py-2.5 bg-themePrimary hover:bg-themePrimaryHover text-white font-bold rounded-xl shadow-md flex items-center gap-2 text-sm disabled:opacity-50">
+                        <i data-lucide="save" class="w-4 h-4"></i> บันทึก
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- INTERACTIVE FLOATING ALERT/MESSAGE SYSTEM -->
     <div id="customAlertModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[110] flex items-center justify-center p-4 hidden" style="z-index: 99999;">
         <div class="bg-themeCard rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-themeBorder text-center transform scale-95 transition-all duration-300 text-themeText">
@@ -1088,7 +1034,7 @@ document.addEventListener('click', function(event) {
                 <i data-lucide="info" class="w-6 h-6"></i>
             </div>
             <h3 class="font-bold text-lg mb-2" id="alertTitle">การประมวลผลระบบ</h3>
-            <p class="text-sm text-themeMuted mb-6 leading-relaxed" id="alertMessage">ข้อความแจ้งเตือน</p>
+            <p class="text-sm text-themeMuted mb-6 leading-relaxed whitespace-pre-line break-words" id="alertMessage">ข้อความแจ้งเตือน</p>
             <div id="alertActionContainer" class="flex flex-col gap-2">
                 <button type="button" onclick="closeAlert()" class="w-full bg-themePrimary hover:bg-themePrimaryHover text-white font-semibold py-2.5 rounded-lg transition-colors shadow-md">ตกลงเข้าใจแล้ว</button>
             </div>
@@ -1116,15 +1062,69 @@ document.addEventListener('click', function(event) {
             }
         }
 
+        // ป้องกันการแทรกโค้ด HTML/สคริปต์ (XSS) จากข้อมูลที่ผู้ใช้กรอกผ่านฟอร์มสมัคร
+        function escapeHtml(value) {
+            return String(value ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        // อนุญาตเฉพาะลิงก์ http/https เท่านั้น (กันลิงก์อันตรายแบบ javascript:)
+        function safeUrl(url) {
+            const u = String(url ?? '').trim();
+            return /^https?:\/\//i.test(u) ? u : '';
+        }
+
+        // เปรียบเทียบรหัสแบบข้อความ (Google Sheets อาจส่งรหัสกลับมาเป็นตัวเลข)
+        function sameId(a, b) {
+            return String(a) === String(b);
+        }
+
+        // อ่าน/บันทึกค่าอย่างปลอดภัย (บางเบราว์เซอร์/โหมดไม่ระบุตัวตนปิด storage ไว้)
+        function storageGet(key) {
+            try { return localStorage.getItem(key); } catch (e) { return null; }
+        }
+        function storageSet(key, value) {
+            try { localStorage.setItem(key, value); } catch (e) { /* ไม่ต้องจำค่า */ }
+        }
+        function sessionGet(key) {
+            try { return sessionStorage.getItem(key); } catch (e) { return null; }
+        }
+        function sessionSet(key, value) {
+            try { value === null ? sessionStorage.removeItem(key) : sessionStorage.setItem(key, value); } catch (e) { /* ignore */ }
+        }
+
+        // เมนู Dropdown ระบบบันทึกข้อความ
+        function toggleMemoDropdown() {
+            const dropdown = document.getElementById('memoDropdown');
+            if (dropdown) dropdown.classList.toggle('hidden');
+        }
+
         // ตัวแปรเก็บข้อมูล
         let schoolsData = [];
-        let evaluationsData = [];
-        let evaluationLinksData = [];
+        let evaluatorsData = [];                       // ปุ่มผู้ประเมิน + ลิงก์ (จากชีต Evaluators)
+        let adminToken = sessionGet('adminToken');     // โทเคนแอดมิน (หมดอายุใน 6 ชม. หรือเมื่อปิดแท็บ)
+        const DATA_CACHE_KEY = 'lruPublicData_v3';     // จำข้อมูลล่าสุดไว้ในเครื่อง เพื่อแสดงผลได้ทันที
+
+        // ชุดสีของปุ่มผู้ประเมิน (เขียนคลาสเต็มไว้ เพื่อให้ Tailwind สร้าง CSS ได้)
+        const evaluatorColors = {
+            purple:  { icon: 'text-purple-500',  dot: 'bg-purple-500',  feature: 'bg-purple-500/10 border-purple-500/20 text-purple-700 dark:text-purple-300 hover:bg-purple-600 hover:text-white' },
+            emerald: { icon: 'text-emerald-500', dot: 'bg-emerald-500', feature: 'bg-emerald-500/10 border-emerald-500/20 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-600 hover:text-white' },
+            blue:    { icon: 'text-blue-500',    dot: 'bg-blue-500',    feature: 'bg-blue-500/10 border-blue-500/20 text-blue-700 dark:text-blue-300 hover:bg-blue-600 hover:text-white' },
+            amber:   { icon: 'text-amber-500',   dot: 'bg-amber-500',   feature: 'bg-amber-500/10 border-amber-500/20 text-amber-700 dark:text-amber-300 hover:bg-amber-600 hover:text-white' },
+            rose:    { icon: 'text-rose-500',    dot: 'bg-rose-500',    feature: 'bg-rose-500/10 border-rose-500/20 text-rose-700 dark:text-rose-300 hover:bg-rose-600 hover:text-white' },
+            cyan:    { icon: 'text-cyan-500',    dot: 'bg-cyan-500',    feature: 'bg-cyan-500/10 border-cyan-500/20 text-cyan-700 dark:text-cyan-300 hover:bg-cyan-600 hover:text-white' },
+            indigo:  { icon: 'text-indigo-500',  dot: 'bg-indigo-500',  feature: 'bg-indigo-500/10 border-indigo-500/20 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-600 hover:text-white' },
+            slate:   { icon: 'text-slate-500',   dot: 'bg-slate-500',   feature: 'bg-slate-500/10 border-slate-500/20 text-slate-700 dark:text-slate-300 hover:bg-slate-600 hover:text-white' }
+        };
+        const evaluatorIcons = ['contact', 'clipboard-check', 'award', 'user-check', 'activity', 'heart',
+            'graduation-cap', 'school', 'book-open', 'star', 'users', 'file-check'];
+        const colorOf = (c) => evaluatorColors[c] || evaluatorColors.blue;
 
         let editingSchoolId = null;
-        let editingLinkId = null;
-        let schoolsChartInstance = null; 
-        let affiliationChartInstance = null;
         let networkMap = null;
         let markersLayer = null;
 
@@ -1215,8 +1215,8 @@ document.addEventListener('click', function(event) {
 
         // เริ่มระบายชุดสิทธิ์สีธีมและโหมดความสว่าง
         function initTheme() {
-            const savedTheme = localStorage.getItem('schoolTheme') || 'blue';
-            const savedMode = localStorage.getItem('schoolMode') || 'auto';
+            const savedTheme = storageGet('schoolTheme') || 'blue';
+            const savedMode = storageGet('schoolMode') || 'auto';
             setTheme(savedTheme, false);
             setMode(savedMode, false);
         }
@@ -1235,13 +1235,13 @@ document.addEventListener('click', function(event) {
                 document.documentElement.style.setProperty(property, value);
             });
             
-            if (store) localStorage.setItem('schoolTheme', themeName);
+            if (store) storageSet('schoolTheme', themeName);
             updateChart(); // วาดกราฟใหม่เพื่อเปลี่ยนสีธีมของชาร์ตให้สอดคล้องกัน
         }
 
         // ตั้งค่ามืดหรือสว่าง
         function setMode(mode, store = true) {
-            if (store) localStorage.setItem('schoolMode', mode);
+            if (store) storageSet('schoolMode', mode);
             
             // ยกเลิกสถานะแอคทีฟปุ่มเดิมใน UI
             document.getElementById('btn-mode-light').className = "py-2.5 text-xs font-bold rounded-xl flex flex-col items-center gap-1 transition text-themeMuted hover:bg-themeBg/50";
@@ -1275,7 +1275,7 @@ document.addEventListener('click', function(event) {
 
         // เฝ้าฟังการสลับโหมดของตัวเครื่องระบบปฏิบัติการกรณีที่ใช้โหมดออโต้
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-            const savedMode = localStorage.getItem('schoolMode') || 'auto';
+            const savedMode = storageGet('schoolMode') || 'auto';
             if (savedMode === 'auto') {
                 setMode('auto', false);
             }
@@ -1288,6 +1288,26 @@ document.addEventListener('click', function(event) {
             if (dropdown && container && !container.contains(event.target)) {
                 dropdown.classList.add('hidden');
             }
+            const memoDropdown = document.getElementById('memoDropdown');
+            const memoContainer = document.getElementById('memoDropdownContainer');
+            if (memoDropdown && memoContainer && !memoContainer.contains(event.target)) {
+                memoDropdown.classList.add('hidden');
+            }
+        });
+
+        // กดปุ่ม Esc เพื่อปิดหน้าต่าง/เมนูที่เปิดอยู่
+        document.addEventListener('keydown', function(event) {
+            if (event.key !== 'Escape') return;
+            ['themeDropdown', 'memoDropdown'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.classList.add('hidden');
+            });
+            closeAlert();
+            closeNetworkMap();
+            closeLoginModal();
+            closeSchoolRegisterModal();
+            closeAdminSchoolModal();
+            closeEvaluatorModal();
         });
 
         // สร้าง Checkbox ตัวเลือกสาขาวิชาแบบ Dynamic
@@ -1314,7 +1334,7 @@ document.addEventListener('click', function(event) {
             return `
                 <div class="flex flex-col p-3 bg-themeCard rounded-xl border border-themeBorder hover:border-themePrimary hover:shadow-sm transition-all duration-150 text-themeText">
                     <label class="flex items-start gap-2.5 cursor-pointer text-xs font-semibold text-themeText">
-                        <input type="checkbox" value="${majorName}" id="${prefix}_cb_${idx}" onchange="toggleQuotaInput('${prefix}', ${idx})" class="${prefix}-major-checkbox mt-0.5 h-4.5 w-4.5 rounded border-themeBorder text-themePrimary focus:ring-themePrimary transition bg-themeBg">
+                        <input type="checkbox" value="${majorName}" id="${prefix}_cb_${idx}" onchange="toggleQuotaInput('${prefix}', ${idx})" class="${prefix}-major-checkbox mt-0.5 h-4 w-4 rounded border-themeBorder text-themePrimary focus:ring-themePrimary transition bg-themeBg">
                         <span class="leading-tight">${idx + 1}. ${majorName.replace('สาขาวิชา', '')}</span>
                     </label>
                     <div id="${prefix}_quota_div_${idx}" class="hidden mt-2.5 flex items-center justify-between bg-themeBg p-2 rounded-lg border border-themeBorder">
@@ -1465,71 +1485,149 @@ document.addEventListener('click', function(event) {
         }
 
         // =========================================================================
-        // HYBRID API BRIDGE: เชื่อมต่อ Google Sheets 100% ในทุกสภาพแวดล้อม
+        // API BRIDGE: เชื่อมต่อ Google Sheets (ทั้งโฮสต์บน Apps Script และเว็บภายนอก)
         // =========================================================================
+        const API_TIMEOUT_MS = 30000;
+
         async function callApi(action, params = {}) {
-            if (isGAS) {
-                return new Promise((resolve, reject) => {
-                    const runner = google.script.run.withSuccessHandler(resolve).withFailureHandler(reject);
-                    switch(action) {
-                        case 'getAllData': runner.getAllData(); break;
-                        case 'authenticateAdmin': runner.authenticateAdmin(params.username, params.password); break;
-                        case 'saveEvaluationLink': runner.saveEvaluationLink(params.data); break;
-                        case 'deleteEvaluationLink': runner.deleteEvaluationLink(params.id); break;
-                        case 'registerSchool': runner.registerSchool(params.data); break;
-                        case 'saveSchoolAdmin': runner.saveSchoolAdmin(params.data); break;
-                        case 'updateSchoolStatus': runner.updateSchoolStatus(params.id, params.status); break;
-                        case 'deleteSchool': runner.deleteSchool(params.id); break;
-                        case 'deleteEvaluation': runner.deleteEvaluation(params.id); break;
-                        default: reject(new Error("ไม่รู้จักคำสั่ง: " + action));
-                    }
-                });
-            } else {
-                if (!WEB_APP_URL || WEB_APP_URL === "YOUR_WEB_APP_URL_HERE") {
-                    console.warn("ระบบต้องการ WEB_APP_URL ในการเชื่อมต่อฐานข้อมูล");
-                    if (action === 'getAllData') return { schools: [], evaluations: [], evaluationLinks: [] };
-                    if (action === 'authenticateAdmin') return { authenticated: false };
-                    throw new Error("กรุณาระบุ WEB_APP_URL ในโค้ดหน้า HTML ก่อนทำการบันทึกหรือทำรายการใดๆ");
-                }
-                
-                const response = await fetch(WEB_APP_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    body: JSON.stringify({ action: action, ...params })
-                });
-                
-                const result = await response.json();
-                if (result.status === 'success') {
-                    return result.data;
+            const payload = { action, ...params };
+            if (adminToken) payload.token = adminToken; // คำสั่งของแอดมินต้องมีโทเคนเสมอ
+
+            let result;
+            try {
+                if (isGAS) {
+                    result = await new Promise((resolve, reject) => {
+                        google.script.run.withSuccessHandler(resolve).withFailureHandler(reject).api(JSON.stringify(payload));
+                    });
                 } else {
-                    throw new Error(result.message);
+                    const controller = new AbortController();
+                    const timer = setTimeout(() => controller.abort(), API_TIMEOUT_MS);
+                    let response;
+                    try {
+                        response = await fetch(WEB_APP_URL, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // ไม่ต้องทำ CORS preflight จึงเร็วขึ้น
+                            body: JSON.stringify(payload),
+                            signal: controller.signal
+                        });
+                    } finally {
+                        clearTimeout(timer);
+                    }
+                    const json = await response.json();
+                    if (json.status !== 'success') throw new Error(json.message || 'เกิดข้อผิดพลาดจากเซิร์ฟเวอร์');
+                    result = json.data;
                 }
+            } catch (err) {
+                const message = err && err.name === 'AbortError'
+                    ? 'เซิร์ฟเวอร์ตอบสนองช้าเกินไป กรุณาลองใหม่อีกครั้ง'
+                    : (err && err.message) || String(err);
+                if (message.indexOf('SESSION_EXPIRED') !== -1) handleSessionExpired();
+                const error = new Error(message.replace(/^(SESSION_EXPIRED|SETUP_REQUIRED): /, ''));
+                error.setupRequired = message.indexOf('SETUP_REQUIRED') !== -1; // ผู้ดูแลยังไม่ได้รัน setup()
+                throw error;
             }
+            return result;
         }
 
-        // --- โหลดข้อมูลหลัก ---
-        async function fetchLatestData() {
-            const dbIndicator = document.getElementById('dbIndicator');
-            const dbDot = document.getElementById('dbDot');
-            const dbText = document.getElementById('dbText');
+        // โทเคนหมดอายุ: กลับไปหน้าแรกและเปิดหน้าต่างล็อกอินใหม่
+        function handleSessionExpired() {
+            setAdminToken(null);
+            switchTab('home');
+            setTimeout(() => {
+                openLoginModal();
+                showToast('เซสชันแอดมินหมดอายุ กรุณาเข้าสู่ระบบอีกครั้ง', 'error');
+            }, 50);
+        }
 
+        function setAdminToken(token) {
+            adminToken = token || null;
+            sessionSet('adminToken', adminToken);
+        }
+
+        // รองรับ Code.gs เวอร์ชันเก่า (ยังไม่มีชีต Evaluators): สร้างปุ่มจาก EvaluationLinks เดิมแบบอ่านอย่างเดียว
+        let legacyBackend = false;
+        function legacyEvaluatorsFrom(links) {
+            const practice = [['mentor', 'ครูพี่เลี้ยง', 'contact', 'purple'], ['major_supervisor', 'นิเทศก์วิชาเอก', 'clipboard-check', 'emerald'],
+                ['pedagogy_supervisor', 'นิเทศก์วิชาชีพครู', 'award', 'blue'], ['course_instructor', 'ผู้สอนรายวิชา', 'user-check', 'amber']];
+            const competency = [['competency_performance', 'ประเมินสมรรถนะวิชาชีพครู', 'activity', 'rose'], ['competency_conduct', 'ประเมินสมรรถนะ PTRU Model', 'heart', 'cyan']];
+            const out = [];
+            const add = (year, group, items, style, suffix = '') => items.forEach(([role, name, icon, color]) => {
+                const link = (links || []).find(l => parseInt(l.year) === year && l.role === role + suffix);
+                out.push({ id: `${year}-${role}${suffix}`, year, group, name, icon, color, style, url: link ? link.url : '', active: true, order: out.length + 1 });
+            });
+            [1, 2, 3].forEach(y => { add(y, 'ประเมินผลรายวิชาปฏิบัติการ', practice, 'list'); add(y, 'ประเมินสมรรถนะ', competency, 'feature'); });
+            add(4, 'ประเมินผลปฏิบัติการสอนในสถานศึกษา 1', practice, 'list');
+            add(4, 'ประเมินผลปฏิบัติการสอนในสถานศึกษา 2', practice, 'list', '2');
+            add(4, 'ประเมินสมรรถนะ', competency, 'feature');
+            return out;
+        }
+
+        // ใส่ข้อมูลลงตัวแปรแล้ววาดหน้าจอทุกส่วน
+        function applyData(data) {
+            if (!data) return;
+            if (Array.isArray(data.schools)) schoolsData = data.schools;
+            legacyBackend = !Array.isArray(data.evaluators) && Array.isArray(data.evaluationLinks);
+            if (Array.isArray(data.evaluators)) evaluatorsData = data.evaluators;
+            else if (legacyBackend) evaluatorsData = legacyEvaluatorsFrom(data.evaluationLinks);
+            const banner = document.getElementById('legacyBackendBanner');
+            if (banner) banner.classList.toggle('hidden', !legacyBackend);
+            renderSchools();
+            renderEvaluatorButtons();
+            renderAdminDashboard();
+            updateChart();
+        }
+
+        // แสดงข้อมูลที่จำไว้ในเครื่องทันที (ไม่ต้องรอเซิร์ฟเวอร์)
+        function loadCachedData() {
             try {
-                const response = await callApi('getAllData', {});
-                if (response) {
-                    if (response.schools) schoolsData = response.schools;
-                    if (response.evaluations) evaluationsData = response.evaluations;
-                    if (response.evaluationLinks) evaluationLinksData = response.evaluationLinks;
+                const cached = JSON.parse(storageGet(DATA_CACHE_KEY) || 'null');
+                if (cached && cached.data) {
+                    applyData(cached.data);
+                    return true;
                 }
-                
-                renderSchools();
-                renderAdminDashboard();
-                updateChart(); 
-            } catch (err) {
-                alertMessageBox("การเชื่อมต่อล้มเหลว: " + err.message, "ข้อผิดพลาดระบบ", "error", "bg-red-100 text-red-600");
-                renderSchools();
-                renderAdminDashboard();
-                updateChart();
-            }
+            } catch (e) { /* แคชเสีย ข้ามไป */ }
+            return false;
+        }
+
+        // --- โหลดข้อมูลหลัก (แอดมินได้ข้อมูลเต็ม, บุคคลทั่วไปได้ข้อมูลสาธารณะที่แคชไว้บนเซิร์ฟเวอร์) ---
+        let fetchInFlight = null;
+        function fetchLatestData() {
+            if (fetchInFlight) return fetchInFlight; // กันการโหลดซ้อน
+            setSyncState('loading');
+            fetchInFlight = (async () => {
+                try {
+                    const asAdmin = !!adminToken;
+                    const data = await callApi(asAdmin ? 'getAdminData' : 'getAllData');
+                    applyData(data);
+                    if (!asAdmin) storageSet(DATA_CACHE_KEY, JSON.stringify({ savedAt: Date.now(), data }));
+                    setSyncState('ok');
+                } catch (err) {
+                    setSyncState('error', err.message);
+                    if (err.setupRequired) {
+                        alertMessageBox(err.message, 'ระบบยังไม่พร้อมใช้งาน', 'error', 'bg-amber-100 text-amber-600');
+                    // มีข้อมูลเดิมแสดงอยู่แล้ว ใช้แจ้งเตือนแบบสั้นแทนหน้าต่างใหญ่
+                    } else if (schoolsData.length || evaluatorsData.length) showToast('อัปเดตข้อมูลล่าสุดไม่สำเร็จ: ' + err.message, 'error');
+                    else alertMessageBox("การเชื่อมต่อล้มเหลว: " + err.message, "ข้อผิดพลาดระบบ", "error", "bg-red-100 text-red-600");
+                } finally {
+                    fetchInFlight = null;
+                }
+            })();
+            return fetchInFlight;
+        }
+
+        // แสดงสถานะการเชื่อมต่อในหน้าแอดมิน
+        function setSyncState(state, message) {
+            const dot = document.getElementById('dbDot');
+            const text = document.getElementById('dbText');
+            if (!dot || !text) return;
+            const map = {
+                loading: ['bg-amber-400 animate-ping', 'กำลังซิงก์ข้อมูลจาก Google Sheets...'],
+                ok: ['bg-emerald-400', 'เชื่อมต่อฐานข้อมูลแล้ว · ' + new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' })],
+                error: ['bg-red-500', 'เชื่อมต่อไม่สำเร็จ' + (message ? ': ' + message : '')]
+            };
+            const [cls, label] = map[state] || map.ok;
+            dot.className = 'w-2 h-2 rounded-full ' + cls;
+            text.textContent = label;
         }
 
         // แสดงผลทำเนียบโรงเรียนในหน้าหลัก
@@ -1544,7 +1642,7 @@ document.addEventListener('click', function(event) {
                     schoolsCountLabel.textContent = `${approvedSchools.length}`;
                 }
 
-                if (document.getElementById('publicStatTotal')) document.getElementById('publicStatTotal').innerHTML = `${schoolsData.length} <span class="text-sm font-medium text-slate-500">แห่ง</span>`;
+                if (document.getElementById('publicStatTotal')) document.getElementById('publicStatTotal').innerHTML = `${schoolsData.length} <span class="text-sm font-medium text-themeMuted">แห่ง</span>`;
                 if (document.getElementById('publicStatApproved')) document.getElementById('publicStatApproved').innerHTML = `${approvedSchools.length} <span class="text-sm font-medium text-emerald-600/70">แห่ง</span>`;
                 if (document.getElementById('publicStatPending')) document.getElementById('publicStatPending').innerHTML = `${pendingSchools.length} <span class="text-sm font-medium text-amber-600/70">แห่ง</span>`;
 
@@ -1552,40 +1650,38 @@ document.addEventListener('click', function(event) {
                 grid.innerHTML = '';
 
                 approvedSchools.forEach(school => {
-                    let badgeColor = 'bg-blue-100 dark:bg-blue-950 text-blue-800 dark:text-blue-300';
-                    if (school.type === 'elementary') badgeColor = 'bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300';
-                    if (school.type === 'vocational') badgeColor = 'bg-indigo-100 dark:bg-indigo-950 text-indigo-800 dark:text-indigo-300';
 
-                    let quotaBadge = parseInt(school.quota) > 0 
-                        ? `<span class="text-xs text-emerald-600 font-medium flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> รับ ${school.quota} อัตรา</span>`
+                    const quota = parseInt(school.quota) || 0;
+                    let quotaBadge = quota > 0
+                        ? `<span class="text-xs text-emerald-600 font-medium flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> รับ ${quota} อัตรา</span>`
                         : `<span class="text-xs text-slate-400 font-medium flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-slate-400"></span> เต็มแล้ว</span>`;
 
-                    let cleanMap = cleanMapUrl(school.mapUrl);
+                    let cleanMap = safeUrl(cleanMapUrl(school.mapUrl));
                     let mapButton = cleanMap
-                        ? `<a href="${cleanMap}" target="_blank" rel="noopener noreferrer" class="text-indigo-600 font-semibold hover:underline flex items-center gap-1 mt-1 text-xs"><i data-lucide="map-pin" class="w-3.5 h-3.5"></i> ดูพิกัดแผนที่</a>`
+                        ? `<a href="${escapeHtml(cleanMap)}" target="_blank" rel="noopener noreferrer" class="text-indigo-600 dark:text-indigo-400 font-semibold hover:underline flex items-center gap-1 mt-1 text-xs"><i data-lucide="map-pin" class="w-3.5 h-3.5"></i> ดูพิกัดแผนที่</a>`
                         : '';
 
                     const card = `
-                        <div class="school-card bg-themeCard rounded-2xl shadow-md border border-themeBorder p-6 space-y-4" data-type="${school.type}">
+                        <div class="school-card bg-themeCard rounded-2xl shadow-md border border-themeBorder p-6 space-y-4" data-type="${escapeHtml(school.type)}" data-search="${escapeHtml(((school.name || '') + ' ' + (school.address || '') + ' ' + (school.affiliation || '')).toLowerCase())}">
                             <div class="flex items-center justify-between">
-                                <span class="${badgeColor} text-xs font-semibold px-2.5 py-1 rounded-full">${school.typeName}</span>
+                                <span class="inline-flex items-center gap-1.5 bg-themeBg border border-themeBorder text-themeText text-xs font-semibold px-2.5 py-1 rounded-full"><span class="w-2 h-2 rounded-full" style="background:${levelColor(school.type)}"></span>${escapeHtml(school.typeName)}</span>
                                 ${quotaBadge}
                             </div>
                             <div>
-                                <h3 class="text-lg font-bold text-themeText school-name">${school.name}</h3>
-                                <p class="text-xs text-themeMuted">สังกัด: ${school.affiliation || '-'}</p>
+                                <h3 class="text-lg font-bold text-themeText school-name">${escapeHtml(school.name)}</h3>
+                                <p class="text-xs text-themeMuted">สังกัด: ${escapeHtml(school.affiliation || '-')}</p>
                             </div>
-                            <p class="text-xs text-themeMuted flex items-start gap-1"><i data-lucide="map-pin" class="w-4 h-4 text-themeMuted flex-shrink-0"></i> ${school.address}</p>
-                            
-                            <div class="bg-slate-50 p-3 rounded-xl border border-themeBorder text-xs">
+                            <p class="text-xs text-themeMuted flex items-start gap-1"><i data-lucide="map-pin" class="w-4 h-4 text-themeMuted flex-shrink-0"></i> ${escapeHtml(school.address)}</p>
+
+                            <div class="bg-themeBg p-3 rounded-xl border border-themeBorder text-xs">
                                 <div class="font-bold text-themeText mb-1">สาขาวิชาและอัตราที่เปิดรับ:</div>
-                                <div class="text-themeMuted max-h-20 overflow-y-auto leading-relaxed">${school.majors || 'รับสาขา..'}</div>
+                                <div class="text-themeMuted max-h-20 overflow-y-auto leading-relaxed">${escapeHtml(school.majors || '-')}</div>
                             </div>
 
-                            <div class="border-t border-themeBorder pt-3 flex justify-between items-center text-xs">
-                                <div>ครูพี่เลี้ยงหลัก: <strong class="text-themeText">${school.coordinator}</strong></div>
+                            <div class="border-t border-themeBorder pt-3 flex justify-between items-center text-xs text-themeMuted">
+                                <div>ครูพี่เลี้ยงหลัก: <strong class="text-themeText">${escapeHtml(school.coordinator)}</strong></div>
                                 <div class="flex flex-col items-end gap-1">
-                                    <button type="button" onclick="alertMessageBox('ติดต่อประสานงานสถานศึกษาแห่งนี้: ${school.phone}')" class="text-themePrimary font-semibold hover:underline bg-transparent border-0 cursor-pointer">ติดต่อสถาบัน</button>
+                                    <button type="button" onclick="showSchoolContact('${escapeHtml(school.id)}')" class="text-themePrimary font-semibold hover:underline bg-transparent border-0 cursor-pointer">ติดต่อสถาบัน</button>
                                     ${mapButton}
                                 </div>
                             </div>
@@ -1593,129 +1689,154 @@ document.addEventListener('click', function(event) {
                     `;
                     grid.insertAdjacentHTML('beforeend', card);
                 });
+
+                // แสดงข้อความเมื่อยังไม่มีโรงเรียนที่อนุมัติ / ไม่พบผลการค้นหา
+                grid.insertAdjacentHTML('beforeend', `
+                    <div id="schoolsEmptyState" class="${approvedSchools.length ? 'hidden' : ''} col-span-full text-center py-16 text-themeMuted bg-themeCard rounded-2xl border border-dashed border-themeBorder">
+                        <i data-lucide="search-x" class="w-10 h-10 mx-auto mb-3 opacity-60"></i>
+                        <p class="text-sm font-medium">ไม่พบโรงเรียนเครือข่ายที่ตรงกับเงื่อนไข</p>
+                    </div>
+                `);
                 safeCreateIcons();
+                filterSchools();
             } catch(e) {
                 console.error("Render Schools Error:", e);
             }
         }
 
-        // ฟังก์ชันวาดและอัปเดตข้อมูลกราฟวงกลม Doughnut Chart
+        // ระดับการศึกษา: ลำดับและสีคงที่ (สีผูกกับประเภท ไม่เปลี่ยนตามอันดับ) ใช้ร่วมกับหมุดแผนที่
+        const schoolLevels = [
+            { type: 'elementary', name: 'ประถมศึกษา', color: 'var(--series-1)' },
+            { type: 'secondary',  name: 'มัธยมศึกษา', color: 'var(--series-2)' },
+            { type: 'vocational', name: 'ขยายโอกาส', color: 'var(--series-3)' }
+        ];
+        const levelColor = (type) => (schoolLevels.find(l => l.type === type) || schoolLevels[1]).color;
+
+        // แยกข้อความสาขา "สาขาวิชา... (N อัตรา), ..." ออกเป็น [{ name, quota }]
+        function parseMajors(majorsStr) {
+            if (!majorsStr) return [];
+            return String(majorsStr).split(', ').map(part => {
+                const m = part.match(/(.+) \((\d+)\s*อัตรา\)/);
+                return m ? { name: m[1].trim(), quota: parseInt(m[2]) || 0 } : { name: part.trim(), quota: 0 };
+            }).filter(x => x.name);
+        }
+
+        // สร้างแถวกราฟแท่งแนวนอน 1 แถว (ชื่อ + ตัวเลข + แท่งสัดส่วน)
+        function barRowHtml(label, value, max, unit, color) {
+            const pct = (max > 0 && value > 0) ? Math.max(2, Math.round(value / max * 100)) : 0;
+            return `
+                <li title="${escapeHtml(label)}: ${value} ${unit}">
+                    <div class="flex items-baseline justify-between gap-3 text-xs mb-1">
+                        <span class="text-themeText truncate">${escapeHtml(label)}</span>
+                        <span class="font-bold text-themeText tabular-nums shrink-0">${value} <span class="font-normal text-themeMuted">${unit}</span></span>
+                    </div>
+                    <div class="h-2 rounded-full bg-themeBg">
+                        <div class="h-full rounded-full" style="width:${pct}%; background:${color}"></div>
+                    </div>
+                </li>`;
+        }
+
+        const emptyStatHtml = '<li class="text-xs text-themeMuted py-6 text-center">ยังไม่มีข้อมูล</li>';
+
+        // วาดภาพรวมสถิติ (ชื่อฟังก์ชันเดิม เพื่อให้จุดที่เรียกใช้อยู่ทำงานต่อได้)
         function updateChart() {
             try {
                 const approvedSchools = schoolsData.filter(s => s.status === 'Approved');
-                
-                // --- 1. กราฟระดับการศึกษา ---
-                const elementaryCount = approvedSchools.filter(s => s.type === 'elementary').length;
-                const secondaryCount = approvedSchools.filter(s => s.type === 'secondary').length;
-                const vocationalCount = approvedSchools.filter(s => s.type === 'vocational').length;
+                const total = approvedSchools.length;
+                const setText = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
 
-                const elemLabel = document.getElementById('labelElementary');
-                const secLabel = document.getElementById('labelSecondary');
-                const vocLabel = document.getElementById('labelVocational');
-
-                if (elemLabel) elemLabel.textContent = `${elementaryCount} แห่ง`;
-                if (secLabel) secLabel.textContent = `${secondaryCount} แห่ง`;
-                if (vocLabel) vocLabel.textContent = `${vocationalCount} แห่ง`;
-
-                const ctx1 = document.getElementById('schoolsPieChartCanvas');
-                if (ctx1) {
-                    if (schoolsChartInstance) schoolsChartInstance.destroy();
-                    schoolsChartInstance = new Chart(ctx1, {
-                        type: 'doughnut',
-                        data: {
-                            labels: ['ประถมศึกษา', 'มัธยมศึกษา', 'ขยายโอกาส'],
-                            datasets: [{
-                                data: [elementaryCount, secondaryCount, vocationalCount],
-                                backgroundColor: ['#f59e0b', '#3b82f6', '#6366f1'],
-                                borderColor: document.documentElement.style.getPropertyValue('--bg-card') || '#ffffff',
-                                borderWidth: 3,
-                                hoverOffset: 8
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: {
-                                legend: { display: false }, 
-                                tooltip: { callbacks: { label: function(context) { return (context.label ? context.label + ': ' : '') + context.raw + ' แห่ง'; } } }
-                            },
-                            cutout: '65%'
-                        }
-                    });
-                }
-
-                // --- 2. กราฟสังกัดหน่วยงาน ---
+                // --- ตัวเลขสรุป ---
                 const affiliationCounts = {};
+                const majorQuota = {};
+                let quotaSum = 0;
                 approvedSchools.forEach(s => {
-                    let aff = s.affiliation ? s.affiliation.trim() : 'ไม่ระบุสังกัด';
-                    if(aff === '') aff = 'ไม่ระบุสังกัด';
+                    const aff = (s.affiliation || '').trim() || 'ไม่ระบุสังกัด';
                     affiliationCounts[aff] = (affiliationCounts[aff] || 0) + 1;
+                    quotaSum += parseInt(s.quota) || 0;
+                    parseMajors(s.majors).forEach(m => {
+                        majorQuota[m.name] = (majorQuota[m.name] || 0) + m.quota;
+                    });
                 });
+                setText('kpiSchools', total);
+                setText('kpiQuota', quotaSum.toLocaleString('th-TH'));
+                setText('kpiAffiliations', Object.keys(affiliationCounts).length);
+                setText('kpiMajors', majorsList.filter(m => majorQuota[m] > 0).length);
 
-                const affLabels = Object.keys(affiliationCounts);
-                const affData = Object.values(affiliationCounts);
-                
-                const colorPalette = ['#10b981', '#f43f5e', '#0ea5e9', '#8b5cf6', '#f97316', '#ec4899', '#14b8a6', '#64748b'];
-                const affColors = affLabels.map((_, i) => colorPalette[i % colorPalette.length]);
-
-                const labelsContainer = document.getElementById('affiliationLabelsContainer');
-                if (labelsContainer) {
-                    labelsContainer.innerHTML = '';
-                    affLabels.forEach((label, i) => {
-                        labelsContainer.insertAdjacentHTML('beforeend', `
-                            <div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full" style="background-color: ${affColors[i]}"></span> ${label}: ${affData[i]}</div>
-                        `);
-                    });
+                // --- 1) ระดับการศึกษา: แท่งสัดส่วน 100% + รายการ ---
+                const levels = schoolLevels.map(l => ({ ...l, count: approvedSchools.filter(s => s.type === l.type).length }));
+                const stackBar = document.getElementById('levelStackBar');
+                if (stackBar) {
+                    stackBar.innerHTML = total === 0 ? '' : levels.filter(l => l.count > 0).map(l =>
+                        `<div class="h-full" style="flex:${l.count}; background:${l.color}" title="${l.name}: ${l.count} แห่ง (${Math.round(l.count / total * 100)}%)"></div>`
+                    ).join('');
+                }
+                const levelLegend = document.getElementById('levelLegend');
+                if (levelLegend) {
+                    levelLegend.innerHTML = levels.map(l => {
+                        const pct = total ? Math.round(l.count / total * 100) : 0;
+                        return `
+                            <li class="flex items-center justify-between gap-3">
+                                <span class="flex items-center gap-2 text-themeText"><span class="w-2.5 h-2.5 rounded-full shrink-0" style="background:${l.color}"></span>${l.name}</span>
+                                <span class="tabular-nums text-themeText"><b>${l.count}</b> <span class="text-xs text-themeMuted">แห่ง</span> <span class="inline-block w-12 text-right text-xs text-themeMuted">${pct}%</span></span>
+                            </li>`;
+                    }).join('');
                 }
 
-                const ctx2 = document.getElementById('affiliationPieChartCanvas');
-                if (ctx2) {
-                    if (affiliationChartInstance) affiliationChartInstance.destroy();
-                    affiliationChartInstance = new Chart(ctx2, {
-                        type: 'doughnut',
-                        data: {
-                            labels: affLabels,
-                            datasets: [{
-                                data: affData,
-                                backgroundColor: affColors,
-                                borderColor: document.documentElement.style.getPropertyValue('--bg-card') || '#ffffff',
-                                borderWidth: 3,
-                                hoverOffset: 8
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: {
-                                legend: { display: false },
-                                tooltip: { callbacks: { label: function(context) { return (context.label ? context.label + ': ' : '') + context.raw + ' แห่ง'; } } }
-                            },
-                            cutout: '65%'
-                        }
-                    });
+                // --- 2) สังกัดหน่วยงาน: 6 อันดับแรก + รวมที่เหลือเป็น "อื่น ๆ" ---
+                const affBox = document.getElementById('affiliationBars');
+                if (affBox) {
+                    const sorted = Object.entries(affiliationCounts).sort((a, b) => b[1] - a[1]);
+                    const TOP = 6;
+                    const rows = sorted.slice(0, TOP);
+                    const rest = sorted.slice(TOP);
+                    if (rest.length) rows.push([`อื่น ๆ (${rest.length} หน่วยงาน)`, rest.reduce((a, [, c]) => a + c, 0)]);
+                    const max = Math.max(0, ...rows.map(r => r[1]));
+                    affBox.innerHTML = rows.length
+                        ? rows.map(([name, count]) => barRowHtml(name, count, max, 'แห่ง', 'var(--primary)')).join('')
+                        : emptyStatHtml;
                 }
 
+                // --- 3) โควตาตามสาขาวิชา (แสดงทุกสาขา เรียงมากไปน้อย สาขาที่ยังไม่มีอยู่ท้ายสุด) ---
+                const majorBox = document.getElementById('majorBars');
+                if (majorBox) {
+                    const rows = majorsList.map(m => [m.replace('สาขาวิชา', ''), majorQuota[m] || 0]).sort((a, b) => b[1] - a[1]);
+                    const max = Math.max(0, ...rows.map(r => r[1]));
+                    majorBox.innerHTML = max > 0
+                        ? rows.map(([name, q]) => barRowHtml(name, q, max, 'อัตรา', 'var(--accent)')).join('')
+                        : emptyStatHtml;
+                }
             } catch (error) {
-                console.error("Chart Render Error:", error);
+                console.error("Stats Render Error:", error);
             }
         }
 
         // ค้นหาคัดกรองโรงเรียน
         function filterSchools() {
-            const searchVal = document.getElementById('schoolSearch').value.toLowerCase();
-            const filterVal = document.getElementById('schoolTypeFilter').value;
+            const searchInput = document.getElementById('schoolSearch');
+            const filterSelect = document.getElementById('schoolTypeFilter');
+            if (!searchInput || !filterSelect) return;
+            const searchVal = searchInput.value.trim().toLowerCase();
+            const filterVal = filterSelect.value;
             const cards = document.querySelectorAll('#schoolsGrid .school-card');
-            const approvedSchools = schoolsData.filter(s => s.status === 'Approved');
+            let visibleCount = 0;
 
-            cards.forEach((card, idx) => {
-                const school = approvedSchools[idx];
-                if (!school) return;
-                const matchesSearch = school.name.toLowerCase().includes(searchVal) || school.address.toLowerCase().includes(searchVal);
-                const matchesFilter = (filterVal === 'all' || school.type === filterVal);
-
-                if (matchesSearch && matchesFilter) card.classList.remove('hidden');
-                else card.classList.add('hidden');
+            cards.forEach(card => {
+                const matchesSearch = (card.dataset.search || '').includes(searchVal);
+                const matchesFilter = (filterVal === 'all' || card.dataset.type === filterVal);
+                const visible = matchesSearch && matchesFilter;
+                card.classList.toggle('hidden', !visible);
+                if (visible) visibleCount++;
             });
+
+            const emptyState = document.getElementById('schoolsEmptyState');
+            if (emptyState) emptyState.classList.toggle('hidden', visibleCount > 0);
+        }
+
+        // แสดงเบอร์ติดต่อของโรงเรียน (ไม่ฝังข้อมูลลงในโค้ด onclick โดยตรง)
+        function showSchoolContact(id) {
+            const school = schoolsData.find(s => sameId(s.id, id));
+            if (!school) return;
+            alertMessageBox(`${school.name}\nผู้ประสานงาน: ${school.coordinator || '-'}\nโทร: ${school.phone || '-'}`, 'ติดต่อประสานงานสถานศึกษา');
         }
 
         // ฟังก์ชันระบบจัดการแผนที่รวมเครือข่าย Leaflet
@@ -1761,20 +1882,20 @@ document.addEventListener('click', function(event) {
             approvedSchools.forEach(school => {
                 const coords = extractCoords(school.mapUrl);
                 if (coords) {
-                    const cleanMap = cleanMapUrl(school.mapUrl);
-                    
+                    const cleanMap = escapeHtml(safeUrl(cleanMapUrl(school.mapUrl)));
+                    const majorsText = escapeHtml(school.majors || '-');
+
                     // สร้างไอคอนแผนที่แบบกำหนดเอง (Custom DivIcon) สีแบ่งตามระดับโรงเรียน พร้อมแอนิเมชันกระเพื่อม (Ping)
-                    let bgColor = 'bg-blue-600';
+                    // สีหมุดตามระดับการศึกษา ใช้ชุดสีเดียวกับภาพรวมสถิติ
+                    const bgStyle = `background:${levelColor(school.type)}`;
                     let strokeColor = 'border-white dark:border-slate-800';
-                    if (school.type === 'elementary') bgColor = 'bg-amber-500';
-                    if (school.type === 'vocational') bgColor = 'bg-indigo-600';
                     
                     // เปลี่ยน SVG ไอคอนด้านในให้เป็นรูปโรงเรียน (School Icon)
                     const markerIcon = L.divIcon({
                         className: 'bg-transparent',
                         html: `<div class="relative w-12 h-12 flex items-center justify-center">
-                                 <div class="absolute inset-1 ${bgColor} opacity-40 rounded-full animate-ping"></div>
-                                 <div class="relative w-8 h-8 ${bgColor} border-[2.5px] ${strokeColor} rounded-full flex items-center justify-center text-white shadow-lg shadow-slate-800/50">
+                                 <div class="absolute inset-1 opacity-40 rounded-full animate-ping" style="${bgStyle}"></div>
+                                 <div style="${bgStyle}" class="relative w-8 h-8 border-[2.5px] ${strokeColor} rounded-full flex items-center justify-center text-white shadow-lg shadow-slate-800/50">
                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 6 8-4 8 4"/><path d="m18 10 4 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-8l4-2"/><path d="M14 22v-4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v4"/><path d="M18 5v17"/><path d="M6 5v17"/><circle cx="12" cy="9" r="2"/></svg>
                                  </div>
                                </div>`,
@@ -1786,17 +1907,17 @@ document.addEventListener('click', function(event) {
                     const marker = L.marker(coords, { icon: markerIcon }).bindPopup(`
                         <div class="text-sm min-w-[220px]" style="font-family: 'Prompt', sans-serif;">
                             <div class="flex items-center gap-2 mb-2">
-                                <div class="w-8 h-8 rounded-full ${bgColor} flex items-center justify-center text-white shadow-sm shrink-0">
+                                <div style="${bgStyle}" class="w-8 h-8 rounded-full flex items-center justify-center text-white shadow-sm shrink-0">
                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 6 8-4 8 4"/><path d="m18 10 4 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-8l4-2"/><path d="M14 22v-4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v4"/><path d="M18 5v17"/><path d="M6 5v17"/><circle cx="12" cy="9" r="2"/></svg>
                                 </div>
                                 <div>
-                                    <strong class="text-[15px] text-themeText leading-tight">${school.name}</strong>
-                                    <div class="text-[11px] text-themeMuted font-medium">${school.typeName} | รับ ${school.quota} อัตรา</div>
+                                    <strong class="text-[15px] text-themeText leading-tight">${escapeHtml(school.name)}</strong>
+                                    <div class="text-[11px] text-themeMuted font-medium">${escapeHtml(school.typeName)} | รับ ${parseInt(school.quota) || 0} อัตรา</div>
                                 </div>
                             </div>
                             <div class="text-[11px] text-slate-600 dark:text-slate-300 bg-themeBg p-2 rounded-lg border border-themeBorder mb-3">
-                                <strong>สังกัด:</strong> ${school.affiliation || '-'}<br>
-                                <div class="mt-1 truncate" title="${school.majors || '-'}"><strong>สาขา:</strong> ${school.majors || '-'}</div>
+                                <strong>สังกัด:</strong> ${escapeHtml(school.affiliation || '-')}<br>
+                                <div class="mt-1 truncate" title="${majorsText}"><strong>สาขา:</strong> ${majorsText}</div>
                             </div>
                             <div class="mt-2 pt-2 border-t border-themeBorder">
                                 <a href="${cleanMap}" target="_blank" rel="noopener noreferrer" class="bg-indigo-600 text-white px-3 py-2 rounded-lg hover:bg-indigo-700 flex items-center justify-center gap-1.5 font-semibold shadow-sm w-full transition-colors text-xs">
@@ -1818,39 +1939,78 @@ document.addEventListener('click', function(event) {
             }
         }
 
-        // ฟังก์ชันเปิดลิงก์แบบประเมินผลออนไลน์ที่ตั้งไว้ในระบบ (เปิดในแท็บใหม่ทันที ป้องกัน Popup Blocker)
-        function goToAppsScript(role, year) {
-            let roleNameTH = "";
-            switch (role) {
-                case 'mentor': roleNameTH = "ครูพี่เลี้ยง"; break;
-                case 'major_supervisor': roleNameTH = "อาจารย์นิเทศก์วิชาเอก"; break;
-                case 'pedagogy_supervisor': roleNameTH = "อาจารย์นิเทศก์วิชาชีพครู"; break;
-                case 'course_instructor': roleNameTH = "อาจารย์ผู้สอนรายวิชา"; break;
-                case 'mentor2': roleNameTH = "ครูพี่เลี้ยง2"; break;
-                case 'major_supervisor2': roleNameTH = "อาจารย์นิเทศก์วิชาเอก2"; break;
-                case 'pedagogy_supervisor2': roleNameTH = "อาจารย์นิเทศก์วิชาชีพครู2"; break;
-                case 'course_instructor2': roleNameTH = "อาจารย์ผู้สอนรายวิชา2"; break;
-                case 'competency_performance': roleNameTH = "ประเมินสมรรถนะวิชาชีพครู"; break;
-                case 'competency_conduct': roleNameTH = "ประเมินสมรรถนะ PTRU Model"; break;
-                default: roleNameTH = "ผู้ประเมิน";
+        // จัดกลุ่มผู้ประเมินของชั้นปี ตามลำดับที่แอดมินกำหนด (กลุ่มเรียงตามรายการแรกที่พบ)
+        function groupEvaluators(year, list = evaluatorsData) {
+            const groups = [];
+            list.filter(e => parseInt(e.year) === parseInt(year))
+                .sort((a, b) => (Number(a.order) || 0) - (Number(b.order) || 0))
+                .forEach(e => {
+                    let g = groups.find(x => x.title === e.group);
+                    if (!g) groups.push(g = { title: e.group, items: [] });
+                    g.items.push(e);
+                });
+            return groups;
+        }
+
+        // HTML ของปุ่มผู้ประเมิน 1 ปุ่ม (ใช้ทั้งหน้าแรกและตัวอย่างในหน้าแอดมิน)
+        function evaluatorButtonHtml(ev, { preview = false } = {}) {
+            const c = colorOf(ev.color);
+            const icon = escapeHtml(ev.icon || 'user');
+            const name = escapeHtml(ev.name || 'ชื่อผู้ประเมิน');
+            const ready = ev.active && safeUrl(ev.url);
+            const onclick = preview ? '' : `onclick="goToEvaluator('${escapeHtml(ev.id)}')"`;
+            const state = !ev.active
+                ? '<span class="text-[10px] font-semibold text-themeMuted flex items-center gap-1"><i data-lucide="lock" class="w-3 h-3"></i> ปิดรับ</span>'
+                : (!ready ? '<span class="text-[10px] font-semibold text-themeMuted">ยังไม่เปิด</span>' : '');
+            if (ev.style === 'feature') {
+                return `
+                    <button type="button" ${onclick} class="w-full py-2.5 px-4 text-left border rounded-2xl text-xs font-bold transition-all duration-300 flex items-center justify-between shadow-sm hover:shadow-md group/btn ${ev.active ? c.feature : 'opacity-50 border-themeBorder text-themeMuted cursor-not-allowed'}">
+                        <span class="flex items-center gap-2"><i data-lucide="${icon}" class="w-4 h-4"></i> ${name}</span>
+                        ${state || '<i data-lucide="arrow-up-right" class="w-3.5 h-3.5 group-hover/btn:translate-x-1 transition"></i>'}
+                    </button>`;
             }
+            return `
+                <button type="button" ${onclick} class="w-full py-2 px-3 text-left border border-themeBorder rounded-xl text-xs font-medium text-themeText transition flex items-center justify-between group/btn ${ev.active ? 'hover:bg-themePrimary/10' : 'opacity-50 cursor-not-allowed'}">
+                    <span class="flex items-center gap-1.5"><i data-lucide="${icon}" class="w-3.5 h-3.5 ${c.icon}"></i> ${name}</span>
+                    ${state || '<i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-300 group-hover/btn:translate-x-1 transition"></i>'}
+                </button>`;
+        }
 
-            let yearNameTH = year === 4 ? "ปฏิบัติการสอนในสถานศึกษา (ปี 4)" : "วิชาชีพครูระหว่างเรียน " + year + " (ปี " + year + ")";
+        // วาดปุ่มผู้ประเมินในการ์ดชั้นปีทั้ง 4 ใบ
+        function renderEvaluatorButtons() {
+            document.querySelectorAll('.eval-year-buttons').forEach(box => {
+                const groups = groupEvaluators(box.dataset.year);
+                box.innerHTML = groups.length
+                    ? groups.map((g, i) => `
+                        <div>
+                            <span class="text-[11px] font-bold text-themeMuted block mb-2 border-b border-themeBorder pb-1">${i + 1}. ${escapeHtml(g.title)}:</span>
+                            <div class="space-y-2.5">${g.items.map(ev => evaluatorButtonHtml(ev)).join('')}</div>
+                        </div>`).join('')
+                    : '<p class="text-xs text-themeMuted text-center py-6 border border-dashed border-themeBorder rounded-xl">ยังไม่มีแบบประเมินสำหรับชั้นปีนี้</p>';
+            });
+            safeCreateIcons();
+        }
 
-            const customLink = evaluationLinksData.find(link => parseInt(link.year) === parseInt(year) && link.role === role);
-
-            if (customLink && customLink.url) {
-                // บังคับจำลองคลิกเพื่อความเสถียรและความรวดเร็วในการเปิดแท็บใหม่
-                const linkElement = document.createElement('a');
-                linkElement.href = customLink.url;
-                linkElement.target = '_blank';
-                linkElement.rel = 'noopener noreferrer';
-                document.body.appendChild(linkElement);
-                linkElement.click();
-                document.body.removeChild(linkElement);
-            } else {
-                alertMessageBox(`ขณะนี้ฝ่ายจัดการยังไม่ได้ตั้งค่าลิงก์แบบประเมินสำหรับ [${roleNameTH}] ชั้นปีที่ ${year} กรุณาแจ้งผู้ดูแลระบบเพื่อทำการอัปเดต URL ก่อนเข้าใช้งาน`, 'ยังไม่มีการตั้งค่าลิงก์', 'error', 'bg-amber-100 text-amber-600');
+        // เปิดแบบประเมิน (สร้างลิงก์แล้วคลิก เพื่อเลี่ยง Popup Blocker)
+        function goToEvaluator(id) {
+            const ev = evaluatorsData.find(e => sameId(e.id, id));
+            if (!ev) return;
+            if (!ev.active) {
+                alertMessageBox(`แบบประเมิน [${ev.name}] ชั้นปีที่ ${ev.year} ปิดรับการประเมินชั่วคราว`, 'ปิดรับการประเมิน', 'error', 'bg-slate-100 text-slate-600');
+                return;
             }
+            const url = safeUrl(ev.url);
+            if (!url) {
+                alertMessageBox(`ขณะนี้ยังไม่ได้ตั้งค่าลิงก์แบบประเมินสำหรับ [${ev.name}] ชั้นปีที่ ${ev.year} กรุณาแจ้งผู้ดูแลระบบ`, 'ยังไม่เปิดใช้งาน', 'error', 'bg-amber-100 text-amber-600');
+                return;
+            }
+            const a = document.createElement('a');
+            a.href = url;
+            a.target = '_blank';
+            a.rel = 'noopener noreferrer';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
         }
 
         // --- ADMIN DASHBOARD PANEL LOGIC ---
@@ -1886,40 +2046,41 @@ document.addEventListener('click', function(event) {
                     schoolsData.forEach(school => {
                         let statusText = school.status === 'Approved' ? 'อนุมัติแล้ว' : 'รออนุมัติ';
                         let statusClass = school.status === 'Approved' ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-400' : 'bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-400';
+                        const sid = escapeHtml(school.id);
                         let actionBtn = school.status === 'Pending'
-                            ? `<button type="button" onclick="setSchoolStatus('${school.id}', 'Approved')" class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-1 px-2.5 rounded transition" title="อนุมัติ"><i data-lucide="check" class="w-3.5 h-3.5"></i></button>`
-                            : `<button type="button" onclick="setSchoolStatus('${school.id}', 'Pending')" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-1 px-2.5 rounded transition" title="เปลี่ยนเป็นรออนุมัติ"><i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i></button>`;
+                            ? `<button type="button" onclick="setSchoolStatus('${sid}', 'Approved')" class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-1 px-2.5 rounded transition" title="อนุมัติ"><i data-lucide="check" class="w-3.5 h-3.5"></i></button>`
+                            : `<button type="button" onclick="setSchoolStatus('${sid}', 'Pending')" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-1 px-2.5 rounded transition" title="เปลี่ยนเป็นรออนุมัติ"><i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i></button>`;
 
-                        let evidenceUrlClean = cleanEvidenceUrl(school.evidenceUrl);
-                        let evidenceLink = evidenceUrlClean 
-                            ? `<a href="${evidenceUrlClean}" target="_blank" rel="noopener noreferrer" class="text-themePrimary hover:underline flex items-center justify-center gap-1 text-xs font-bold"><i data-lucide="external-link" class="w-3.5 h-3.5"></i> เปิดดู</a>` 
+                        let evidenceUrlClean = safeUrl(cleanEvidenceUrl(school.evidenceUrl));
+                        let evidenceLink = evidenceUrlClean
+                            ? `<a href="${escapeHtml(evidenceUrlClean)}" target="_blank" rel="noopener noreferrer" class="text-themePrimary hover:underline flex items-center justify-center gap-1 text-xs font-bold"><i data-lucide="external-link" class="w-3.5 h-3.5"></i> เปิดดู</a>` 
                             : `<span class="text-slate-400">-</span>`;
 
-                        let cleanMap = cleanMapUrl(school.mapUrl);
-                        let mapLink = cleanMap 
-                            ? `<a href="${cleanMap}" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:underline flex items-center gap-0.5 text-xs font-bold"><i data-lucide="map" class="w-3.5 h-3.5"></i> ดูแผนที่</a>` 
+                        let cleanMap = safeUrl(cleanMapUrl(school.mapUrl));
+                        let mapLink = cleanMap
+                            ? `<a href="${escapeHtml(cleanMap)}" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:underline flex items-center gap-0.5 text-xs font-bold"><i data-lucide="map" class="w-3.5 h-3.5"></i> ดูแผนที่</a>` 
                             : `<span class="text-slate-400">ไม่มีพิกัด</span>`;
 
                         const tr = `
                             <tr class="hover:bg-themeBg/50 text-xs text-themeText">
                                 <td class="px-6 py-4">
-                                    <div class="font-bold text-sm">${school.name}</div>
-                                    <div class="text-[10px] text-themeMuted font-semibold mt-0.5">สังกัด: ${school.affiliation || '-'}</div>
-                                    <div class="text-[10px] text-themeMuted mt-1 max-w-[220px] truncate" title="${school.majors || '-'}">สาขา: ${school.majors || '-'}</div>
+                                    <div class="font-bold text-sm">${escapeHtml(school.name)}</div>
+                                    <div class="text-[10px] text-themeMuted font-semibold mt-0.5">สังกัด: ${escapeHtml(school.affiliation || '-')}</div>
+                                    <div class="text-[10px] text-themeMuted mt-1 max-w-[220px] truncate" title="${escapeHtml(school.majors || '-')}">สาขา: ${escapeHtml(school.majors || '-')}</div>
                                 </td>
-                                <td class="px-6 py-4 font-medium">${school.typeName}</td>
-                                <td class="px-6 py-4 font-semibold">${school.quota} อัตรา</td>
+                                <td class="px-6 py-4 font-medium">${escapeHtml(school.typeName)}</td>
+                                <td class="px-6 py-4 font-semibold">${parseInt(school.quota) || 0} อัตรา</td>
                                 <td class="px-6 py-4 max-w-xs">
-                                    <div class="truncate text-themeMuted" title="${school.address}">${school.address}</div>
+                                    <div class="truncate text-themeMuted" title="${escapeHtml(school.address)}">${escapeHtml(school.address)}</div>
                                     <div class="mt-1">${mapLink}</div>
                                 </td>
-                                <td class="px-6 py-4">${school.coordinator}<br><span class="text-themeMuted font-mono text-xs">${school.phone}</span></td>
+                                <td class="px-6 py-4">${escapeHtml(school.coordinator)}<br><span class="text-themeMuted font-mono text-xs">${escapeHtml(school.phone)}</span></td>
                                 <td class="px-6 py-4"><span class="${statusClass} px-2.5 py-1 rounded-full font-bold">${statusText}</span></td>
                                 <td class="px-6 py-4 text-center">${evidenceLink}</td>
                                 <td class="px-6 py-4 flex gap-1.5 justify-center font-semibold">
                                     ${actionBtn}
-                                    <button type="button" onclick="openAdminSchoolModal('${school.id}')" class="text-blue-500 hover:bg-blue-50 p-1.5 rounded transition" title="แก้ไขข้อมูล"><i data-lucide="edit" class="w-4 h-4"></i></button>
-                                    <button type="button" onclick="deleteSchoolAdmin('${school.id}')" class="text-red-500 hover:bg-red-50 p-1.5 rounded transition" title="ลบข้อมูล"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                                    <button type="button" onclick="openAdminSchoolModal('${sid}')" class="text-blue-500 hover:bg-blue-500/10 p-1.5 rounded transition" title="แก้ไขข้อมูล"><i data-lucide="edit" class="w-4 h-4"></i></button>
+                                    <button type="button" onclick="deleteSchoolAdmin('${sid}')" class="text-red-500 hover:bg-red-500/10 p-1.5 rounded transition" title="ลบข้อมูล"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                                 </td>
                             </tr>
                         `;
@@ -1927,38 +2088,7 @@ document.addEventListener('click', function(event) {
                     });
                 }
 
-                const linksBody = document.getElementById('adminLinksTableBody');
-                if (linksBody) {
-                    linksBody.innerHTML = '';
-                    evaluationLinksData.forEach(link => {
-                        let roleTH = "";
-                        switch (link.role) {
-                            case 'mentor': roleTH = "ครูพี่เลี้ยง"; break;
-                            case 'major_supervisor': roleTH = "นิเทศก์วิชาเอก"; break;
-                            case 'pedagogy_supervisor': roleTH = "นิเทศก์วิชาชีพครู"; break;
-                            case 'course_instructor': roleTH = "ผู้สอนรายวิชา"; break;
-                            case 'mentor2': roleTH = "ครูพี่เลี้ยง2"; break;
-                            case 'major_supervisor2': roleTH = "นิเทศก์วิชาเอก2"; break;
-                            case 'pedagogy_supervisor2': roleTH = "นิเทศก์วิชาชีพครู2"; break;
-                            case 'course_instructor2': roleTH = "ผู้สอนรายวิชา2"; break;
-                            case 'competency_performance': roleTH = "ประเมินสมรรถนะวิชาชีพครู"; break;
-                            case 'competency_conduct': roleTH = "ประเมินสมรรถนะ PTRU Model"; break;
-                            default: roleTH = link.role;
-                        }
-                        const tr = `
-                            <tr class="hover:bg-themeBg/50 text-xs">
-                                <td class="px-6 py-4 font-bold text-themeText">ปีที่ ${link.year}</td>
-                                <td class="px-6 py-4 text-themeText font-semibold">${roleTH}</td>
-                                <td class="px-6 py-4 max-w-xs truncate"><a href="${link.url}" target="_blank" rel="noopener noreferrer" class="text-themePrimary underline hover:text-themePrimaryDark">${link.url}</a></td>
-                                <td class="px-6 py-4 text-center flex justify-center gap-1.5">
-                                    <button type="button" onclick="editLinkAdmin('${link.id}')" class="text-blue-500 hover:bg-blue-50 p-1.5 rounded-md transition" title="แก้ไขลิงก์"><i data-lucide="edit" class="w-4 h-4"></i></button>
-                                    <button type="button" onclick="deleteLinkAdmin('${link.id}')" class="text-red-500 hover:bg-red-50 p-1.5 rounded-md transition" title="ลบลิงก์"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-                                </td>
-                            </tr>
-                        `;
-                        linksBody.insertAdjacentHTML('beforeend', tr);
-                    });
-                }
+                renderLinkManager();
 
                 safeCreateIcons();
             } catch(e) {
@@ -1991,48 +2121,404 @@ document.addEventListener('click', function(event) {
             }
         }
 
-        async function handleLinkSubmit(event) {
-            event.preventDefault();
-            alertMessageBox('กำลังบันทึกลิงก์ขึ้น Google Sheets...', 'บันทึกข้อมูล');
-            try {
-                const payload = {
-                    data: {
-                        id: editingLinkId ? editingLinkId : Date.now().toString(),
-                        year: document.getElementById('linkYear').value,
-                        role: document.getElementById('linkRole').value,
-                        url: document.getElementById('linkUrl').value
-                    }
-                };
+        // =========================================================================
+        // จัดการผู้ประเมิน (ชีต Evaluators): เพิ่ม/ลบ/แก้ไข/เปิด-ปิด/เรียงลำดับ/ตั้งลิงก์
+        // =========================================================================
+        let linkActiveYear = 1;
+        const linkDrafts = {};          // ลิงก์ที่พิมพ์ไว้แต่ยังไม่บันทึก { evaluatorId: url }
+        const linkSaving = new Set();   // ผู้ประเมินที่กำลังบันทึก
+        let editingEvaluatorId = null;
 
-                await callApi('saveEvaluationLink', payload);
-                closeAlert();
-                cancelEditLink();
-                fetchLatestData();
-                alertMessageBox('บันทึกปรับปรุงลิงก์ในระบบเรียบร้อยแล้ว!', 'สำเร็จ', 'success');
+        const evDomId = (id) => 'ev-row-' + String(id).replace(/[^a-zA-Z0-9_-]/g, '_');
+        const isReady = (ev) => ev.active && !!safeUrl(ev.url);
+
+        function evState(ev) {
+            const savedUrl = String(ev.url || '').trim();
+            const value = ev.id in linkDrafts ? linkDrafts[ev.id] : savedUrl;
+            const dirty = value.trim() !== savedUrl;
+            const valid = value.trim() === '' || !!safeUrl(value);
+            return { savedUrl, value, dirty, valid, saving: linkSaving.has(ev.id) };
+        }
+
+        function renderLinkManager() {
+            const body = document.getElementById('linkManagerBody');
+            if (!body) return;
+
+            // --- ความพร้อมรวม ---
+            const readyCount = evaluatorsData.filter(isReady).length;
+            const progressText = document.getElementById('linkProgressText');
+            const progressBar = document.getElementById('linkProgressBar');
+            if (progressText) progressText.textContent = `${readyCount} / ${evaluatorsData.length} ปุ่ม`;
+            if (progressBar) progressBar.style.width = `${evaluatorsData.length ? Math.round(readyCount / evaluatorsData.length * 100) : 0}%`;
+
+            // --- แท็บชั้นปี ---
+            const tabs = document.getElementById('linkYearTabs');
+            if (tabs) {
+                tabs.innerHTML = [1, 2, 3, 4].map(year => {
+                    const ys = evaluatorsData.filter(e => parseInt(e.year) === year);
+                    const yr = ys.filter(isReady).length;
+                    const complete = ys.length > 0 && yr === ys.length;
+                    const active = year === linkActiveYear;
+                    return `
+                        <button type="button" role="tab" aria-selected="${active}" onclick="setLinkYear(${year})"
+                            class="px-4 py-2 rounded-lg text-xs font-bold whitespace-nowrap flex items-center gap-2 transition ${active ? 'bg-themeCard text-themePrimary shadow-sm border border-themeBorder' : 'text-themeMuted hover:text-themeText'}">
+                            ชั้นปีที่ ${year}
+                            <span class="px-1.5 py-0.5 rounded-md text-[10px] tabular-nums ${complete ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400' : 'bg-amber-500/15 text-amber-600 dark:text-amber-400'}">${yr}/${ys.length}</span>
+                        </button>`;
+                }).join('');
+            }
+
+            // --- รายการผู้ประเมินของชั้นปีที่เลือก ---
+            const onlyMissing = document.getElementById('linkOnlyMissing')?.checked;
+            const groups = groupEvaluators(linkActiveYear);
+            let html = '';
+            let shown = 0;
+            groups.forEach((group, gi) => {
+                const items = group.items.filter(ev => !onlyMissing || !isReady(ev) || evState(ev).dirty);
+                if (!items.length) return;
+                shown += items.length;
+                html += `
+                    <section>
+                        <h4 class="text-xs font-bold text-themeMuted uppercase tracking-wider mb-2">${gi + 1}. ${escapeHtml(group.title)}</h4>
+                        <div class="space-y-2">${items.map((ev, i) => evaluatorRowHtml(ev, group.items.indexOf(ev), group.items.length)).join('')}</div>
+                    </section>`;
+            });
+            if (!shown) {
+                html = groups.length
+                    ? `<div class="text-center py-10 text-sm text-themeMuted"><i data-lucide="check-circle-2" class="w-8 h-8 mx-auto mb-2 text-emerald-500"></i>ผู้ประเมินชั้นปีนี้พร้อมใช้งานครบแล้ว</div>`
+                    : `<div class="text-center py-10 text-sm text-themeMuted border border-dashed border-themeBorder rounded-2xl">
+                            ยังไม่มีผู้ประเมินในชั้นปีที่ ${linkActiveYear}
+                            <button type="button" onclick="openEvaluatorModal()" class="block mx-auto mt-3 text-themePrimary font-bold hover:underline">+ เพิ่มผู้ประเมินคนแรก</button>
+                       </div>`;
+            }
+            body.innerHTML = html;
+            updateLinkDirtyCount();
+            safeCreateIcons();
+        }
+
+        function evaluatorRowHtml(ev, indexInGroup, groupSize) {
+            const st = evState(ev);
+            const c = colorOf(ev.color);
+            const id = escapeHtml(ev.id);
+            return `
+                <div id="${evDomId(ev.id)}" class="grid grid-cols-1 lg:grid-cols-[auto_15rem_minmax(0,1fr)_auto] gap-2 lg:gap-3 items-center p-3 rounded-xl border transition ${st.dirty ? 'border-themePrimary bg-themePrimary/5' : 'border-themeBorder'} ${ev.active ? '' : 'bg-themeBg/60'}">
+                    <!-- สวิตช์เปิด-ปิด -->
+                    <button type="button" role="switch" aria-checked="${ev.active}" onclick="toggleEvaluatorActive('${id}')" title="${ev.active ? 'กดเพื่อปิดใช้งาน' : 'กดเพื่อเปิดใช้งาน'}"
+                        class="relative w-10 h-6 rounded-full transition shrink-0 ${ev.active ? 'bg-emerald-500' : 'bg-slate-300 dark:bg-slate-600'}">
+                        <span class="absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${ev.active ? 'translate-x-4' : ''}"></span>
+                    </button>
+                    <div class="flex lg:flex-col items-center lg:items-start justify-between gap-1 min-w-0">
+                        <span class="flex items-center gap-2 text-sm font-semibold min-w-0 ${ev.active ? 'text-themeText' : 'text-themeMuted line-through'}">
+                            <i data-lucide="${escapeHtml(ev.icon || 'user')}" class="w-4 h-4 shrink-0 ${c.icon}"></i><span class="leading-snug">${escapeHtml(ev.name)}</span>
+                            ${ev.style === 'feature' ? '<span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-themePrimary/10 text-themePrimary no-underline">เด่น</span>' : ''}
+                        </span>
+                        <span data-role="status" class="lg:pl-6">${evStatusPill(ev, st)}</span>
+                    </div>
+                    <div>
+                        <input type="url" inputmode="url" spellcheck="false" value="${escapeHtml(st.value)}" placeholder="วางลิงก์แบบประเมิน เช่น https://forms.gle/..."
+                            oninput="onLinkInput('${id}', this.value)" onkeydown="if(event.key==='Enter'){event.preventDefault();saveLinkSlot('${id}');}"
+                            class="w-full px-3 py-2 text-xs font-mono border rounded-lg bg-themeBg text-themeText focus:outline-none focus:ring-2 focus:ring-themePrimary ${st.valid ? 'border-themeBorder' : 'border-red-500'}">
+                        <p data-role="error" class="${st.valid ? 'hidden' : ''} text-[11px] text-red-500 mt-1">ลิงก์ต้องขึ้นต้นด้วย http:// หรือ https://</p>
+                    </div>
+                    <div class="flex items-center gap-1 justify-end flex-wrap">
+                        <button type="button" data-role="save" onclick="saveLinkSlot('${id}')" ${(!st.dirty || !st.valid || st.saving) ? 'disabled' : ''}
+                            class="px-3 py-2 rounded-lg text-xs font-bold flex items-center gap-1 transition bg-themePrimary text-white hover:bg-themePrimaryHover disabled:opacity-30 disabled:cursor-not-allowed">
+                            <i data-lucide="${st.saving ? 'loader-2' : 'save'}" class="w-3.5 h-3.5 ${st.saving ? 'animate-spin' : ''}"></i> บันทึก
+                        </button>
+                        <a ${safeUrl(st.savedUrl) ? `href="${escapeHtml(safeUrl(st.savedUrl))}"` : 'aria-disabled="true"'} target="_blank" rel="noopener noreferrer" title="เปิดทดสอบลิงก์"
+                            class="p-2 rounded-lg border border-themeBorder text-themeMuted hover:text-themePrimary hover:border-themePrimary transition ${safeUrl(st.savedUrl) ? '' : 'opacity-30 pointer-events-none'}"><i data-lucide="external-link" class="w-3.5 h-3.5"></i></a>
+                        <button type="button" onclick="moveEvaluator('${id}', -1)" title="เลื่อนขึ้น" ${indexInGroup <= 0 ? 'disabled' : ''}
+                            class="p-2 rounded-lg border border-themeBorder text-themeMuted hover:text-themePrimary transition disabled:opacity-30 disabled:cursor-not-allowed"><i data-lucide="arrow-up" class="w-3.5 h-3.5"></i></button>
+                        <button type="button" onclick="moveEvaluator('${id}', 1)" title="เลื่อนลง" ${indexInGroup >= groupSize - 1 ? 'disabled' : ''}
+                            class="p-2 rounded-lg border border-themeBorder text-themeMuted hover:text-themePrimary transition disabled:opacity-30 disabled:cursor-not-allowed"><i data-lucide="arrow-down" class="w-3.5 h-3.5"></i></button>
+                        <button type="button" onclick="openEvaluatorModal('${id}')" title="แก้ไขชื่อ กลุ่ม ไอคอน สี"
+                            class="p-2 rounded-lg border border-themeBorder text-themeMuted hover:text-blue-500 hover:border-blue-500 transition"><i data-lucide="pencil" class="w-3.5 h-3.5"></i></button>
+                        <button type="button" onclick="deleteEvaluator('${id}')" title="ลบผู้ประเมินนี้"
+                            class="p-2 rounded-lg border border-themeBorder text-themeMuted hover:text-red-500 hover:border-red-500 transition"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+                    </div>
+                </div>`;
+        }
+
+        function evStatusPill(ev, st) {
+            if (st.dirty) return `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-themePrimary/15 text-themePrimary whitespace-nowrap">ยังไม่บันทึก</span>`;
+            if (!ev.active) return `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-500/15 text-themeMuted whitespace-nowrap">ปิดใช้งาน</span>`;
+            if (st.savedUrl) return `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 whitespace-nowrap flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>พร้อมใช้งาน</span>`;
+            return `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 text-amber-600 dark:text-amber-400 whitespace-nowrap">ยังไม่มีลิงก์</span>`;
+        }
+
+        // อัปเดตเฉพาะแถวที่กำลังพิมพ์ (ไม่วาดใหม่ทั้งหน้า เคอร์เซอร์จึงไม่หลุด)
+        function onLinkInput(id, value) {
+            linkDrafts[id] = value;
+            const ev = evaluatorsData.find(e => sameId(e.id, id));
+            const row = document.getElementById(evDomId(id));
+            if (!ev || !row) return;
+            const st = evState(ev);
+            row.classList.toggle('border-themePrimary', st.dirty);
+            row.classList.toggle('bg-themePrimary/5', st.dirty);
+            row.classList.toggle('border-themeBorder', !st.dirty);
+            row.querySelector('[data-role="status"]').innerHTML = evStatusPill(ev, st);
+            row.querySelector('[data-role="save"]').disabled = !st.dirty || !st.valid || st.saving;
+            row.querySelector('[data-role="error"]').classList.toggle('hidden', st.valid);
+            const input = row.querySelector('input');
+            input.classList.toggle('border-red-500', !st.valid);
+            input.classList.toggle('border-themeBorder', st.valid);
+            updateLinkDirtyCount();
+        }
+
+        function dirtyEvaluators() {
+            return evaluatorsData.filter(ev => { const st = evState(ev); return st.dirty && st.valid; });
+        }
+
+        function updateLinkDirtyCount() {
+            const n = dirtyEvaluators().length;
+            const btn = document.getElementById('linkSaveAllBtn');
+            const count = document.getElementById('linkDirtyCount');
+            if (count) count.textContent = n;
+            if (btn) btn.classList.toggle('hidden', n < 2);
+        }
+
+        function setLinkYear(year) {
+            linkActiveYear = year;
+            renderLinkManager();
+        }
+
+        // แทนที่ข้อมูลผู้ประเมิน 1 รายการในเครื่อง แล้ววาดทั้งหน้าแอดมินและหน้าแรกใหม่
+        function upsertLocalEvaluator(saved) {
+            const idx = evaluatorsData.findIndex(e => sameId(e.id, saved.id));
+            if (idx >= 0) evaluatorsData[idx] = { ...evaluatorsData[idx], ...saved };
+            else evaluatorsData.push(saved);
+            renderEvaluatorButtons();
+            renderLinkManager();
+        }
+
+        // บันทึกลิงก์ (ส่งข้อมูลผู้ประเมินทั้งรายการ เพื่อให้ฝั่งเซิร์ฟเวอร์ตรวจสอบได้ครบ)
+        async function saveLinkSlot(id, { silent = false } = {}) {
+            const ev = evaluatorsData.find(e => sameId(e.id, id));
+            if (!ev) return false;
+            const st = evState(ev);
+            if (!st.dirty || linkSaving.has(ev.id)) return true;
+            if (!st.valid) {
+                showToast('ลิงก์ต้องขึ้นต้นด้วย http:// หรือ https://', 'error');
+                return false;
+            }
+            linkSaving.add(ev.id);
+            if (!silent) renderLinkManager();
+            try {
+                const saved = await callApi('saveEvaluator', { data: { ...ev, url: st.value.trim() } });
+                delete linkDrafts[ev.id];
+                linkSaving.delete(ev.id);
+                upsertLocalEvaluator(saved);
+                if (!silent) showToast(`บันทึกลิงก์ "${ev.name}" ชั้นปีที่ ${ev.year} แล้ว`);
+                return true;
             } catch (err) {
-                alertMessageBox('บันทึกลิงก์ล้มเหลว: ' + err.message, 'ข้อผิดพลาด', 'error');
+                linkSaving.delete(ev.id);
+                if (!silent) renderLinkManager();
+                showToast('บันทึกไม่สำเร็จ: ' + err.message, 'error');
+                return false;
             }
         }
 
-        async function deleteLinkAdmin(id) {
-            if(confirm('ยืนยันลบลิงก์นี้ออกจากระบบ? (ปุ่มของผู้ใช้อาจกดไม่ไปหากไม่มีลิงก์สำรอง)')) {
-                alertMessageBox('กำลังดำเนินการลบลิงก์...', 'รอสักครู่');
-                try {
-                    await callApi('deleteEvaluationLink', { id: id });
-                    closeAlert();
-                    fetchLatestData();
-                    alertMessageBox("ลบลิงก์การประเมินออกสำเร็จ", "สำเร็จ", "success");
-                } catch (err) {
-                    alertMessageBox('ลบลิงก์ขัดข้อง: ' + err.message, 'เกิดข้อผิดพลาด', 'error');
-                }
+        async function saveAllLinkDrafts() {
+            const pending = dirtyEvaluators();
+            if (!pending.length) return;
+            const btn = document.getElementById('linkSaveAllBtn');
+            if (btn) btn.disabled = true;
+            let ok = 0;
+            for (const ev of pending) {
+                if (await saveLinkSlot(ev.id, { silent: true })) ok++;
             }
+            if (btn) btn.disabled = false;
+            renderLinkManager();
+            showToast(ok === pending.length ? `บันทึกครบ ${ok} ลิงก์แล้ว` : `บันทึกได้ ${ok} จาก ${pending.length} ลิงก์`, ok === pending.length ? 'success' : 'error');
+        }
+
+        // เปิด-ปิดใช้งาน: เปลี่ยนบนจอทันที ถ้าบันทึกไม่สำเร็จจะคืนค่าเดิม
+        async function toggleEvaluatorActive(id) {
+            const ev = evaluatorsData.find(e => sameId(e.id, id));
+            if (!ev) return;
+            const next = !ev.active;
+            ev.active = next;
+            renderEvaluatorButtons();
+            renderLinkManager();
+            try {
+                const saved = await callApi('setEvaluatorActive', { id: ev.id, active: next });
+                upsertLocalEvaluator(saved);
+                showToast(`${next ? 'เปิด' : 'ปิด'}ใช้งาน "${ev.name}" แล้ว`);
+            } catch (err) {
+                ev.active = !next;
+                renderEvaluatorButtons();
+                renderLinkManager();
+                showToast('เปลี่ยนสถานะไม่สำเร็จ: ' + err.message, 'error');
+            }
+        }
+
+        // เลื่อนลำดับภายในกลุ่มเดียวกัน แล้วบันทึกลำดับทั้งชั้นปีในครั้งเดียว
+        async function moveEvaluator(id, dir) {
+            const ev = evaluatorsData.find(e => sameId(e.id, id));
+            if (!ev) return;
+            const groups = groupEvaluators(ev.year);
+            const group = groups.find(g => g.title === ev.group);
+            const i = group.items.indexOf(ev);
+            const j = i + dir;
+            if (j < 0 || j >= group.items.length) return;
+            [group.items[i], group.items[j]] = [group.items[j], group.items[i]];
+            const orderedIds = groups.flatMap(g => g.items.map(e => e.id));
+            const before = orderedIds.map(x => [x, evaluatorsData.find(e => sameId(e.id, x)).order]);
+            orderedIds.forEach((x, k) => { evaluatorsData.find(e => sameId(e.id, x)).order = k + 1; });
+            renderEvaluatorButtons();
+            renderLinkManager();
+            try {
+                await callApi('reorderEvaluators', { ids: orderedIds });
+            } catch (err) {
+                before.forEach(([x, o]) => { evaluatorsData.find(e => sameId(e.id, x)).order = o; });
+                renderEvaluatorButtons();
+                renderLinkManager();
+                showToast('บันทึกลำดับไม่สำเร็จ: ' + err.message, 'error');
+            }
+        }
+
+        async function deleteEvaluator(id) {
+            const ev = evaluatorsData.find(e => sameId(e.id, id));
+            if (!ev) return;
+            if (!confirm(`ยืนยันลบผู้ประเมิน "${ev.name}" ชั้นปีที่ ${ev.year}?\nปุ่มนี้จะหายไปจากหน้าแรก (หากต้องการซ่อนชั่วคราว ให้ใช้สวิตช์ปิดใช้งานแทน)`)) return;
+            try {
+                await callApi('deleteEvaluator', { id: ev.id });
+                evaluatorsData = evaluatorsData.filter(e => !sameId(e.id, id));
+                delete linkDrafts[ev.id];
+                renderEvaluatorButtons();
+                renderLinkManager();
+                showToast(`ลบ "${ev.name}" แล้ว`);
+            } catch (err) {
+                showToast('ลบไม่สำเร็จ: ' + err.message, 'error');
+            }
+        }
+
+        // --- หน้าต่างเพิ่ม/แก้ไขผู้ประเมิน ---
+        let evPickedIcon = 'user-check';
+        let evPickedColor = 'blue';
+
+        function openEvaluatorModal(id = null) {
+            const ev = id ? evaluatorsData.find(e => sameId(e.id, id)) : null;
+            editingEvaluatorId = ev ? ev.id : null;
+            document.getElementById('evaluatorModalTitle').textContent = ev ? 'แก้ไขผู้ประเมิน' : 'เพิ่มผู้ประเมิน';
+            document.getElementById('evYear').value = String(ev ? ev.year : linkActiveYear);
+            refreshEvaluatorGroups();
+            const groups = groupEvaluators(ev ? ev.year : linkActiveYear);
+            document.getElementById('evGroup').value = ev ? ev.group : (groups[0] ? groups[0].title : '');
+            document.getElementById('evName').value = ev ? ev.name : '';
+            document.getElementById('evUrl').value = ev ? (linkDrafts[ev.id] ?? ev.url ?? '') : '';
+            document.getElementById('evActive').checked = ev ? !!ev.active : true;
+            document.querySelector(`input[name="evStyle"][value="${ev && ev.style === 'feature' ? 'feature' : 'list'}"]`).checked = true;
+            evPickedIcon = ev ? ev.icon : 'user-check';
+            evPickedColor = ev ? ev.color : 'blue';
+            renderEvaluatorPickers();
+            const modal = document.getElementById('evaluatorModal');
+            modal.style.display = 'flex';
+            setTimeout(() => document.getElementById('evName').focus(), 50);
+        }
+
+        function closeEvaluatorModal() {
+            const modal = document.getElementById('evaluatorModal');
+            if (modal) modal.style.display = 'none';
+            editingEvaluatorId = null;
+        }
+
+        // ตัวเลือกกลุ่มที่มีอยู่แล้วในชั้นปีนั้น
+        function refreshEvaluatorGroups() {
+            const year = document.getElementById('evYear').value;
+            const titles = groupEvaluators(year).map(g => g.title);
+            document.getElementById('evGroupOptions').innerHTML = titles.map(t => `<option value="${escapeHtml(t)}"></option>`).join('');
+        }
+
+        function renderEvaluatorPickers() {
+            document.getElementById('evIconPicker').innerHTML = evaluatorIcons.map(icon => `
+                <button type="button" onclick="pickEvaluatorIcon('${icon}')" title="${icon}"
+                    class="aspect-square rounded-lg border flex items-center justify-center transition ${icon === evPickedIcon ? 'border-themePrimary bg-themePrimary/10 text-themePrimary' : 'border-themeBorder text-themeMuted hover:text-themeText'}">
+                    <i data-lucide="${icon}" class="w-4 h-4"></i>
+                </button>`).join('');
+            document.getElementById('evColorPicker').innerHTML = Object.keys(evaluatorColors).map(color => `
+                <button type="button" onclick="pickEvaluatorColor('${color}')" title="${color}" aria-label="สี ${color}"
+                    class="w-7 h-7 rounded-full ${evaluatorColors[color].dot} transition ${color === evPickedColor ? 'ring-2 ring-offset-2 ring-themePrimary ring-offset-themeCard' : 'opacity-70 hover:opacity-100'}"></button>`).join('');
+            updateEvaluatorPreview();
+        }
+
+        function pickEvaluatorIcon(icon) { evPickedIcon = icon; renderEvaluatorPickers(); }
+        function pickEvaluatorColor(color) { evPickedColor = color; renderEvaluatorPickers(); }
+
+        function readEvaluatorForm() {
+            return {
+                id: editingEvaluatorId || undefined,
+                year: parseInt(document.getElementById('evYear').value),
+                group: document.getElementById('evGroup').value.trim(),
+                name: document.getElementById('evName').value.trim(),
+                url: document.getElementById('evUrl').value.trim(),
+                active: document.getElementById('evActive').checked,
+                style: document.querySelector('input[name="evStyle"]:checked').value,
+                icon: evPickedIcon,
+                color: evPickedColor
+            };
+        }
+
+        function updateEvaluatorPreview() {
+            const box = document.getElementById('evaluatorPreview');
+            if (!box) return;
+            const data = readEvaluatorForm();
+            box.innerHTML = evaluatorButtonHtml({ ...data, active: true, url: 'https://example.com' }, { preview: true });
+            safeCreateIcons();
+        }
+
+        async function handleEvaluatorSubmit(event) {
+            event.preventDefault();
+            const data = readEvaluatorForm();
+            if (data.url && !safeUrl(data.url)) {
+                showToast('ลิงก์ต้องขึ้นต้นด้วย http:// หรือ https://', 'error');
+                return;
+            }
+            // ย้ายชั้นปี/กลุ่ม: ให้ไปต่อท้ายกลุ่มใหม่
+            const old = editingEvaluatorId ? evaluatorsData.find(e => sameId(e.id, editingEvaluatorId)) : null;
+            if (old && (parseInt(old.year) !== data.year || old.group !== data.group)) {
+                data.order = evaluatorsData.filter(e => parseInt(e.year) === data.year).reduce((m, e) => Math.max(m, Number(e.order) || 0), 0) + 1;
+            }
+            const btn = document.getElementById('evaluatorSaveBtn');
+            btn.disabled = true;
+            try {
+                const saved = await callApi('saveEvaluator', { data });
+                if (old) delete linkDrafts[old.id];
+                linkActiveYear = data.year;
+                upsertLocalEvaluator(saved);
+                closeEvaluatorModal();
+                showToast(old ? `แก้ไข "${saved.name}" แล้ว` : `เพิ่ม "${saved.name}" ในชั้นปีที่ ${saved.year} แล้ว`);
+            } catch (err) {
+                showToast('บันทึกไม่สำเร็จ: ' + err.message, 'error');
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        // แจ้งเตือนแบบสั้นมุมจอ (ไม่ขวางการทำงาน)
+        function showToast(message, type = 'success') {
+            let wrap = document.getElementById('toastWrap');
+            if (!wrap) {
+                wrap = document.createElement('div');
+                wrap.id = 'toastWrap';
+                wrap.className = 'fixed bottom-4 right-4 left-4 sm:left-auto z-[99999] flex flex-col gap-2 items-end pointer-events-none';
+                document.body.appendChild(wrap);
+            }
+            const toast = document.createElement('div');
+            const isErr = type === 'error';
+            toast.className = `pointer-events-auto max-w-sm w-full sm:w-auto flex items-start gap-2 px-4 py-3 rounded-xl shadow-xl border text-sm animate-fadeIn bg-themeCard text-themeText ${isErr ? 'border-red-500/40' : 'border-emerald-500/40'}`;
+            toast.innerHTML = `<i data-lucide="${isErr ? 'alert-triangle' : 'check-circle-2'}" class="w-4 h-4 mt-0.5 shrink-0 ${isErr ? 'text-red-500' : 'text-emerald-500'}"></i><span></span>`;
+            toast.querySelector('span').textContent = message;
+            wrap.appendChild(toast);
+            safeCreateIcons();
+            setTimeout(() => toast.remove(), isErr ? 6000 : 3000);
         }
 
         function openAdminSchoolModal(id = null) {
             editingSchoolId = id;
             try {
                 if (id) {
-                    const school = schoolsData.find(s => s.id === id);
+                    const school = schoolsData.find(s => sameId(s.id, id));
                     if (school) {
                         document.getElementById('adminSchName').value = school.name;
                         document.getElementById('adminSchAffiliation').value = school.affiliation || '';
@@ -2123,6 +2609,12 @@ document.addEventListener('click', function(event) {
 
         // --- LOGIN PROCESS ---
         function openLoginModal() {
+            // ล็อกอินค้างไว้แล้ว (ภายในแท็บเดิม) ไม่ต้องกรอกรหัสใหม่
+            if (adminToken) {
+                switchTab('dashboard');
+                fetchLatestData();
+                return;
+            }
             try {
                 const modal = document.getElementById('loginModal');
                 if(modal) {
@@ -2161,10 +2653,15 @@ document.addEventListener('click', function(event) {
                 if (btn) btn.classList.remove('hidden');
                 if (loader) loader.classList.add('hidden');
                 
-                if (response && response.authenticated) {
+                if (response && response.authenticated && !response.token) {
+                    alertMessageBox('รหัสผ่านถูกต้อง แต่ Google Apps Script ยังเป็นเวอร์ชันเก่า กรุณาอัปเดต Code.gs เป็นเวอร์ชันใหม่และ Deploy ใหม่ก่อน จึงจะใช้งานหลังบ้านได้', 'ต้องอัปเดตฝั่งเซิร์ฟเวอร์', 'error', 'bg-amber-100 text-amber-600');
+                } else if (response && response.authenticated && response.token) {
+                    document.getElementById('passwordInput').value = ''; // ไม่เก็บรหัสผ่านค้างไว้ในฟอร์ม
+                    setAdminToken(response.token);
                     closeLoginModal();
                     switchTab('dashboard');
-                    alertMessageBox('ยินดีต้อนรับผู้ควบคุมระบบ! คุณเชื่อมต่อฐานข้อมูลชีตสมบูรณ์', 'เข้าสู่ระบบสำเร็จ', 'success', 'bg-emerald-100 text-emerald-600');
+                    showToast('เข้าสู่ระบบแอดมินสำเร็จ กำลังโหลดข้อมูลล่าสุด...');
+                    fetchLatestData(); // ข้อมูลฉบับเต็มสำหรับแอดมิน (รวมลิงก์หลักฐาน)
                 } else {
                     alertMessageBox('ชื่อผู้ใช้งานหรือรหัสผ่านไม่ถูกต้อง!', 'ล้มเหลว', 'error', 'bg-red-100 text-red-600');
                 }
@@ -2176,6 +2673,12 @@ document.addEventListener('click', function(event) {
         }
 
         function logout() {
+            const pw = document.getElementById('passwordInput');
+            if (pw) pw.value = '';
+            Object.keys(linkDrafts).forEach(k => delete linkDrafts[k]); // ล้างลิงก์ที่พิมพ์ค้างไว้
+            if (adminToken) callApi('logoutAdmin').catch(() => {}); // ยกเลิกโทเคนฝั่งเซิร์ฟเวอร์
+            setAdminToken(null);
+            loadCachedData(); // กลับไปใช้ข้อมูลสาธารณะ
             switchTab('home');
             alertMessageBox('ออกจากระบบผู้ดูแลหลังบ้านเรียบร้อยแล้ว', 'เรียบร้อย', 'info');
         }
@@ -2211,7 +2714,7 @@ document.addEventListener('click', function(event) {
                     `;
                 } else {
                     actionContainer.innerHTML = `
-                        <button type="button" onclick="closeAlert()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-lg transition-colors shadow-md">ตกลงเข้าใจแล้ว</button>
+                        <button type="button" onclick="closeAlert()" class="w-full bg-themePrimary hover:bg-themePrimaryHover text-white font-semibold py-2.5 rounded-lg transition-colors shadow-md">ตกลงเข้าใจแล้ว</button>
                     `;
                 }
                 
@@ -2325,13 +2828,14 @@ document.addEventListener('click', function(event) {
             }
         }
 
-        // เริ่มต้นโหลดเมื่อหน้าต่างบราวเซอร์พร้อมทำงาน
-        window.onload = function() {
+        // เริ่มทำงานทันทีที่ HTML พร้อม (สคริปต์อยู่ท้าย body) ไม่ต้องรอฟอนต์/รูปภาพโหลดเสร็จแบบ window.onload
+        (function init() {
             initTheme(); // คืนค่าธีมหลักและโหมดความสว่างเดิม
-            initMajorsUI(); 
-            fetchLatestData();
+            loadCachedData();   // 1) แสดงข้อมูลล่าสุดที่จำไว้ในเครื่องทันที
+            fetchLatestData();  // 2) ดึงข้อมูลใหม่จาก Google Sheets เบื้องหลัง
+            initMajorsUI();
             safeCreateIcons();
-            
+
             const mobileMenuBtn = document.getElementById('mobileMenuBtn');
             const mobileMenu = document.getElementById('mobileMenu');
             if(mobileMenuBtn && mobileMenu) {
@@ -2339,21 +2843,14 @@ document.addEventListener('click', function(event) {
                     mobileMenu.classList.toggle('hidden');
                 });
             }
-        };
+        })();
     </script>
-      <script language=JavaScript>
-<!--
-var message="Do not click right..!! (อย่าคลิ๊กขวา..!!)";
-///////////////////////////////////
-function clickIE() {if (document.all) {alert(message);return false;}}
-function clickNS(e) {if 
-(document.layers||(document.getElementById&&!document.all)) {
-if (e.which==2||e.which==3) {alert(message);return false;}}}
-if (document.layers) 
-{document.captureEvents(Event.MOUSEDOWN);document.onmousedown=clickNS;}
-else{document.onmouseup=clickNS;document.oncontextmenu=clickIE;}
-document.oncontextmenu=new Function("return false")
-// --> 
-</script>
+    <!-- ป้องกันการคลิกขวา (เขียนใหม่ให้รองรับเบราว์เซอร์ปัจจุบัน และใช้กล่องแจ้งเตือนของระบบแทน alert) -->
+    <script>
+        document.addEventListener('contextmenu', function(event) {
+            event.preventDefault();
+            alertMessageBox('ไม่อนุญาตให้คลิกขวาบนหน้านี้', 'แจ้งเตือน', 'error', 'bg-amber-100 text-amber-600');
+        });
+    </script>
 </body>
 </html>
