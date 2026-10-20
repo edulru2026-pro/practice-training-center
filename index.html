@@ -64,6 +64,12 @@
         .leaflet-popup-tip { background: var(--bg-card) !important; }
         /* หมุดโรงเรียน: ไม่มีกรอบ/พื้นหลังของ Leaflet และมีเงาให้อ่านง่ายบนแผนที่ดาวเทียม */
         .school-pin { background: none; border: 0; }
+        /* พิมพ์รายงาน: ซ่อนเมนู/ปุ่ม/ตัวกรอง แสดงเฉพาะรายงานและรายชื่อ */
+        @media print {
+            header, .no-print, #customAlertModal, #toastWrap { display: none !important; }
+            body { background: #fff !important; }
+            .school-card { break-inside: avoid; box-shadow: none !important; }
+        }
         .school-pin svg { filter: drop-shadow(0 2px 2px rgb(0 0 0 / 0.35)); }
         
         /* CSS Variables สำหรับจัดการ Palette ธีม */
@@ -450,14 +456,14 @@
             </div>
         </section>
 
-        <!-- SECTION: SCHOOLS LIST -->
+        <!-- SECTION: ทำเนียบโรงเรียนเครือข่ายฝึกสอน -->
         <section id="tab-schools" class="tab-content hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 animate-fadeIn">
-            <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
                 <div class="text-left">
                     <h2 class="text-3xl font-bold text-themeText">ทำเนียบโรงเรียนเครือข่ายฝึกสอน</h2>
-                    <p class="text-sm text-themeMuted mt-1">รายชื่อโรงเรียนเครือข่ายความร่วมมือ (เฉพาะที่ผ่านการรับรองและอนุมัติจากผู้ดูแลระบบแล้ว)</p>
+                    <p class="text-sm text-themeMuted mt-1">รายชื่อโรงเรียนเครือข่ายความร่วมมือ (เฉพาะที่ผ่านการรับรองและอนุมัติจากผู้ดูแลระบบแล้ว) · กดที่โรงเรียนเพื่อดูรายละเอียดทั้งหมด</p>
                 </div>
-                <div class="flex gap-2 w-full md:w-auto mt-4 md:mt-0">
+                <div class="flex gap-2 w-full md:w-auto no-print">
                     <button type="button" onclick="openNetworkMap()" class="bg-themePrimary hover:bg-themePrimaryHover text-white font-bold px-4 py-3 rounded-xl shadow-md hover:shadow-lg transition flex items-center justify-center gap-2 w-full md:w-auto">
                         <i data-lucide="map-pinned" class="w-5 h-5"></i> แผนที่เครือข่าย
                     </button>
@@ -467,56 +473,74 @@
                 </div>
             </div>
 
-            <!-- Dashboard Stats for Public Schools -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div class="bg-themeCard rounded-2xl p-5 shadow-sm border border-themeBorder flex items-center justify-between">
+            <!-- รายงานภาพรวมสถิติ (คำนวณจากข้อมูลจริงใน Google Sheets) -->
+            <div class="bg-themeCard rounded-3xl shadow-sm border border-themeBorder overflow-hidden mb-8">
+                <div class="px-6 pt-5 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div>
-                        <p class="text-xs font-bold text-themeMuted uppercase tracking-wider">ยื่นสมัครลงทะเบียนทั้งหมด</p>
-                        <h3 class="text-2xl font-extrabold text-themeText mt-1" id="publicStatTotal">0 <span class="text-sm font-medium text-themeMuted">แห่ง</span></h3>
+                        <h3 class="text-base font-bold text-themeText flex items-center gap-2"><i data-lucide="file-bar-chart" class="w-5 h-5 text-themePrimary"></i> รายงานภาพรวมสถิติโรงเรียนเครือข่ายความร่วมมือ</h3>
+                        <p class="text-xs text-themeMuted mt-0.5" id="reportAsOf">ข้อมูลจากฐานข้อมูล Google Sheets</p>
                     </div>
-                    <div class="w-12 h-12 rounded-full bg-themeBg flex items-center justify-center text-themeMuted">
-                        <i data-lucide="building" class="w-6 h-6"></i>
+                    <div class="flex gap-2">
+                        <button type="button" onclick="downloadSchoolsCsv()" class="no-print text-xs font-bold px-3 py-2 rounded-lg border border-themeBorder text-themeText hover:bg-themePrimary/10 flex items-center gap-1.5 transition"><i data-lucide="download" class="w-3.5 h-3.5"></i> ดาวน์โหลดรายงาน (CSV)</button>
+                        <button type="button" onclick="printSchoolsReport()" class="no-print text-xs font-bold px-3 py-2 rounded-lg border border-themeBorder text-themeText hover:bg-themePrimary/10 flex items-center gap-1.5 transition"><i data-lucide="printer" class="w-3.5 h-3.5"></i> พิมพ์</button>
                     </div>
                 </div>
-                <div class="bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-slate-800 dark:to-slate-900 rounded-2xl p-5 shadow-sm border border-emerald-100 dark:border-slate-700 flex items-center justify-between">
-                    <div>
-                        <p class="text-xs font-bold text-emerald-600 uppercase tracking-wider">อนุมัติแล้ว (Approved)</p>
-                        <h3 class="text-2xl font-extrabold text-emerald-700 mt-1" id="publicStatApproved">0 <span class="text-sm font-medium text-emerald-600/70">แห่ง</span></h3>
-                    </div>
-                    <div class="w-12 h-12 rounded-full bg-emerald-100/50 dark:bg-emerald-950 flex items-center justify-center text-emerald-600">
-                        <i data-lucide="check-circle" class="w-6 h-6"></i>
-                    </div>
+                <!-- ตัวเลขสรุป -->
+                <div class="grid grid-cols-2 lg:grid-cols-5 gap-px bg-themeBorder border-y border-themeBorder">
+                    <div class="bg-themeCard px-5 py-4"><p class="text-[11px] font-semibold text-themeMuted">ยื่นสมัครทั้งหมด</p><p class="mt-1 text-2xl font-extrabold text-themeText tabular-nums" id="publicStatTotal">0</p></div>
+                    <div class="bg-themeCard px-5 py-4"><p class="text-[11px] font-semibold text-emerald-600">อนุมัติแล้ว</p><p class="mt-1 text-2xl font-extrabold text-emerald-600 tabular-nums" id="publicStatApproved">0</p></div>
+                    <div class="bg-themeCard px-5 py-4"><p class="text-[11px] font-semibold text-amber-600">รอพิจารณา</p><p class="mt-1 text-2xl font-extrabold text-amber-600 tabular-nums" id="publicStatPending">0</p></div>
+                    <div class="bg-themeCard px-5 py-4"><p class="text-[11px] font-semibold text-themeMuted">โควตารับรวม (อนุมัติแล้ว)</p><p class="mt-1 text-2xl font-extrabold text-themeText tabular-nums"><span id="reportQuota">0</span> <span class="text-xs font-medium text-themeMuted">อัตรา</span></p></div>
+                    <div class="bg-themeCard px-5 py-4 col-span-2 lg:col-span-1"><p class="text-[11px] font-semibold text-themeMuted">มีพิกัดแผนที่</p><p class="mt-1 text-2xl font-extrabold text-themeText tabular-nums"><span id="reportMapped">0</span> <span class="text-xs font-medium text-themeMuted" id="reportMappedPct"></span></p></div>
                 </div>
-                <div class="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-slate-800 dark:to-slate-900 rounded-2xl p-5 shadow-sm border border-amber-100 dark:border-slate-700 flex items-center justify-between">
-                    <div>
-                        <p class="text-xs font-bold text-amber-600 uppercase tracking-wider">รอพิจารณาอนุมัติ (Pending)</p>
-                        <h3 class="text-2xl font-extrabold text-amber-700 mt-1" id="publicStatPending">0 <span class="text-sm font-medium text-amber-600/70">แห่ง</span></h3>
+                <!-- ตารางแยกมิติ -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 divide-y lg:divide-y-0 lg:divide-x divide-themeBorder">
+                    <div class="p-5">
+                        <h4 class="text-xs font-bold text-themeMuted uppercase tracking-wider mb-3">จำแนกตามระดับการศึกษา</h4>
+                        <table class="w-full text-xs text-themeText"><thead class="text-themeMuted"><tr><th class="text-left font-semibold pb-1.5">ระดับ</th><th class="text-right font-semibold pb-1.5">โรงเรียน</th><th class="text-right font-semibold pb-1.5">%</th><th class="text-right font-semibold pb-1.5">โควตา</th></tr></thead><tbody id="reportByLevel" class="divide-y divide-themeBorder"></tbody></table>
                     </div>
-                    <div class="w-12 h-12 rounded-full bg-amber-100/50 dark:bg-amber-950 flex items-center justify-center text-amber-600">
-                        <i data-lucide="clock" class="w-6 h-6"></i>
+                    <div class="p-5">
+                        <h4 class="text-xs font-bold text-themeMuted uppercase tracking-wider mb-3">จำแนกตามสังกัดหน่วยงาน <span class="normal-case font-normal">(กดเพื่อดูรายชื่อหน่วยงาน)</span></h4>
+                        <div id="reportByAffiliation" class="space-y-1 text-xs text-themeText max-h-72 overflow-y-auto pr-1"></div>
+                    </div>
+                    <div class="p-5">
+                        <h4 class="text-xs font-bold text-themeMuted uppercase tracking-wider mb-3">ปีการศึกษาที่โรงเรียนประสงค์รับนักศึกษา</h4>
+                        <table class="w-full text-xs text-themeText"><thead class="text-themeMuted"><tr><th class="text-left font-semibold pb-1.5">ปีการศึกษา</th><th class="text-right font-semibold pb-1.5">โรงเรียน</th><th class="text-right font-semibold pb-1.5">โควตา</th></tr></thead><tbody id="reportByYear" class="divide-y divide-themeBorder"></tbody></table>
                     </div>
                 </div>
             </div>
 
-            <!-- Search and Filters -->
-            <div class="bg-themeCard rounded-2xl shadow-md p-6 mb-8 border border-themeBorder flex flex-col md:flex-row gap-4 justify-between items-center">
-                <div class="relative w-full md:w-96">
-                    <span class="absolute inset-y-0 left-0 flex items-center pl-3">
-                        <i data-lucide="search" class="w-5 h-5 text-themeMuted"></i>
-                    </span>
-                    <input type="text" id="schoolSearch" onkeyup="filterSchools()" class="w-full pl-10 pr-4 py-2.5 border border-themeBorder bg-themeBg text-themeText rounded-xl focus:outline-none focus:ring-2 focus:ring-themePrimary text-sm" placeholder="ค้นหาชื่อโรงเรียนหรือที่อยู่...">
+            <!-- ค้นหาและกรอง -->
+            <div class="bg-themeCard rounded-2xl shadow-md p-5 mb-6 border border-themeBorder space-y-3 no-print">
+                <div class="flex flex-col lg:flex-row gap-3">
+                    <div class="relative flex-1">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3"><i data-lucide="search" class="w-5 h-5 text-themeMuted"></i></span>
+                        <input type="text" id="schoolSearch" oninput="filterSchools()" class="w-full pl-10 pr-4 py-2.5 border border-themeBorder bg-themeBg text-themeText rounded-xl focus:outline-none focus:ring-2 focus:ring-themePrimary text-sm" placeholder="ค้นหาชื่อโรงเรียน ที่อยู่ สังกัด สาขาวิชา หรือผู้ประสานงาน...">
+                    </div>
+                    <div class="grid grid-cols-2 lg:flex gap-2">
+                        <select id="schoolTypeFilter" onchange="filterSchools()" class="lg:w-48 px-3 py-2.5 border border-themeBorder rounded-xl focus:outline-none focus:ring-2 focus:ring-themePrimary text-sm bg-themeBg text-themeText">
+                            <option value="all">ทุกระดับการศึกษา</option>
+                            <option value="elementary">ปฐมวัย-ประถมศึกษา</option>
+                            <option value="vocational">ขยายโอกาสทางการศึกษา</option>
+                            <option value="secondary">มัธยมศึกษา</option>
+                        </select>
+                        <select id="schoolAffFilter" onchange="filterSchools()" class="lg:w-52 px-3 py-2.5 border border-themeBorder rounded-xl focus:outline-none focus:ring-2 focus:ring-themePrimary text-sm bg-themeBg text-themeText">
+                            <option value="all">ทุกสังกัด</option>
+                        </select>
+                        <select id="schoolMajorFilter" onchange="filterSchools()" class="lg:w-52 px-3 py-2.5 border border-themeBorder rounded-xl focus:outline-none focus:ring-2 focus:ring-themePrimary text-sm bg-themeBg text-themeText">
+                            <option value="all">ทุกสาขาวิชา</option>
+                        </select>
+                        <select id="schoolSort" onchange="filterSchools()" class="lg:w-44 px-3 py-2.5 border border-themeBorder rounded-xl focus:outline-none focus:ring-2 focus:ring-themePrimary text-sm bg-themeBg text-themeText">
+                            <option value="name">เรียงตามชื่อ ก-ฮ</option>
+                            <option value="quota">โควตามากที่สุด</option>
+                            <option value="affiliation">เรียงตามสังกัด</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="flex gap-2 w-full md:w-auto">
-                    <select id="schoolTypeFilter" onchange="filterSchools()" class="w-full md:w-48 px-3 py-2.5 border border-themeBorder rounded-xl focus:outline-none focus:ring-2 focus:ring-themePrimary text-sm bg-themeBg text-themeText">
-                        <option value="all">ทุกระดับการศึกษา</option>
-                        <option value="elementary">ประถมศึกษา</option>
-                        <option value="secondary">มัธยมศึกษา</option>
-                        <option value="vocational">ขยายโอกาส</option>
-                    </select>
-                </div>
+                <p class="text-xs text-themeMuted" id="schoolResultCount"></p>
             </div>
 
-            <!-- Dynamic Schools Grid -->
+            <!-- รายการโรงเรียน -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="schoolsGrid"></div>
         </section>
 
@@ -836,23 +860,13 @@
                         <h4 class="text-sm font-bold text-themePrimary flex items-center gap-1.5 border-b border-themeBorder pb-2">
                             <i data-lucide="info" class="w-4 h-4"></i> ข้อมูลโรงเรียนหลัก
                         </h4>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="space-y-4">
                             <div>
                                 <label class="block text-xs font-semibold text-themeText mb-1">ชื่อโรงเรียน *</label>
-                                <input type="text" id="regSchoolName" required class="w-full px-4 py-2.5 text-sm border border-themeBorder rounded-xl focus:outline-none focus:ring-2 focus:ring-themePrimary bg-themeCard text-themeText" placeholder="โรงเรียนเลยพิทยาคม">
+                                <input type="text" id="regSchoolName" required maxlength="200" class="w-full px-4 py-2.5 text-sm border border-themeBorder rounded-xl focus:outline-none focus:ring-2 focus:ring-themePrimary bg-themeCard text-themeText" placeholder="โรงเรียนเลยพิทยาคม">
                             </div>
-                            <div>
-                                <label class="block text-xs font-semibold text-themeText mb-1">สังกัดหน่วยงาน *</label>
-                                <input type="text" id="regSchoolAffiliation" required class="w-full px-4 py-2.5 text-sm border border-themeBorder rounded-xl focus:outline-none focus:ring-2 focus:ring-themePrimary bg-themeCard text-themeText" placeholder="สพม.เลย หนองบัวลำภู">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-semibold text-themeText mb-1">ระดับการศึกษา *</label>
-                                <select id="regSchoolType" required class="w-full px-3 py-2.5 text-sm border border-themeBorder rounded-xl focus:outline-none focus:ring-2 focus:ring-themePrimary bg-themeCard text-themeText">
-                                    <option value="elementary">ประถมศึกษา</option>
-                                    <option value="secondary">มัธยมศึกษา</option>
-                                    <option value="vocational">ขยายโอกาส</option>
-                                </select>
-                            </div>
+                            <!-- สังกัดหน่วยงาน / ระดับการศึกษา / ปีการศึกษา (สร้างโดย renderSchoolFormFields) -->
+                            <div id="regSchoolCoreFields" class="space-y-4"></div>
                         </div>
                     </div>
 
@@ -947,23 +961,13 @@
                         <h4 class="text-sm font-bold text-themePrimary flex items-center gap-1.5 border-b border-themeBorder pb-2">
                             <i data-lucide="info" class="w-4 h-4"></i> ข้อมูลโรงเรียนหลัก
                         </h4>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="space-y-4">
                             <div>
                                 <label class="block text-xs font-semibold text-themeText mb-1">ชื่อโรงเรียน *</label>
-                                <input type="text" id="adminSchName" required class="w-full px-4 py-2.5 text-sm border border-themeBorder rounded-xl focus:outline-none focus:ring-2 focus:ring-themePrimary bg-themeCard text-themeText">
+                                <input type="text" id="adminSchName" required maxlength="200" class="w-full px-4 py-2.5 text-sm border border-themeBorder rounded-xl focus:outline-none focus:ring-2 focus:ring-themePrimary bg-themeCard text-themeText">
                             </div>
-                            <div>
-                                <label class="block text-xs font-semibold text-themeText mb-1">สังกัดหน่วยงาน *</label>
-                                <input type="text" id="adminSchAffiliation" required class="w-full px-4 py-2.5 text-sm border border-themeBorder rounded-xl focus:outline-none focus:ring-2 focus:ring-themePrimary bg-themeCard text-themeText">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-semibold text-themeText mb-1">ระดับการศึกษา *</label>
-                                <select id="adminSchType" required class="w-full px-3 py-2.5 text-sm border border-themeBorder rounded-xl focus:outline-none focus:ring-2 focus:ring-themePrimary bg-themeCard text-themeText">
-                                    <option value="elementary">ประถมศึกษา</option>
-                                    <option value="secondary">มัธยมศึกษา</option>
-                                    <option value="vocational">ขยายโอกาส</option>
-                                </select>
-                            </div>
+                            <!-- สังกัดหน่วยงาน / ระดับการศึกษา / ปีการศึกษา (สร้างโดย renderSchoolFormFields) -->
+                            <div id="adminSchoolCoreFields" class="space-y-4"></div>
                         </div>
                     </div>
 
@@ -1110,6 +1114,16 @@
                     </button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- MODAL รายละเอียดโรงเรียนเครือข่าย (เปิดจากทำเนียบ) -->
+    <div id="schoolDetailModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4" style="z-index: 9998; display: none;" onclick="if(event.target===this) closeSchoolDetail()">
+        <div class="bg-themeCard rounded-3xl max-w-4xl w-full shadow-2xl border border-themeBorder relative flex flex-col max-h-[95vh] text-themeText" role="dialog" aria-modal="true" aria-labelledby="schoolDetailTitle">
+            <button type="button" onclick="closeSchoolDetail()" class="absolute top-4 right-4 p-1.5 rounded-full hover:bg-themeBg text-themeMuted transition z-10" aria-label="ปิด">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <div id="schoolDetailBody" class="overflow-y-auto"></div>
         </div>
     </div>
 
@@ -1394,6 +1408,7 @@
             closeSchoolRegisterModal();
             closeAdminSchoolModal();
             closeEvaluatorModal();
+            closeSchoolDetail();
         });
 
         // สร้าง Checkbox ตัวเลือกสาขาวิชาแบบ Dynamic
@@ -1762,85 +1777,585 @@
             text.textContent = label;
         }
 
-        // แสดงผลทำเนียบโรงเรียนในหน้าหลัก
+        // =========================================================================
+        // ข้อมูลอ้างอิง: ระดับการศึกษา / สังกัดหน่วยงาน / ปีการศึกษา
+        // =========================================================================
+        const SCHOOL_LEVEL_INFO = {
+            elementary: { label: 'ปฐมวัย-ประถมศึกษา', hint: 'อนุบาล – ป.6', icon: 'baby' },
+            vocational: { label: 'ขยายโอกาสทางการศึกษา', hint: 'อนุบาล – ม.3', icon: 'school' },
+            secondary:  { label: 'มัธยมศึกษา', hint: 'ม.1 – ม.6', icon: 'graduation-cap' }
+        };
+        const levelLabel = (type) => (SCHOOL_LEVEL_INFO[type] || SCHOOL_LEVEL_INFO.elementary).label;
+
+        // กลุ่มสังกัด (ลำดับนี้ใช้แสดงในรายงานและตัวเลือกในฟอร์ม)
+        const AFF_GROUPS = [
+            { key: 'spp', label: 'สพป. (สำนักงานเขตพื้นที่การศึกษาประถมศึกษา)', short: 'สพป. (ประถมศึกษา)' },
+            { key: 'spm', label: 'สพม. (สำนักงานเขตพื้นที่การศึกษามัธยมศึกษา)', short: 'สพม. (มัธยมศึกษา)' },
+            { key: 'local', label: 'องค์กรปกครองส่วนท้องถิ่น (อบจ./เทศบาล/อบต.)', short: 'องค์กรปกครองส่วนท้องถิ่น' },
+            { key: 'private', label: 'สช. (สำนักงานคณะกรรมการส่งเสริมการศึกษาเอกชน)', short: 'เอกชน (สช.)' },
+            { key: 'special', label: 'สำนักบริหารงานการศึกษาพิเศษ', short: 'การศึกษาพิเศษ' },
+            { key: 'obec', label: 'สพฐ. (ส่วนกลาง)', short: 'สพฐ. ส่วนกลาง' },
+            { key: 'higher', label: 'สถาบันอุดมศึกษา / โรงเรียนสาธิต', short: 'อุดมศึกษา/สาธิต' },
+            { key: 'other', label: 'อื่นๆ (ระบุ)', short: 'อื่นๆ' }
+        ];
+        const affGroup = (key) => AFF_GROUPS.find(g => g.key === key) || { key: 'unknown', label: 'ไม่ระบุสังกัด', short: 'ไม่ระบุ' };
+
+        const PROVINCE_ABBR = { 'ลย': 'เลย', 'ขก': 'ขอนแก่น', 'ชย': 'ชัยภูมิ', 'พช': 'เพชรบูรณ์', 'นค': 'หนองคาย', 'อด': 'อุดรธานี', 'นภ': 'หนองบัวลำภู', 'สน': 'สกลนคร', 'บก': 'บึงกาฬ', 'พล': 'พิษณุโลก' };
+        const thaiDigits = (s) => String(s).replace(/[๐-๙]/g, d => '๐๑๒๓๔๕๖๗๘๙'.indexOf(d));
+
+        // แปลงชื่อสังกัดที่พิมพ์ต่างรูปแบบ ให้เป็นชื่อมาตรฐาน + กลุ่ม (กฎเดียวกับ Code.gs)
+        function normalizeAffiliation(raw) {
+            let s = thaiDigits(String(raw || '')).replace(/\s+/g, ' ').trim();
+            if (!s || s === '-') return { name: 'ไม่ระบุสังกัด', group: 'unknown' };
+            const province = (rest) => {
+                const t = rest.replace(/จังหวัด/g, '').replace(/[.\s]/g, '');
+                const m = t.match(/^([^\d]+?)(?:เขต)?(\d+)/);
+                let p = m ? m[1] : t.replace(/เขต$/, '');
+                p = PROVINCE_ABBR[p] || p;
+                return { p, d: m ? parseInt(m[2], 10) : null };
+            };
+            let m = s.match(/^(?:สพป|สำนักงานเขตพื้นที่การศึกษาประถมศึกษา)\s*\.?\s*(.*)$/);
+            if (m) { const r = province(m[1]); return { name: 'สพป.' + r.p + (r.d ? ' เขต ' + r.d : ''), group: 'spp' }; }
+            m = s.match(/^(?:สพม|สำนักงานเขตพื้นที่การศึกษามัธยมศึกษา)\s*\.?\s*(.*)$/);
+            if (m) {
+                const rest = m[1].replace(/\s*เขต\s*$/, '').trim();
+                const d = rest.match(/เขต\s*(\d+)/);
+                const p = rest.replace(/\s*เขต\s*\d+.*$/, '').replace(/\./g, '').trim();
+                return { name: 'สพม.' + (PROVINCE_ABBR[p] || p) + (d ? ' เขต ' + d[1] : ''), group: 'spm' };
+            }
+            if ((m = s.match(/^(?:อบจ|องค์การบริหารส่วนจังหวัด)\s*\.?\s*(.+)$/))) return { name: 'อบจ.' + m[1].replace(/\./g, '').trim(), group: 'local' };
+            if ((m = s.match(/^(?:อบต|องค์การบริหารส่วนตำบล)\s*\.?\s*(.+)$/))) return { name: 'อบต.' + m[1].replace(/\./g, '').trim(), group: 'local' };
+            if (/เทศบาล/.test(s)) return { name: s.replace(/^.*?(เทศบาล)/, '$1').trim(), group: 'local' };
+            if (/องค์กรปกครองส่วนท้องถิ่น|^อปท/.test(s)) return { name: 'องค์กรปกครองส่วนท้องถิ่น', group: 'local' };
+            if (/เอกชน|^สช\b|^สช\./.test(s)) return { name: 'สำนักงานคณะกรรมการส่งเสริมการศึกษาเอกชน (สช.)', group: 'private' };
+            if (/การศึกษาพิเศษ/.test(s)) return { name: 'สำนักบริหารงานการศึกษาพิเศษ', group: 'special' };
+            if (/คณะกรรมการการศึกษาขั้นพื้นฐาน|^สพฐ/.test(s)) return { name: 'สำนักงานคณะกรรมการการศึกษาขั้นพื้นฐาน (สพฐ.)', group: 'obec' };
+            if (/มหาวิทยาลัย|สาธิต|อุดมศึกษา/.test(s)) return { name: s, group: 'higher' };
+            return { name: s, group: 'other' };
+        }
+
+        // คำแนะนำชื่อสังกัดของแต่ละกลุ่ม (เขตพื้นที่ใกล้เคียง + ชื่อที่มีอยู่จริงในฐานข้อมูล)
+        function affiliationSuggestions(group) {
+            const base = {
+                spp: ['เลย:3', 'หนองบัวลำภู:2', 'ขอนแก่น:5', 'อุดรธานี:4', 'เพชรบูรณ์:3', 'ชัยภูมิ:3', 'หนองคาย:2', 'สกลนคร:3']
+                    .flatMap(x => { const [p, n] = x.split(':'); return Array.from({ length: +n }, (_, i) => `สพป.${p} เขต ${i + 1}`); }),
+                spm: ['สพม.เลย หนองบัวลำภู', 'สพม.ขอนแก่น', 'สพม.อุดรธานี', 'สพม.เพชรบูรณ์', 'สพม.ชัยภูมิ', 'สพม.หนองคาย', 'สพม.สกลนคร'],
+                local: ['อบจ.เลย', 'อบจ.ขอนแก่น', 'เทศบาลเมืองเลย'],
+                higher: ['มหาวิทยาลัยราชภัฏเลย']
+            }[group] || [];
+            const fromData = schoolsData.map(s => normalizeAffiliation(s.affiliation)).filter(a => a.group === group).map(a => a.name);
+            return [...new Set(base.concat(fromData))].sort((a, b) => a.localeCompare(b, 'th'));
+        }
+
+        // ภาคเรียน/ปีการศึกษาไทย: ภาคเรียนที่ 1 = พ.ค.–ต.ค., ภาคเรียนที่ 2 = พ.ย.–มี.ค.
+        function upcomingTerms(count = 4) {
+            const now = new Date();
+            const be = now.getFullYear() + 543, m = now.getMonth() + 1;
+            let year = m >= 5 ? be : be - 1;
+            let term = (m >= 5 && m <= 10) ? 1 : 2;
+            const out = [];
+            for (let i = 0; i < count; i++) {
+                out.push(`${term}/${year}`);
+                if (term === 1) term = 2; else { term = 1; year++; }
+            }
+            return out;
+        }
+        const TERM_RE = /^([1-3]\/)?25\d{2}$/;
+        function parseTerms(str) {
+            return [...new Set(String(str || '').split(/[,\s;]+/).map(t => thaiDigits(t).replace(/^ภาค(เรียน)?(ที่)?/, '').trim()).filter(Boolean))];
+        }
+        const termSortKey = (t) => { const m = t.match(/^(?:(\d)\/)?(\d{4})$/); return m ? (+m[2]) * 10 + (+m[1] || 0) : 0; };
+        const termLabel = (t) => /^\d\//.test(t) ? `ภาคเรียนที่ ${t}` : `ปีการศึกษา ${t}`;
+
+        // =========================================================================
+        // ฟิลด์ในฟอร์มสมัคร/แอดมิน: สังกัด (มี "อื่นๆ ระบุ") + ปุ่มระดับการศึกษา + ปีการศึกษา
+        // =========================================================================
+        const FORM_IDS = {
+            reg: { aff: 'regSchoolAffiliation', type: 'regSchoolType', year: 'regAcademicYear', group: 'regAffiliationGroup', requireYear: true },
+            admin: { aff: 'adminSchAffiliation', type: 'adminSchType', year: 'adminSchAcademicYear', group: 'adminSchAffiliationGroup', requireYear: false }
+        };
+        const formTerms = { reg: [], admin: [] };
+
+        function renderSchoolFormFields(prefix) {
+            const box = document.getElementById(prefix + 'SchoolCoreFields');
+            if (!box) return;
+            const ids = FORM_IDS[prefix];
+            const inputCls = 'w-full px-4 py-2.5 text-sm border border-themeBorder rounded-xl focus:outline-none focus:ring-2 focus:ring-themePrimary bg-themeCard text-themeText';
+            box.innerHTML = `
+                <input type="hidden" id="${ids.aff}"><input type="hidden" id="${ids.group}">
+                <input type="hidden" id="${ids.type}" value="elementary"><input type="hidden" id="${ids.year}">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-themeText mb-1">สังกัดหน่วยงาน *</label>
+                        <select id="${prefix}AffGroupSel" required onchange="onAffGroupChange('${prefix}')" class="${inputCls}">
+                            <option value="">— เลือกประเภทสังกัด —</option>
+                            ${AFF_GROUPS.map(g => `<option value="${g.key}">${escapeHtml(g.label)}</option>`).join('')}
+                        </select>
+                    </div>
+                    <div id="${prefix}AffNameWrap">
+                        <label class="block text-xs font-semibold text-themeText mb-1" id="${prefix}AffNameLabel">ชื่อหน่วยงาน/เขตพื้นที่ *</label>
+                        <input type="text" id="${prefix}AffName" list="${prefix}AffList" maxlength="200" oninput="syncSchoolFormFields('${prefix}')" class="${inputCls}" placeholder="เลือกประเภทสังกัดก่อน">
+                        <datalist id="${prefix}AffList"></datalist>
+                        <p class="text-[11px] text-themeMuted mt-1" id="${prefix}AffPreview"></p>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-themeText mb-1">ระดับการศึกษา *</label>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2" role="radiogroup" id="${prefix}LevelBtns">
+                        ${Object.entries(SCHOOL_LEVEL_INFO).map(([key, info]) => `
+                            <button type="button" role="radio" data-level="${key}" onclick="setSchoolFormLevel('${prefix}', '${key}')"
+                                class="level-btn text-left px-4 py-3 rounded-xl border-2 transition flex items-center gap-3">
+                                <span class="w-3 h-3 rounded-full shrink-0" style="background:${levelColor(key)}"></span>
+                                <span><span class="block text-sm font-bold">${info.label}</span><span class="block text-[11px] opacity-75">${info.hint}</span></span>
+                            </button>`).join('')}
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-themeText mb-1">ปีการศึกษาที่ต้องการรับนักศึกษา${ids.requireYear ? ' *' : ''} <span class="font-normal text-themeMuted">(เลือกได้หลายภาคเรียน)</span></label>
+                    <div class="flex flex-wrap gap-2 mb-2" id="${prefix}TermChips"></div>
+                    <div class="flex gap-2">
+                        <input type="text" id="${prefix}TermInput" maxlength="12" inputmode="numeric" class="${inputCls} max-w-xs" placeholder="พิมพ์เพิ่ม เช่น 1/2569 หรือ 2570"
+                            onkeydown="if(event.key==='Enter'){event.preventDefault();addSchoolFormTerm('${prefix}');}">
+                        <button type="button" onclick="addSchoolFormTerm('${prefix}')" class="px-4 py-2.5 rounded-xl border border-themeBorder text-sm font-semibold hover:bg-themePrimary/10 transition">+ เพิ่ม</button>
+                    </div>
+                    <p class="text-[11px] text-themeMuted mt-1">รูปแบบ ภาคเรียน/ปีการศึกษา เช่น <b>1/2569</b> (ภาคเรียนที่ 1) หรือพิมพ์เฉพาะปี เช่น <b>2570</b> (ทั้งปีการศึกษา)</p>
+                </div>`;
+            formTerms[prefix] = [];
+            setSchoolFormLevel(prefix, 'elementary');
+            renderTermChips(prefix);
+        }
+
+        function onAffGroupChange(prefix) {
+            const group = document.getElementById(prefix + 'AffGroupSel').value;
+            const input = document.getElementById(prefix + 'AffName');
+            const label = document.getElementById(prefix + 'AffNameLabel');
+            const singleName = { private: 1, special: 1, obec: 1 }[group];
+            document.getElementById(prefix + 'AffList').innerHTML = affiliationSuggestions(group).map(n => `<option value="${escapeHtml(n)}"></option>`).join('');
+            label.textContent = group === 'other' ? 'ระบุชื่อสังกัดหน่วยงาน *' : singleName ? 'ชื่อหน่วยงาน (ไม่บังคับ)' : 'ชื่อหน่วยงาน/เขตพื้นที่ *';
+            input.placeholder = { spp: 'เช่น สพป.เลย เขต 1', spm: 'เช่น สพม.เลย หนองบัวลำภู', local: 'เช่น เทศบาลเมืองเลย / อบต.นาอาน', higher: 'เช่น มหาวิทยาลัยราชภัฏเลย', other: 'พิมพ์ชื่อสังกัดหน่วยงาน' }[group] || 'ไม่ต้องกรอก';
+            input.required = !!group && !singleName;
+            syncSchoolFormFields(prefix);
+        }
+
+        // อัปเดต hidden input ที่ฟังก์ชันบันทึกใช้ + แสดงชื่อมาตรฐานที่จะบันทึก
+        function syncSchoolFormFields(prefix) {
+            const ids = FORM_IDS[prefix];
+            const group = document.getElementById(prefix + 'AffGroupSel').value;
+            const typed = document.getElementById(prefix + 'AffName').value.trim();
+            // กลุ่มที่มีหน่วยงานเดียว ไม่ต้องพิมพ์ชื่อ
+            const single = { private: 'สช.', special: 'การศึกษาพิเศษ', obec: 'สพฐ.' };
+            const name = typed || single[group] || '';
+            const norm = name ? (group === 'other' ? { name } : normalizeAffiliation(name)) : { name: '' };
+            document.getElementById(ids.aff).value = norm.name;
+            document.getElementById(ids.group).value = group;
+            const preview = document.getElementById(prefix + 'AffPreview');
+            if (preview) preview.textContent = norm.name && norm.name !== typed ? `จะบันทึกเป็น: ${norm.name}` : '';
+        }
+
+        function setSchoolFormLevel(prefix, level) {
+            document.getElementById(FORM_IDS[prefix].type).value = level;
+            document.querySelectorAll(`#${prefix}LevelBtns .level-btn`).forEach(b => {
+                const on = b.dataset.level === level;
+                b.setAttribute('aria-checked', on);
+                b.className = 'level-btn text-left px-4 py-3 rounded-xl border-2 transition flex items-center gap-3 ' +
+                    (on ? 'border-themePrimary bg-themePrimary/10 text-themePrimary' : 'border-themeBorder bg-themeCard text-themeText hover:border-themePrimary/50');
+            });
+        }
+
+        function renderTermChips(prefix) {
+            const box = document.getElementById(prefix + 'TermChips');
+            if (!box) return;
+            const selected = formTerms[prefix];
+            const options = [...new Set(upcomingTerms(4).concat(selected))].sort((a, b) => termSortKey(a) - termSortKey(b));
+            box.innerHTML = options.map(t => {
+                const on = selected.includes(t);
+                return `<button type="button" onclick="toggleSchoolFormTerm('${prefix}', '${t}')" aria-pressed="${on}"
+                    class="px-3 py-1.5 rounded-full text-xs font-bold border transition ${on ? 'bg-themePrimary text-white border-themePrimary' : 'bg-themeCard text-themeText border-themeBorder hover:border-themePrimary'}">
+                    ${on ? '✓ ' : ''}${escapeHtml(t)}</button>`;
+            }).join('');
+            document.getElementById(FORM_IDS[prefix].year).value = selected.slice().sort((a, b) => termSortKey(a) - termSortKey(b)).join(', ');
+        }
+
+        function toggleSchoolFormTerm(prefix, t) {
+            const list = formTerms[prefix];
+            const i = list.indexOf(t);
+            if (i >= 0) list.splice(i, 1); else list.push(t);
+            renderTermChips(prefix);
+        }
+
+        function addSchoolFormTerm(prefix) {
+            const input = document.getElementById(prefix + 'TermInput');
+            const terms = parseTerms(input.value);
+            if (!terms.length) return;
+            const bad = terms.filter(t => !TERM_RE.test(t));
+            if (bad.length) { showToast(`รูปแบบไม่ถูกต้อง: ${bad.join(', ')} (ตัวอย่าง 1/2569 หรือ 2570)`, 'error'); return; }
+            terms.forEach(t => { if (!formTerms[prefix].includes(t)) formTerms[prefix].push(t); });
+            input.value = '';
+            renderTermChips(prefix);
+        }
+
+        // เติมค่าลงฟอร์ม (ใช้ตอนแอดมินแก้ไขโรงเรียน)
+        function setSchoolFormValues(prefix, school) {
+            renderSchoolFormFields(prefix);
+            if (!school) return;
+            const norm = normalizeAffiliation(school.affiliation);
+            const group = school.affiliationGroup || (norm.group === 'unknown' ? '' : norm.group);
+            document.getElementById(prefix + 'AffGroupSel').value = group;
+            onAffGroupChange(prefix);
+            document.getElementById(prefix + 'AffName').value = school.affiliation ? norm.name : '';
+            syncSchoolFormFields(prefix);
+            setSchoolFormLevel(prefix, SCHOOL_LEVEL_INFO[school.type] ? school.type : 'elementary');
+            formTerms[prefix] = parseTerms(school.academicYear).filter(t => TERM_RE.test(t));
+            renderTermChips(prefix);
+        }
+
+        // ตรวจความครบถ้วนก่อนส่ง คืนข้อความผิดพลาด (ถ้ามี)
+        function validateSchoolFormFields(prefix) {
+            const ids = FORM_IDS[prefix];
+            const pending = document.getElementById(prefix + 'TermInput').value.trim();
+            if (pending) addSchoolFormTerm(prefix); // พิมพ์ไว้แต่ยังไม่กดเพิ่ม
+            syncSchoolFormFields(prefix);
+            if (!document.getElementById(prefix + 'AffGroupSel').value) return 'กรุณาเลือกประเภทสังกัดหน่วยงาน';
+            if (!document.getElementById(ids.aff).value) return 'กรุณาระบุชื่อสังกัดหน่วยงาน';
+            if (ids.requireYear && !formTerms[prefix].length) return 'กรุณาเลือกหรือพิมพ์ปีการศึกษาที่ต้องการรับนักศึกษาอย่างน้อย 1 รายการ';
+            return '';
+        }
+
+        // =========================================================================
+        // ทำเนียบโรงเรียนเครือข่าย: การ์ด + ตัวกรอง + รายงานสถิติ + รายละเอียดรายโรงเรียน
+        // =========================================================================
+        const approvedList = () => schoolsData.filter(s => s.status === 'Approved');
+        const schoolQuota = (s) => parseInt(s.quota) || 0;
+
         function renderSchools() {
             try {
-                const grid = document.getElementById('schoolsGrid');
-                const schoolsCountLabel = document.getElementById('homeSchoolsCount');
-                const approvedSchools = schoolsData.filter(s => s.status === 'Approved');
-                const pendingSchools = schoolsData.filter(s => s.status === 'Pending');
+                const approved = approvedList();
+                const pending = schoolsData.filter(s => s.status === 'Pending');
+                const setText = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+                setText('homeSchoolsCount', approved.length);
+                setText('publicStatTotal', schoolsData.length);
+                setText('publicStatApproved', approved.length);
+                setText('publicStatPending', pending.length);
 
-                if (schoolsCountLabel) {
-                    schoolsCountLabel.textContent = `${approvedSchools.length}`;
+                const grid = document.getElementById('schoolsGrid');
+                if (!grid) return;
+
+                // ตัวเลือกตัวกรองจากข้อมูลจริง
+                const affSel = document.getElementById('schoolAffFilter');
+                if (affSel) {
+                    const keep = affSel.value;
+                    const groups = AFF_GROUPS.concat([affGroup('unknown')]).filter(g => approved.some(s => normalizeAffiliation(s.affiliation).group === g.key));
+                    affSel.innerHTML = '<option value="all">ทุกสังกัด</option>' + groups.map(g => `<option value="${g.key}">${escapeHtml(g.short)}</option>`).join('');
+                    affSel.value = [...affSel.options].some(o => o.value === keep) ? keep : 'all';
+                }
+                const majorSel = document.getElementById('schoolMajorFilter');
+                if (majorSel) {
+                    const keep = majorSel.value;
+                    majorSel.innerHTML = '<option value="all">ทุกสาขาวิชา</option>' + majorsList.map(m => `<option value="${escapeHtml(m)}">${escapeHtml(m.replace('สาขาวิชา', ''))}</option>`).join('');
+                    majorSel.value = keep && [...majorSel.options].some(o => o.value === keep) ? keep : 'all';
                 }
 
-                if (document.getElementById('publicStatTotal')) document.getElementById('publicStatTotal').innerHTML = `${schoolsData.length} <span class="text-sm font-medium text-themeMuted">แห่ง</span>`;
-                if (document.getElementById('publicStatApproved')) document.getElementById('publicStatApproved').innerHTML = `${approvedSchools.length} <span class="text-sm font-medium text-emerald-600/70">แห่ง</span>`;
-                if (document.getElementById('publicStatPending')) document.getElementById('publicStatPending').innerHTML = `${pendingSchools.length} <span class="text-sm font-medium text-amber-600/70">แห่ง</span>`;
-
-                if (!grid) return;
-                grid.innerHTML = '';
-
-                approvedSchools.forEach(school => {
-
-                    const quota = parseInt(school.quota) || 0;
-                    let quotaBadge = quota > 0
-                        ? `<span class="text-xs text-emerald-600 font-medium flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> รับ ${quota} อัตรา</span>`
-                        : `<span class="text-xs text-slate-400 font-medium flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-slate-400"></span> เต็มแล้ว</span>`;
-
-                    let cleanMap = safeUrl(cleanMapUrl(school.mapUrl));
-                    let mapButton = cleanMap
-                        ? `<a href="${escapeHtml(cleanMap)}" target="_blank" rel="noopener noreferrer" class="text-indigo-600 dark:text-indigo-400 font-semibold hover:underline flex items-center gap-1 mt-1 text-xs"><i data-lucide="map-pin" class="w-3.5 h-3.5"></i> ดูพิกัดแผนที่</a>`
-                        : '';
-
-                    const card = `
-                        <div class="school-card bg-themeCard rounded-2xl shadow-md border border-themeBorder p-6 space-y-4" data-type="${escapeHtml(school.type)}" data-search="${escapeHtml(((school.name || '') + ' ' + (school.address || '') + ' ' + (school.affiliation || '')).toLowerCase())}">
-                            <div class="flex items-center justify-between">
-                                <span class="inline-flex items-center gap-1.5 bg-themeBg border border-themeBorder text-themeText text-xs font-semibold px-2.5 py-1 rounded-full"><span class="w-2 h-2 rounded-full" style="background:${levelColor(school.type)}"></span>${escapeHtml(school.typeName)}</span>
-                                ${quotaBadge}
-                            </div>
-                            <div>
-                                <h3 class="text-lg font-bold text-themeText school-name">${escapeHtml(school.name)}</h3>
-                                <p class="text-xs text-themeMuted">สังกัด: ${escapeHtml(school.affiliation || '-')}</p>
-                            </div>
-                            <p class="text-xs text-themeMuted flex items-start gap-1"><i data-lucide="map-pin" class="w-4 h-4 text-themeMuted flex-shrink-0"></i> ${escapeHtml(school.address)}</p>
-
-                            <div class="bg-themeBg p-3 rounded-xl border border-themeBorder text-xs">
-                                <div class="font-bold text-themeText mb-1">สาขาวิชาและอัตราที่เปิดรับ:</div>
-                                <div class="text-themeMuted max-h-20 overflow-y-auto leading-relaxed">${escapeHtml(school.majors || '-')}</div>
-                            </div>
-
-                            <div class="border-t border-themeBorder pt-3 flex justify-between items-center text-xs text-themeMuted">
-                                <div>ครูพี่เลี้ยงหลัก: <strong class="text-themeText">${escapeHtml(school.coordinator)}</strong></div>
-                                <div class="flex flex-col items-end gap-1">
-                                    <button type="button" onclick="showSchoolContact('${escapeHtml(school.id)}')" class="text-themePrimary font-semibold hover:underline bg-transparent border-0 cursor-pointer">ติดต่อสถาบัน</button>
-                                    ${mapButton}
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                    grid.insertAdjacentHTML('beforeend', card);
-                });
-
-                // แสดงข้อความเมื่อยังไม่มีโรงเรียนที่อนุมัติ / ไม่พบผลการค้นหา
-                grid.insertAdjacentHTML('beforeend', `
-                    <div id="schoolsEmptyState" class="${approvedSchools.length ? 'hidden' : ''} col-span-full text-center py-16 text-themeMuted bg-themeCard rounded-2xl border border-dashed border-themeBorder">
+                grid.innerHTML = approved.map(schoolCardHtml).join('') + `
+                    <div id="schoolsEmptyState" class="hidden col-span-full text-center py-16 text-themeMuted bg-themeCard rounded-2xl border border-dashed border-themeBorder">
                         <i data-lucide="search-x" class="w-10 h-10 mx-auto mb-3 opacity-60"></i>
                         <p class="text-sm font-medium">ไม่พบโรงเรียนเครือข่ายที่ตรงกับเงื่อนไข</p>
-                    </div>
-                `);
-                safeCreateIcons();
+                    </div>`;
+                renderSchoolsReport();
                 filterSchools();
-            } catch(e) {
+                safeCreateIcons();
+                openSchoolFromHash();
+            } catch (e) {
                 console.error("Render Schools Error:", e);
             }
         }
 
+        function schoolCardHtml(school) {
+            const quota = schoolQuota(school);
+            const aff = normalizeAffiliation(school.affiliation);
+            const majors = parseMajors(school.majors);
+            const terms = parseTerms(school.academicYear).sort((a, b) => termSortKey(a) - termSortKey(b));
+            const hasMap = !!schoolCoords(school);
+            const search = [school.name, school.address, school.affiliation, aff.name, school.majors, school.coordinator, school.typeName, school.academicYear].join(' ').toLowerCase();
+            return `
+                <article class="school-card group bg-themeCard rounded-2xl shadow-md hover:shadow-xl border border-themeBorder hover:border-themePrimary/50 p-5 flex flex-col gap-3 cursor-pointer transition"
+                    tabindex="0" role="button" aria-label="ดูรายละเอียด ${escapeHtml(school.name)}"
+                    onclick="openSchoolDetail('${escapeHtml(school.id)}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openSchoolDetail('${escapeHtml(school.id)}');}"
+                    data-id="${escapeHtml(school.id)}" data-type="${escapeHtml(school.type)}" data-aff="${aff.group}" data-quota="${quota}"
+                    data-name="${escapeHtml(school.name)}" data-affname="${escapeHtml(aff.name)}" data-majors="${escapeHtml(majors.map(m => m.name).join('|'))}" data-search="${escapeHtml(search)}">
+                    <div class="flex items-center justify-between gap-2">
+                        <span class="inline-flex items-center gap-1.5 bg-themeBg border border-themeBorder text-themeText text-xs font-semibold px-2.5 py-1 rounded-full">
+                            <span class="w-2 h-2 rounded-full" style="background:${levelColor(school.type)}"></span>${escapeHtml(levelLabel(school.type))}</span>
+                        ${quota > 0
+                            ? `<span class="text-xs text-emerald-600 dark:text-emerald-400 font-bold">รับ ${quota} อัตรา</span>`
+                            : `<span class="text-xs text-themeMuted font-medium">ยังไม่ระบุโควตา</span>`}
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-themeText leading-snug group-hover:text-themePrimary transition">${escapeHtml(school.name)}</h3>
+                        <p class="text-xs text-themeMuted mt-0.5 flex items-center gap-1"><i data-lucide="landmark" class="w-3.5 h-3.5 shrink-0"></i> ${escapeHtml(aff.name)}</p>
+                    </div>
+                    <div class="flex flex-wrap gap-1.5 text-[11px]">
+                        ${terms.length ? terms.map(t => `<span class="px-2 py-0.5 rounded-md bg-themePrimary/10 text-themePrimary font-semibold">${escapeHtml(t)}</span>`).join('') : ''}
+                        ${majors.length ? `<span class="px-2 py-0.5 rounded-md bg-themeBg border border-themeBorder text-themeMuted">${majors.length} สาขาวิชา</span>` : ''}
+                        ${hasMap ? `<span class="px-2 py-0.5 rounded-md bg-themeBg border border-themeBorder text-themeMuted">📍 มีพิกัด</span>` : ''}
+                    </div>
+                    <p class="text-xs text-themeMuted line-clamp-2">${escapeHtml(school.address || 'ไม่ได้ระบุที่อยู่')}</p>
+                    <div class="mt-auto pt-3 border-t border-themeBorder flex items-center justify-between text-xs">
+                        <span class="text-themeMuted truncate">ผู้ประสานงาน: <b class="text-themeText">${escapeHtml(school.coordinator || 'ไม่ระบุ')}</b></span>
+                        <span class="text-themePrimary font-bold flex items-center gap-1 shrink-0">ดูรายละเอียด <i data-lucide="arrow-right" class="w-3.5 h-3.5 group-hover:translate-x-0.5 transition"></i></span>
+                    </div>
+                </article>`;
+        }
+
+        function filterSchools() {
+            const grid = document.getElementById('schoolsGrid');
+            if (!grid) return;
+            const q = (document.getElementById('schoolSearch')?.value || '').trim().toLowerCase();
+            const type = document.getElementById('schoolTypeFilter')?.value || 'all';
+            const aff = document.getElementById('schoolAffFilter')?.value || 'all';
+            const major = document.getElementById('schoolMajorFilter')?.value || 'all';
+            const sort = document.getElementById('schoolSort')?.value || 'name';
+            const cards = [...grid.querySelectorAll('.school-card')];
+            let visible = 0, visibleQuota = 0;
+            cards.forEach(card => {
+                const ok = (!q || card.dataset.search.includes(q)) &&
+                    (type === 'all' || card.dataset.type === type) &&
+                    (aff === 'all' || card.dataset.aff === aff) &&
+                    (major === 'all' || card.dataset.majors.split('|').includes(major));
+                card.classList.toggle('hidden', !ok);
+                if (ok) { visible++; visibleQuota += +card.dataset.quota || 0; }
+            });
+            const cmp = {
+                name: (a, b) => a.dataset.name.localeCompare(b.dataset.name, 'th'),
+                quota: (a, b) => (+b.dataset.quota - +a.dataset.quota) || a.dataset.name.localeCompare(b.dataset.name, 'th'),
+                affiliation: (a, b) => a.dataset.affname.localeCompare(b.dataset.affname, 'th') || a.dataset.name.localeCompare(b.dataset.name, 'th')
+            }[sort];
+            const empty = document.getElementById('schoolsEmptyState');
+            cards.sort(cmp).forEach(c => grid.insertBefore(c, empty));
+            if (empty) empty.classList.toggle('hidden', visible > 0);
+            const count = document.getElementById('schoolResultCount');
+            if (count) count.textContent = `แสดง ${visible} จาก ${cards.length} โรงเรียน · โควตารวม ${visibleQuota.toLocaleString('th-TH')} อัตรา`;
+        }
+
+        // --- รายงานภาพรวมสถิติ (จากข้อมูลจริงที่โหลดมาจาก Google Sheets) ---
+        function schoolsReportData() {
+            const approved = approvedList();
+            const total = approved.length;
+            const quota = approved.reduce((s, x) => s + schoolQuota(x), 0);
+            const byLevel = Object.keys(SCHOOL_LEVEL_INFO).map(t => {
+                const list = approved.filter(s => (SCHOOL_LEVEL_INFO[s.type] ? s.type : 'elementary') === t);
+                return { type: t, label: levelLabel(t), count: list.length, quota: list.reduce((a, s) => a + schoolQuota(s), 0) };
+            });
+            const groups = {};
+            approved.forEach(s => {
+                const a = normalizeAffiliation(s.affiliation);
+                const g = groups[a.group] = groups[a.group] || { key: a.group, label: affGroup(a.group).short, count: 0, quota: 0, names: {} };
+                g.count++; g.quota += schoolQuota(s);
+                g.names[a.name] = (g.names[a.name] || 0) + 1;
+            });
+            const byAff = Object.values(groups).sort((a, b) => b.count - a.count);
+            const years = {};
+            let noYear = 0;
+            approved.forEach(s => {
+                const terms = parseTerms(s.academicYear);
+                if (!terms.length) noYear++;
+                terms.forEach(t => { const y = years[t] = years[t] || { term: t, count: 0, quota: 0 }; y.count++; y.quota += schoolQuota(s); });
+            });
+            const byYear = Object.values(years).sort((a, b) => termSortKey(a.term) - termSortKey(b.term));
+            const mapped = approved.filter(s => schoolCoords(s)).length;
+            return { approved, total, quota, byLevel, byAff, byYear, noYear, mapped };
+        }
+
+        function renderSchoolsReport() {
+            const r = schoolsReportData();
+            const pct = (n) => r.total ? Math.round(n / r.total * 100) : 0;
+            const setText = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+            setText('reportQuota', r.quota.toLocaleString('th-TH'));
+            setText('reportMapped', r.mapped);
+            setText('reportMappedPct', `/ ${r.total} แห่ง (${pct(r.mapped)}%)`);
+            setText('reportAsOf', `ข้อมูลจริงจาก Google Sheets · ปรับปรุงล่าสุด ${new Date().toLocaleString('th-TH', { dateStyle: 'medium', timeStyle: 'short' })} · นับเฉพาะโรงเรียนที่อนุมัติแล้ว`);
+
+            const lv = document.getElementById('reportByLevel');
+            if (lv) lv.innerHTML = r.byLevel.map(l => `
+                <tr><td class="py-1.5"><span class="inline-flex items-center gap-1.5"><span class="w-2 h-2 rounded-full" style="background:${levelColor(l.type)}"></span>${escapeHtml(l.label)}</span></td>
+                <td class="py-1.5 text-right tabular-nums font-bold">${l.count}</td><td class="py-1.5 text-right tabular-nums text-themeMuted">${pct(l.count)}%</td>
+                <td class="py-1.5 text-right tabular-nums">${l.quota.toLocaleString('th-TH')}</td></tr>`).join('') + `
+                <tr class="font-bold"><td class="py-1.5">รวม</td><td class="py-1.5 text-right tabular-nums">${r.total}</td><td class="py-1.5 text-right text-themeMuted">100%</td><td class="py-1.5 text-right tabular-nums">${r.quota.toLocaleString('th-TH')}</td></tr>`;
+
+            const af = document.getElementById('reportByAffiliation');
+            if (af) af.innerHTML = r.byAff.length ? r.byAff.map(g => `
+                <details class="group rounded-lg border border-themeBorder">
+                    <summary class="flex items-center justify-between gap-2 px-2.5 py-1.5 cursor-pointer list-none hover:bg-themePrimary/5 rounded-lg">
+                        <span class="flex items-center gap-1.5 font-semibold"><i data-lucide="chevron-right" class="w-3.5 h-3.5 transition group-open:rotate-90"></i>${escapeHtml(g.label)}</span>
+                        <span class="tabular-nums"><b>${g.count}</b> แห่ง · ${pct(g.count)}% · ${g.quota.toLocaleString('th-TH')} อัตรา</span>
+                    </summary>
+                    <ul class="px-3 pb-2 pt-1 space-y-0.5 text-themeMuted">
+                        ${Object.entries(g.names).sort((a, b) => b[1] - a[1]).map(([n, c]) => `<li class="flex justify-between gap-2"><span>${escapeHtml(n)}</span><span class="tabular-nums">${c}</span></li>`).join('')}
+                    </ul>
+                </details>`).join('') : '<p class="text-themeMuted">ยังไม่มีข้อมูล</p>';
+
+            const yr = document.getElementById('reportByYear');
+            if (yr) yr.innerHTML = (r.byYear.length ? r.byYear.map(y => `
+                <tr><td class="py-1.5">${escapeHtml(termLabel(y.term))}</td><td class="py-1.5 text-right tabular-nums font-bold">${y.count}</td><td class="py-1.5 text-right tabular-nums">${y.quota.toLocaleString('th-TH')}</td></tr>`).join('') : '') + `
+                <tr class="text-themeMuted"><td class="py-1.5">ยังไม่ระบุปีการศึกษา</td><td class="py-1.5 text-right tabular-nums">${r.noYear}</td><td></td></tr>`;
+            safeCreateIcons();
+        }
+
+        // ดาวน์โหลดรายชื่อโรงเรียนที่อนุมัติแล้ว (เปิดด้วย Excel ภาษาไทยได้ถูกต้อง)
+        function downloadSchoolsCsv() {
+            const rows = [['ลำดับ', 'ชื่อโรงเรียน', 'ระดับการศึกษา', 'สังกัด (มาตรฐาน)', 'ประเภทสังกัด', 'สังกัด (ตามที่กรอก)', 'ปีการศึกษาที่รับ', 'โควตารวม', 'สาขาวิชาและอัตรา', 'ผู้ประสานงาน', 'โทรศัพท์', 'ที่อยู่', 'ละติจูด', 'ลองจิจูด']];
+            approvedList().slice().sort((a, b) => String(a.name).localeCompare(String(b.name), 'th')).forEach((s, i) => {
+                const a = normalizeAffiliation(s.affiliation);
+                const c = schoolCoords(s);
+                rows.push([i + 1, s.name, levelLabel(s.type), a.name, affGroup(a.group).short, s.affiliation || '', s.academicYear || '', schoolQuota(s), s.majors || '', s.coordinator || '', s.phone || '', s.address || '', c ? c.lat.toFixed(6) : '', c ? c.lng.toFixed(6) : '']);
+            });
+            const csv = '﻿' + rows.map(r => r.map(v => {
+                let t = String(v ?? '');
+                if (/^[=+\-@]/.test(t)) t = "'" + t; // กันสูตรใน Excel
+                return '"' + t.replace(/"/g, '""') + '"';
+            }).join(',')).join('\r\n');
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `รายงานโรงเรียนเครือข่าย_${new Date().toISOString().slice(0, 10)}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+        }
+
+        function printSchoolsReport() {
+            document.querySelectorAll('#reportByAffiliation details').forEach(d => d.open = true);
+            window.print();
+        }
+
+        // --- รายละเอียดรายโรงเรียน ---
+        let schoolDetailMap = null;
+
+        function openSchoolDetail(id) {
+            const s = schoolsData.find(x => sameId(x.id, id));
+            if (!s) return;
+            const aff = normalizeAffiliation(s.affiliation);
+            const majors = parseMajors(s.majors);
+            const quota = schoolQuota(s);
+            const majorsQuota = majors.reduce((a, m) => a + m.quota, 0);
+            const terms = parseTerms(s.academicYear).sort((a, b) => termSortKey(a) - termSortKey(b));
+            const c = schoolCoords(s);
+            const mapLink = safeUrl(cleanMapUrl(s.mapUrl));
+            const phoneDigits = String(s.phone || '').replace(/[^\d+]/g, '');
+            const none = '<span class="text-themeMuted italic">ไม่ได้ระบุ</span>';
+            const field = (icon, label, value) => `
+                <div class="flex gap-3 py-2.5">
+                    <i data-lucide="${icon}" class="w-4 h-4 mt-0.5 text-themePrimary shrink-0"></i>
+                    <div class="min-w-0"><p class="text-[11px] font-semibold text-themeMuted">${label}</p><div class="text-sm text-themeText break-words">${value}</div></div>
+                </div>`;
+            const maxQ = Math.max(1, ...majors.map(m => m.quota));
+            const missing = [!s.address && 'ที่อยู่', !s.coordinator && 'ผู้ประสานงาน', !s.phone && 'เบอร์โทร', !majors.length && 'สาขาวิชา', !terms.length && 'ปีการศึกษา', !c && 'พิกัดแผนที่'].filter(Boolean);
+
+            document.getElementById('schoolDetailBody').innerHTML = `
+                <div class="p-6 sm:p-8 border-b border-themeBorder bg-gradient-to-br from-themePrimary/10 to-transparent rounded-t-3xl">
+                    <div class="flex flex-wrap items-center gap-2 mb-3 pr-8">
+                        <span class="inline-flex items-center gap-1.5 bg-themeCard border border-themeBorder text-xs font-bold px-2.5 py-1 rounded-full">
+                            <span class="w-2 h-2 rounded-full" style="background:${levelColor(s.type)}"></span>${escapeHtml(levelLabel(s.type))}</span>
+                        ${s.status === 'Approved'
+                            ? '<span class="inline-flex items-center gap-1 bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 text-xs font-bold px-2.5 py-1 rounded-full"><i data-lucide="badge-check" class="w-3.5 h-3.5"></i> ผ่านการรับรองเป็นโรงเรียนเครือข่าย</span>'
+                            : '<span class="bg-amber-500/15 text-amber-700 text-xs font-bold px-2.5 py-1 rounded-full">รอพิจารณาอนุมัติ</span>'}
+                    </div>
+                    <h3 id="schoolDetailTitle" class="text-2xl font-extrabold leading-tight">${escapeHtml(s.name)}</h3>
+                    <p class="text-sm text-themeMuted mt-1 flex items-center gap-1.5"><i data-lucide="landmark" class="w-4 h-4"></i> ${escapeHtml(aff.name)} <span class="opacity-70">· ${escapeHtml(affGroup(aff.group).short)}</span></p>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-5">
+                        ${[['โควตารับรวม', quota ? quota + ' อัตรา' : '–'], ['สาขาวิชาที่รับ', majors.length ? majors.length + ' สาขา' : '–'],
+                           ['ปีการศึกษา', terms.length ? terms.length + ' ภาคเรียน' : '–'], ['ช่วงชั้นที่เปิดสอน', escapeHtml(s.typeName || levelLabel(s.type))]]
+                            .map(([k, v]) => `<div class="bg-themeCard rounded-xl border border-themeBorder px-3 py-2.5"><p class="text-[11px] text-themeMuted">${k}</p><p class="text-sm font-extrabold mt-0.5">${v}</p></div>`).join('')}
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-5 gap-0 lg:divide-x divide-themeBorder">
+                    <div class="lg:col-span-3 p-6 sm:p-8 space-y-6">
+                        <section>
+                            <h4 class="text-sm font-bold mb-3 flex items-center gap-2"><i data-lucide="graduation-cap" class="w-4 h-4 text-themePrimary"></i> สาขาวิชาและจำนวนนักศึกษาที่เปิดรับ</h4>
+                            ${majors.length ? `
+                                <ul class="space-y-2.5">${majors.sort((a, b) => b.quota - a.quota).map(m => `
+                                    <li><div class="flex justify-between text-xs mb-1"><span>${escapeHtml(m.name.replace('สาขาวิชา', 'สาขาวิชา'))}</span><b class="tabular-nums">${m.quota} อัตรา</b></div>
+                                    <div class="h-1.5 rounded-full bg-themeBg"><div class="h-full rounded-full bg-themePrimary" style="width:${Math.max(4, m.quota / maxQ * 100)}%"></div></div></li>`).join('')}
+                                </ul>
+                                <p class="text-xs text-themeMuted mt-3">รวมทุกสาขา ${majorsQuota} อัตรา${majorsQuota !== quota && quota ? ` (โควตารวมที่แจ้งไว้ ${quota} อัตรา)` : ''}</p>`
+                                : `<p class="text-sm text-themeMuted">โรงเรียนยังไม่ได้ระบุสาขาวิชา โควตารวม ${quota || 0} อัตรา</p>`}
+                        </section>
+                        <section>
+                            <h4 class="text-sm font-bold mb-3 flex items-center gap-2"><i data-lucide="calendar-days" class="w-4 h-4 text-themePrimary"></i> ปีการศึกษาที่ประสงค์รับนักศึกษา</h4>
+                            ${terms.length ? `<div class="flex flex-wrap gap-2">${terms.map(t => `<span class="px-3 py-1.5 rounded-lg bg-themePrimary/10 text-themePrimary text-sm font-bold">${escapeHtml(termLabel(t))}</span>`).join('')}</div>` : `<p class="text-sm text-themeMuted">ยังไม่ได้ระบุ</p>`}
+                        </section>
+                        <section class="divide-y divide-themeBorder">
+                            <h4 class="text-sm font-bold mb-1 flex items-center gap-2"><i data-lucide="contact" class="w-4 h-4 text-themePrimary"></i> ข้อมูลติดต่อประสานงาน</h4>
+                            ${field('user', 'ผู้ประสานงาน (ครูพี่เลี้ยงหลัก)', s.coordinator ? escapeHtml(s.coordinator) : none)}
+                            ${field('phone', 'เบอร์โทรศัพท์', s.phone ? `<a href="tel:${escapeHtml(phoneDigits)}" class="text-themePrimary font-bold hover:underline">${escapeHtml(s.phone)}</a>` : none)}
+                            ${field('map-pin', 'ที่อยู่', s.address ? escapeHtml(s.address) : none)}
+                            ${field('building-2', 'สังกัดหน่วยงาน', escapeHtml(aff.name) + (s.affiliation && s.affiliation.trim() !== aff.name ? `<span class="block text-[11px] text-themeMuted">ตามที่โรงเรียนกรอก: ${escapeHtml(s.affiliation)}</span>` : ''))}
+                        </section>
+                    </div>
+                    <div class="lg:col-span-2 p-6 sm:p-8 space-y-3 border-t lg:border-t-0 border-themeBorder">
+                        <h4 class="text-sm font-bold flex items-center gap-2"><i data-lucide="map" class="w-4 h-4 text-themePrimary"></i> ที่ตั้งโรงเรียน</h4>
+                        ${c ? `
+                            <div id="schoolDetailMap" class="h-56 rounded-2xl border border-themeBorder overflow-hidden z-0"></div>
+                            <p class="text-xs text-themeMuted font-mono">📍 ${c.lat.toFixed(6)}, ${c.lng.toFixed(6)}${c.approx ? ' <span class="text-amber-600 font-sans">(พิกัดโดยประมาณ)</span>' : ''}</p>
+                            <div class="grid grid-cols-1 gap-2">
+                                <a href="https://www.google.com/maps/dir/?api=1&destination=${c.lat},${c.lng}" target="_blank" rel="noopener noreferrer" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold py-2.5 rounded-xl flex items-center justify-center gap-1.5"><i data-lucide="navigation" class="w-3.5 h-3.5"></i> นำทางด้วย Google Maps</a>
+                                <button type="button" onclick="copySchoolCoords('${c.lat.toFixed(6)}, ${c.lng.toFixed(6)}')" class="border border-themeBorder hover:bg-themePrimary/10 text-xs font-bold py-2.5 rounded-xl flex items-center justify-center gap-1.5"><i data-lucide="copy" class="w-3.5 h-3.5"></i> คัดลอกพิกัด</button>
+                            </div>`
+                            : `<div class="h-40 rounded-2xl border border-dashed border-themeBorder flex flex-col items-center justify-center text-xs text-themeMuted gap-1"><i data-lucide="map-pin-off" class="w-6 h-6"></i>ยังไม่มีพิกัดที่ใช้ปักหมุดได้</div>`}
+                        ${mapLink ? `<a href="${escapeHtml(mapLink)}" target="_blank" rel="noopener noreferrer" class="block text-center border border-themeBorder hover:bg-themePrimary/10 text-xs font-bold py-2.5 rounded-xl">เปิดลิงก์แผนที่ที่โรงเรียนส่งมา</a>` : ''}
+                        ${missing.length ? `<div class="mt-4 text-[11px] bg-amber-500/10 border border-amber-500/20 text-amber-700 dark:text-amber-300 rounded-xl p-3">ข้อมูลที่ยังไม่ครบ: ${missing.join(', ')}<br>หากเป็นโรงเรียนนี้ โปรดแจ้งศูนย์ฝึกประสบการณ์วิชาชีพครูเพื่อปรับปรุงข้อมูล</div>` : ''}
+                    </div>
+                </div>`;
+            const modal = document.getElementById('schoolDetailModal');
+            modal.style.display = 'flex';
+            safeCreateIcons();
+            try { history.replaceState(null, '', '#school-' + encodeURIComponent(s.id)); } catch (e) { /* ใน iframe ของ Apps Script อาจทำไม่ได้ */ }
+
+            if (c && typeof L !== 'undefined') {
+                setTimeout(() => {
+                    if (schoolDetailMap) { schoolDetailMap.remove(); schoolDetailMap = null; }
+                    schoolDetailMap = L.map('schoolDetailMap', { scrollWheelZoom: false }).setView([c.lat, c.lng], 16);
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap' }).addTo(schoolDetailMap);
+                    const color = getComputedStyle(document.documentElement).getPropertyValue(levelColor(s.type).replace(/^var\((.+)\)$/, '$1')).trim() || '#2a78d6';
+                    L.marker([c.lat, c.lng], { icon: schoolPinIcon(color, c.approx) }).addTo(schoolDetailMap);
+                }, 60);
+            }
+        }
+
+        function closeSchoolDetail() {
+            const modal = document.getElementById('schoolDetailModal');
+            if (modal) modal.style.display = 'none';
+            if (schoolDetailMap) { schoolDetailMap.remove(); schoolDetailMap = null; }
+            try { if (location.hash.indexOf('#school-') === 0) history.replaceState(null, '', location.pathname + location.search); } catch (e) { /* ignore */ }
+        }
+
+        function copySchoolCoords(text) {
+            const done = () => showToast('คัดลอกพิกัดแล้ว: ' + text);
+            if (navigator.clipboard) navigator.clipboard.writeText(text).then(done, () => alertMessageBox(text, 'พิกัดโรงเรียน'));
+            else alertMessageBox(text, 'พิกัดโรงเรียน');
+        }
+
+        // ลิงก์ตรงถึงโรงเรียน เช่น ...#school-1712345678901
+        let hashHandled = false;
+        function openSchoolFromHash() {
+            if (hashHandled) return;
+            const m = (location.hash || '').match(/^#school-(.+)$/);
+            if (!m) return;
+            const id = decodeURIComponent(m[1]);
+            if (!schoolsData.some(s => sameId(s.id, id))) return;
+            hashHandled = true;
+            switchTab('schools');
+            openSchoolDetail(id);
+        }
+
+        // ปุ่ม "ติดต่อสถาบัน" เดิม: เปิดหน้ารายละเอียดแทน
+        function showSchoolContact(id) { openSchoolDetail(id); }
+
         // ระดับการศึกษา: ลำดับและสีคงที่ (สีผูกกับประเภท ไม่เปลี่ยนตามอันดับ) ใช้ร่วมกับหมุดแผนที่
         const schoolLevels = [
-            { type: 'elementary', name: 'ประถมศึกษา', color: 'var(--series-1)' },
+            { type: 'elementary', name: 'ปฐมวัย-ประถมศึกษา', color: 'var(--series-1)' },
             { type: 'secondary',  name: 'มัธยมศึกษา', color: 'var(--series-2)' },
-            { type: 'vocational', name: 'ขยายโอกาส', color: 'var(--series-3)' }
+            { type: 'vocational', name: 'ขยายโอกาสทางการศึกษา', color: 'var(--series-3)' }
         ];
         const levelColor = (type) => (schoolLevels.find(l => l.type === type) || schoolLevels[1]).color;
 
@@ -1882,7 +2397,7 @@
                 const majorQuota = {};
                 let quotaSum = 0;
                 approvedSchools.forEach(s => {
-                    const aff = (s.affiliation || '').trim() || 'ไม่ระบุสังกัด';
+                    const aff = normalizeAffiliation(s.affiliation).name; // รวมชื่อที่เขียนต่างรูปแบบเป็นหน่วยงานเดียวกัน
                     affiliationCounts[aff] = (affiliationCounts[aff] || 0) + 1;
                     quotaSum += parseInt(s.quota) || 0;
                     parseMajors(s.majors).forEach(m => {
@@ -1940,35 +2455,6 @@
             } catch (error) {
                 console.error("Stats Render Error:", error);
             }
-        }
-
-        // ค้นหาคัดกรองโรงเรียน
-        function filterSchools() {
-            const searchInput = document.getElementById('schoolSearch');
-            const filterSelect = document.getElementById('schoolTypeFilter');
-            if (!searchInput || !filterSelect) return;
-            const searchVal = searchInput.value.trim().toLowerCase();
-            const filterVal = filterSelect.value;
-            const cards = document.querySelectorAll('#schoolsGrid .school-card');
-            let visibleCount = 0;
-
-            cards.forEach(card => {
-                const matchesSearch = (card.dataset.search || '').includes(searchVal);
-                const matchesFilter = (filterVal === 'all' || card.dataset.type === filterVal);
-                const visible = matchesSearch && matchesFilter;
-                card.classList.toggle('hidden', !visible);
-                if (visible) visibleCount++;
-            });
-
-            const emptyState = document.getElementById('schoolsEmptyState');
-            if (emptyState) emptyState.classList.toggle('hidden', visibleCount > 0);
-        }
-
-        // แสดงเบอร์ติดต่อของโรงเรียน (ไม่ฝังข้อมูลลงในโค้ด onclick โดยตรง)
-        function showSchoolContact(id) {
-            const school = schoolsData.find(s => sameId(s.id, id));
-            if (!school) return;
-            alertMessageBox(`${school.name}\nผู้ประสานงาน: ${school.coordinator || '-'}\nโทร: ${school.phone || '-'}`, 'ติดต่อประสานงานสถานศึกษา');
         }
 
         // =========================================================================
@@ -2230,10 +2716,11 @@
                             <tr class="hover:bg-themeBg/50 text-xs text-themeText">
                                 <td class="px-6 py-4">
                                     <div class="font-bold text-sm">${escapeHtml(school.name)}</div>
-                                    <div class="text-[10px] text-themeMuted font-semibold mt-0.5">สังกัด: ${escapeHtml(school.affiliation || '-')}</div>
+                                    <div class="text-[10px] text-themeMuted font-semibold mt-0.5">สังกัด: ${escapeHtml(normalizeAffiliation(school.affiliation).name)}</div>
+                                    <div class="text-[10px] text-themePrimary font-semibold mt-0.5">ปีการศึกษา: ${escapeHtml(school.academicYear || 'ยังไม่ระบุ')}</div>
                                     <div class="text-[10px] text-themeMuted mt-1 max-w-[220px] truncate" title="${escapeHtml(school.majors || '-')}">สาขา: ${escapeHtml(school.majors || '-')}</div>
                                 </td>
-                                <td class="px-6 py-4 font-medium">${escapeHtml(school.typeName)}</td>
+                                <td class="px-6 py-4 font-medium">${escapeHtml(levelLabel(school.type))}${school.typeName && school.typeName !== levelLabel(school.type) ? `<div class="text-[10px] text-themeMuted">${escapeHtml(school.typeName)}</div>` : ''}</td>
                                 <td class="px-6 py-4 font-semibold">${parseInt(school.quota) || 0} อัตรา</td>
                                 <td class="px-6 py-4 max-w-xs">
                                     <div class="truncate text-themeMuted" title="${escapeHtml(school.address)}">${escapeHtml(school.address)}</div>
@@ -2864,8 +3351,7 @@
                     const school = schoolsData.find(s => sameId(s.id, id));
                     if (school) {
                         document.getElementById('adminSchName').value = school.name;
-                        document.getElementById('adminSchAffiliation').value = school.affiliation || '';
-                        document.getElementById('adminSchType').value = school.type;
+                        setSchoolFormValues('admin', school); // สังกัด / ระดับ / ปีการศึกษา
                         document.getElementById('adminSchAddress').value = school.address;
                         document.getElementById('adminSchMapUrl').value = school.mapUrl || '';
                         document.getElementById('adminSchCoordinator').value = school.coordinator;
@@ -2879,6 +3365,7 @@
                 } else {
                     const form = document.getElementById('adminSchoolForm');
                     if (form) form.reset();
+                    renderSchoolFormFields('admin');
                     document.getElementById('adminSchStatus').value = 'Approved';
                     document.getElementById('adminSchoolModalTitle').textContent = 'เพิ่มสถาบันใหม่';
                     deserializeMajorsData('admin', '');
@@ -2906,6 +3393,8 @@
             event.preventDefault();
             const btn = document.getElementById('adminSchoolSaveBtn');
             if (!btn) return;
+            const formError = validateSchoolFormFields('admin');
+            if (formError) { showToast(formError, 'error'); return; }
 
             const originalText = btn.innerHTML;
             btn.innerHTML = `<svg class="animate-spin h-4 w-4 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> กำลังบันทึก...`;
@@ -2913,16 +3402,22 @@
 
             try {
                 const schoolType = document.getElementById('adminSchType').value;
-                let typeName = schoolType === 'secondary' ? "มัธยมศึกษา" : schoolType === 'vocational' ? "ขยายโอกาส" : "ประถมศึกษา";
-                
+                const existing = editingSchoolId ? schoolsData.find(s => sameId(s.id, editingSchoolId)) : null;
+                // ช่วงชั้นที่เคยระบุไว้เอง (เช่น "ปฐมวัย-มัธยมศึกษา") คงไว้ ถ้าไม่ได้เปลี่ยนระดับ
+                const typeName = existing && existing.type === schoolType && existing.typeName ? existing.typeName : levelLabel(schoolType);
+
+                // โควตา = ผลรวมรายสาขา ถ้าไม่ได้เลือกสาขาเลย ให้คงโควตาเดิมไว้ (ไม่ทับเป็น 0)
                 const quotaLabel = document.getElementById('adminTotalQuotaLabel');
-                const finalQuota = quotaLabel ? parseInt(quotaLabel.textContent) : 0;
+                const majorsTotal = quotaLabel ? (parseInt(quotaLabel.textContent) || 0) : 0;
+                const finalQuota = majorsTotal || (existing ? (parseInt(existing.quota) || 0) : 0);
 
                 const payload = {
                     data: {
                         id: editingSchoolId ? editingSchoolId : Date.now().toString(),
                         name: document.getElementById('adminSchName').value,
                         affiliation: document.getElementById('adminSchAffiliation').value,
+                        affiliationGroup: document.getElementById('adminSchAffiliationGroup').value,
+                        academicYear: document.getElementById('adminSchAcademicYear').value,
                         type: schoolType,
                         typeName: typeName,
                         quota: finalQuota,
@@ -3085,6 +3580,7 @@
                 initMajorsUI();
                 const form = modal.querySelector('form');
                 if (form) form.reset();
+                renderSchoolFormFields('reg'); // สังกัด / ปุ่มระดับการศึกษา / ปีการศึกษา
                 calculateTotalQuota('reg');
             }
         }
@@ -3127,13 +3623,16 @@
             const submitBtn = document.getElementById('schoolRegBtn');
             const loader = document.getElementById('schoolRegLoader');
 
+            const formError = validateSchoolFormFields('reg');
+            if (formError) { alertMessageBox(formError, 'กรุณากรอกข้อมูลให้ครบถ้วน', 'error', 'bg-amber-100 text-amber-600'); return; }
+
             if(submitBtn) submitBtn.classList.add('hidden');
             if(loader) loader.classList.remove('hidden');
 
             try {
                 const schoolType = document.getElementById('regSchoolType').value;
-                let typeName = schoolType === 'secondary' ? "มัธยมศึกษา" : schoolType === 'vocational' ? "ขยายโอกาส" : "ประถมศึกษา";
-                
+                const typeName = levelLabel(schoolType);
+
                 const quotaLabel = document.getElementById('regTotalQuotaLabel');
                 const finalQuota = quotaLabel ? (parseInt(quotaLabel.textContent) || 0) : 0;
 
@@ -3142,6 +3641,8 @@
                         id: Date.now().toString(),
                         name: document.getElementById('regSchoolName').value,
                         affiliation: document.getElementById('regSchoolAffiliation').value,
+                        affiliationGroup: document.getElementById('regAffiliationGroup').value,
+                        academicYear: document.getElementById('regAcademicYear').value,
                         type: schoolType,
                         typeName: typeName,
                         quota: finalQuota,
@@ -3185,6 +3686,8 @@
                 fetchLatestData();  // 2) ดึงข้อมูลใหม่จาก Google Sheets เบื้องหลัง
             }
             initMajorsUI();
+            renderSchoolFormFields('reg');
+            renderSchoolFormFields('admin');
             safeCreateIcons();
 
             const mobileMenuBtn = document.getElementById('mobileMenuBtn');
