@@ -466,6 +466,9 @@
                 <div class="text-left">
                     <h2 class="text-3xl font-bold text-themeText">ทำเนียบโรงเรียนเครือข่ายฝึกสอน</h2>
                     <p class="text-sm text-themeMuted mt-1">รายชื่อโรงเรียนเครือข่ายความร่วมมือ (เฉพาะที่ผ่านการรับรองและอนุมัติจากผู้ดูแลระบบแล้ว) · กดที่โรงเรียนเพื่อดูรายละเอียดทั้งหมด</p>
+                    <p class="text-xs mt-2 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-themePrimary/10 text-themePrimary font-semibold">
+                        <i data-lucide="pencil-line" class="w-3.5 h-3.5"></i> โรงเรียนเครือข่ายอัปเดตข้อมูลเองได้: ค้นหาโรงเรียนของท่าน → กดดูรายละเอียด → "แก้ไขข้อมูลโรงเรียนนี้" → ใส่รหัสแก้ไข
+                    </p>
                 </div>
                 <div class="flex gap-2 w-full md:w-auto no-print">
                     <button type="button" onclick="openNetworkMap()" class="bg-themePrimary hover:bg-themePrimaryHover text-white font-bold px-4 py-3 rounded-xl shadow-md hover:shadow-lg transition flex items-center justify-center gap-2 w-full md:w-auto">
@@ -768,6 +771,28 @@
                         </div>
                     </div>
                 </div>
+                <!-- รหัสแก้ไขข้อมูลของโรงเรียน + ประวัติการแก้ไข -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="bg-themeCard rounded-2xl shadow-md border border-themeBorder p-5 sm:p-6 h-fit">
+                        <h3 class="font-bold text-themeText text-base flex items-center gap-2"><i data-lucide="key-round" class="w-5 h-5 text-themePrimary"></i> รหัสแก้ไขข้อมูลสำหรับโรงเรียน</h3>
+                        <p class="text-xs text-themeMuted mt-1 mb-4">โรงเรียนเครือข่ายที่ผ่านการรับรองแล้ว ใช้รหัสนี้แก้ไขข้อมูลของตนเองในหน้าทำเนียบ (ตรวจรหัสที่เซิร์ฟเวอร์เท่านั้น)</p>
+                        <label class="block text-xs font-semibold text-themeMuted mb-1">รหัสปัจจุบัน</label>
+                        <div class="flex gap-2">
+                            <input type="text" id="schoolEditCodeAdmin" maxlength="50" autocomplete="off" spellcheck="false" class="flex-1 min-w-0 px-3 py-2.5 text-sm font-mono border border-themeBorder rounded-xl bg-themeBg text-themeText focus:outline-none focus:ring-2 focus:ring-themePrimary" placeholder="กำลังโหลด...">
+                            <button type="button" id="schoolEditCodeSaveBtn" onclick="saveSchoolEditCodeAdmin()" class="shrink-0 bg-themePrimary hover:bg-themePrimaryHover text-white text-xs font-bold px-4 rounded-xl disabled:opacity-50">บันทึก</button>
+                        </div>
+                        <p class="text-[11px] text-themeMuted mt-2">อย่างน้อย 6 ตัวอักษร ไม่มีช่องว่าง · เปลี่ยนรหัสแล้ว รหัสเดิมใช้ไม่ได้ทันที (ผู้ที่ยืนยันไว้แล้วแก้ต่อได้จนครบ 1 ชั่วโมง)</p>
+                    </div>
+                    <div class="lg:col-span-2 bg-themeCard rounded-2xl shadow-md border border-themeBorder overflow-hidden">
+                        <div class="p-5 border-b border-themeBorder flex items-center justify-between gap-3">
+                            <h3 class="font-bold text-themeText text-base flex items-center gap-2"><i data-lucide="history" class="w-5 h-5 text-themePrimary"></i> ประวัติการแก้ไขข้อมูลโดยโรงเรียน</h3>
+                            <button type="button" onclick="loadSchoolEditLog()" class="text-xs font-bold px-3 py-1.5 rounded-lg border border-themeBorder hover:bg-themePrimary/10 flex items-center gap-1"><i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> โหลดใหม่</button>
+                        </div>
+                        <ul id="schoolEditLogList" class="divide-y divide-themeBorder max-h-[28rem] overflow-y-auto text-xs">
+                            <li class="p-5 text-themeMuted">กำลังโหลด...</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
 
         </section>
@@ -858,8 +883,8 @@
                     <div class="mx-auto w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-600 flex items-center justify-center shadow-sm">
                         <i data-lucide="school" class="w-6 h-6"></i>
                     </div>
-                    <h3 class="text-xl font-bold">ยื่นใบสมัครโรงเรียนเครือข่าย</h3>
-                    <p class="text-xs text-themeMuted">คณะครุศาสตร์ มหาวิทยาลัยราชภัฏเลย ร่วมส่งเสริมวิชาชีพครูร่วมกัน</p>
+                    <h3 class="text-xl font-bold" id="regModalTitle">ยื่นใบสมัครโรงเรียนเครือข่าย</h3>
+                    <p class="text-xs text-themeMuted" id="regModalSubtitle">คณะครุศาสตร์ มหาวิทยาลัยราชภัฏเลย ร่วมส่งเสริมวิชาชีพครูร่วมกัน</p>
                 </div>
                 
                 <form onsubmit="handleSchoolRegisterSubmit(event)" class="space-y-6">
@@ -928,7 +953,7 @@
                                 <input type="tel" id="regPhone" required class="w-full px-4 py-2.5 text-sm border border-themeBorder rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 bg-themeCard text-themeText" placeholder="042-XXXXXX">
                             </div>
                             <div>
-                                <label class="block text-xs font-semibold text-themeText mb-1">ลิงก์แนบหลักฐาน (ใบสมัครโรงเรียนเครือข่ายฯ) *</label>
+                                <label class="block text-xs font-semibold text-themeText mb-1" id="regEvidenceLabel">ลิงก์แนบหลักฐาน (ใบสมัครโรงเรียนเครือข่ายฯ) *</label>
                                 <input type="url" id="regEvidenceUrl" required class="w-full px-4 py-2.5 text-sm border border-themeBorder rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 bg-themeCard text-themeText" placeholder="https://drive.google.com/...">
                             </div>
                         </div>
@@ -937,11 +962,11 @@
                     <div class="flex gap-3 justify-end pt-4 border-t border-themeBorder">
                         <button type="button" onclick="closeSchoolRegisterModal()" class="px-6 py-3 border border-themeBorder rounded-xl hover:bg-themeBg text-themeText font-semibold transition duration-150 text-sm bg-themeCard">ยกเลิก</button>
                         <button type="submit" id="schoolRegBtn" class="px-8 py-3 bg-gradient-to-r from-themePrimary to-themePrimaryHover hover:from-themePrimaryHover hover:to-themePrimaryDark text-white font-bold rounded-xl transition duration-150 shadow-md hover:shadow-lg flex items-center gap-2 text-sm">
-                            <i data-lucide="check-circle" class="w-4 h-4"></i> ส่งใบสมัครความร่วมมือ
+                            <i data-lucide="check-circle" class="w-4 h-4"></i> <span id="regSubmitText">ส่งใบสมัครความร่วมมือ</span>
                         </button>
                         <div id="schoolRegLoader" class="hidden flex items-center gap-2 px-6 py-3 text-themeMuted text-sm">
                             <svg class="animate-spin h-5 w-5 text-themePrimary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
-                            กำลังส่งใบสมัคร...
+                            <span id="regLoaderText">กำลังส่งใบสมัคร...</span>
                         </div>
                     </div>
                 </form>
@@ -1132,6 +1157,37 @@
                 <i data-lucide="x" class="w-5 h-5"></i>
             </button>
             <div id="schoolDetailBody" class="overflow-y-auto"></div>
+        </div>
+    </div>
+
+    <!-- MODAL ยืนยันรหัสแก้ไขข้อมูล (สำหรับโรงเรียนเครือข่าย) -->
+    <div id="schoolEditCodeModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4" style="z-index: 9999; display: none;" onclick="if(event.target===this) closeSchoolEditCode()">
+        <div class="bg-themeCard rounded-3xl max-w-md w-full p-6 sm:p-8 border border-themeBorder relative text-themeText shadow-2xl" role="dialog" aria-modal="true" aria-labelledby="schoolEditCodeTitle">
+            <button type="button" onclick="closeSchoolEditCode()" class="absolute top-4 right-4 p-1.5 rounded-full hover:bg-themeBg text-themeMuted transition" aria-label="ปิด">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <div class="text-center space-y-2 mb-5">
+                <div class="mx-auto w-14 h-14 rounded-full flex items-center justify-center bg-themePrimary/10 text-themePrimary">
+                    <i data-lucide="key-round" class="w-7 h-7"></i>
+                </div>
+                <h3 class="text-lg font-bold" id="schoolEditCodeTitle">แก้ไขข้อมูลโรงเรียน</h3>
+                <p class="text-sm font-semibold text-themePrimary" id="schoolEditCodeSchool"></p>
+                <p class="text-xs text-themeMuted">กรอกรหัสแก้ไขข้อมูลที่ได้รับจากศูนย์ฝึกประสบการณ์วิชาชีพครู เพื่อปรับปรุงข้อมูลของโรงเรียนท่าน</p>
+            </div>
+            <form onsubmit="submitSchoolEditCode(event)" class="space-y-4">
+                <div class="relative">
+                    <input type="password" id="schoolEditCodeInput" required autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="50"
+                        class="w-full pl-4 pr-11 py-3 text-base tracking-wider border border-themeBorder rounded-xl focus:outline-none focus:ring-2 focus:ring-themePrimary bg-themeBg text-themeText" placeholder="รหัสแก้ไขข้อมูล">
+                    <button type="button" onclick="const i=document.getElementById('schoolEditCodeInput'); i.type = i.type === 'password' ? 'text' : 'password';" class="absolute inset-y-0 right-0 px-3 text-themeMuted hover:text-themeText" aria-label="แสดง/ซ่อนรหัส">
+                        <i data-lucide="eye" class="w-4 h-4"></i>
+                    </button>
+                </div>
+                <p id="schoolEditCodeError" class="hidden text-xs text-red-500"></p>
+                <button type="submit" id="schoolEditCodeBtn" class="w-full bg-themePrimary hover:bg-themePrimaryHover text-white font-bold py-3 rounded-xl transition shadow-md flex items-center justify-center gap-2 disabled:opacity-60">
+                    <i data-lucide="unlock" class="w-4 h-4"></i> <span>ยืนยันรหัสและแก้ไขข้อมูล</span>
+                </button>
+                <p class="text-[11px] text-themeMuted text-center">การแก้ไขทุกครั้งจะถูกบันทึกประวัติไว้ให้ผู้ดูแลระบบตรวจสอบ</p>
+            </form>
         </div>
     </div>
 
@@ -1417,6 +1473,7 @@
             closeAdminSchoolModal();
             closeEvaluatorModal();
             closeSchoolDetail();
+            closeSchoolEditCode();
         });
 
         // สร้าง Checkbox ตัวเลือกสาขาวิชาแบบ Dynamic
@@ -1677,8 +1734,9 @@
                     ? 'เซิร์ฟเวอร์ตอบสนองช้าเกินไป กรุณาลองใหม่อีกครั้ง'
                     : (err && err.message) || String(err);
                 if (message.indexOf('SESSION_EXPIRED') !== -1) handleSessionExpired();
-                const error = new Error(message.replace(/^(SESSION_EXPIRED|SETUP_REQUIRED): /, ''));
+                const error = new Error(message.replace(/^(SESSION_EXPIRED|SETUP_REQUIRED|EDIT_EXPIRED): /, ''));
                 error.setupRequired = message.indexOf('SETUP_REQUIRED') !== -1; // ผู้ดูแลยังไม่ได้รัน setup()
+                error.editExpired = message.indexOf('EDIT_EXPIRED') !== -1;   // รหัสแก้ไขของโรงเรียนหมดเวลา
                 throw error;
             }
             return result;
@@ -2345,9 +2403,16 @@
                             </div>`
                             : `<div class="h-40 rounded-2xl border border-dashed border-themeBorder flex flex-col items-center justify-center text-xs text-themeMuted gap-1"><i data-lucide="map-pin-off" class="w-6 h-6"></i>ยังไม่มีพิกัดที่ใช้ปักหมุดได้</div>`}
                         ${mapLink ? `<a href="${escapeHtml(mapLink)}" target="_blank" rel="noopener noreferrer" class="block text-center border border-themeBorder hover:bg-themePrimary/10 text-xs font-bold py-2.5 rounded-xl">เปิดลิงก์แผนที่ที่โรงเรียนส่งมา</a>` : ''}
-                        ${missing.length ? `<div class="mt-4 text-[11px] bg-amber-500/10 border border-amber-500/20 text-amber-700 dark:text-amber-300 rounded-xl p-3">ข้อมูลที่ยังไม่ครบ: ${missing.join(', ')}<br>หากเป็นโรงเรียนนี้ โปรดแจ้งศูนย์ฝึกประสบการณ์วิชาชีพครูเพื่อปรับปรุงข้อมูล</div>` : ''}
+                        ${missing.length ? `<div class="mt-4 text-[11px] bg-amber-500/10 border border-amber-500/20 text-amber-700 dark:text-amber-300 rounded-xl p-3">ข้อมูลที่ยังไม่ครบ: ${missing.join(', ')}<br>หากเป็นโรงเรียนนี้ กด "แก้ไขข้อมูลโรงเรียนนี้" ด้านล่างเพื่อเพิ่มข้อมูลได้ทันที</div>` : ''}
                     </div>
-                </div>`;
+                </div>
+                ${s.status === 'Approved' ? `
+                <div class="px-6 sm:px-8 py-4 border-t border-themeBorder bg-themeBg/60 rounded-b-3xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <p class="text-xs text-themeMuted"><b class="text-themeText">เป็นเจ้าหน้าที่ของโรงเรียนนี้?</b> อัปเดตข้อมูลได้ตลอดเวลาด้วยรหัสแก้ไขข้อมูลที่ได้รับจากศูนย์ฝึกฯ</p>
+                    <button type="button" onclick="openSchoolEditCode('${escapeHtml(s.id)}')" class="shrink-0 bg-themePrimary hover:bg-themePrimaryHover text-white text-sm font-bold px-5 py-2.5 rounded-xl shadow-md flex items-center justify-center gap-2 transition">
+                        <i data-lucide="pencil-line" class="w-4 h-4"></i> แก้ไขข้อมูลโรงเรียนนี้
+                    </button>
+                </div>` : ''}`;
             const modal = document.getElementById('schoolDetailModal');
             modal.style.display = 'flex';
             safeCreateIcons();
@@ -2724,6 +2789,8 @@
             if (subTabId === 'maintenance' && !window.__maintChecked && adminToken) {
                 window.__maintChecked = true;
                 runDatabaseCheck();
+                loadSchoolEditCodeAdmin();
+                loadSchoolEditLog();
             }
         }
 
@@ -3370,6 +3437,64 @@
             }
         }
 
+        // --- รหัสแก้ไขข้อมูลของโรงเรียน + ประวัติการแก้ไข (แท็บซ่อมบำรุง) ---
+        const SCHOOL_FIELD_LABELS = {
+            name: 'ชื่อโรงเรียน', type: 'ระดับการศึกษา', typeName: 'ช่วงชั้น', quota: 'โควตา', address: 'ที่อยู่',
+            coordinator: 'ผู้ประสานงาน', phone: 'เบอร์โทร', affiliation: 'สังกัด', academicYear: 'ปีการศึกษา',
+            majors: 'สาขาวิชา', mapUrl: 'แผนที่', evidenceUrl: 'หลักฐาน'
+        };
+
+        async function loadSchoolEditCodeAdmin() {
+            const input = document.getElementById('schoolEditCodeAdmin');
+            if (!input) return;
+            try {
+                const r = await callApi('getSchoolEditCode');
+                input.value = r.code || '';
+            } catch (e) { input.placeholder = 'โหลดไม่สำเร็จ: ' + e.message; }
+        }
+
+        async function saveSchoolEditCodeAdmin() {
+            const input = document.getElementById('schoolEditCodeAdmin');
+            const btn = document.getElementById('schoolEditCodeSaveBtn');
+            const code = input.value.trim();
+            if (code.length < 6 || /\s/.test(code)) { showToast('รหัสต้องมีอย่างน้อย 6 ตัวอักษร และไม่มีช่องว่าง', 'error'); return; }
+            if (!confirm(`เปลี่ยนรหัสแก้ไขข้อมูลของโรงเรียนเป็น "${code}" ?\nอย่าลืมแจ้งรหัสใหม่ให้โรงเรียนเครือข่ายทราบ`)) return;
+            btn.disabled = true;
+            try {
+                await callApi('setSchoolEditCode', { code });
+                showToast('เปลี่ยนรหัสแก้ไขข้อมูลแล้ว');
+            } catch (e) { showToast('เปลี่ยนรหัสไม่สำเร็จ: ' + e.message, 'error'); }
+            finally { btn.disabled = false; }
+        }
+
+        async function loadSchoolEditLog() {
+            const list = document.getElementById('schoolEditLogList');
+            if (!list) return;
+            list.innerHTML = '<li class="p-5 text-themeMuted">กำลังโหลด...</li>';
+            try {
+                const rows = await callApi('getSchoolEditLog', { limit: 100 });
+                if (!rows.length) { list.innerHTML = '<li class="p-5 text-themeMuted">ยังไม่มีการแก้ไขข้อมูลโดยโรงเรียน</li>'; return; }
+                const short = (v) => { const t = String(v ?? ''); return t.length > 80 ? t.slice(0, 80) + '…' : (t || '(ว่าง)'); };
+                list.innerHTML = rows.map(r => {
+                    const when = r.timestamp ? new Date(r.timestamp).toLocaleString('th-TH', { dateStyle: 'medium', timeStyle: 'short' }) : '';
+                    const changes = r.changes && typeof r.changes === 'object'
+                        ? Object.entries(r.changes).map(([k, [a, b]]) => `
+                            <li class="grid grid-cols-[6rem_1fr] gap-2"><span class="font-semibold text-themeMuted">${escapeHtml(SCHOOL_FIELD_LABELS[k] || k)}</span>
+                            <span class="break-words"><span class="line-through text-red-500/80">${escapeHtml(short(a))}</span> → <span class="text-emerald-600 dark:text-emerald-400">${escapeHtml(short(b))}</span></span></li>`).join('')
+                        : `<li class="text-themeMuted">${escapeHtml(String(r.changes || ''))}</li>`;
+                    return `<li class="p-4">
+                        <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+                            <button type="button" onclick="switchTab('schools'); openSchoolDetail('${escapeHtml(r.schoolId)}')" class="font-bold text-sm text-themeText hover:text-themePrimary text-left">${escapeHtml(r.schoolName || r.schoolId)}</button>
+                            <span class="text-themeMuted">${escapeHtml(when)} · ${escapeHtml(r.editor || '')}</span>
+                        </div>
+                        <ul class="space-y-1">${changes}</ul>
+                    </li>`;
+                }).join('');
+            } catch (e) {
+                list.innerHTML = `<li class="p-5 text-red-500">โหลดประวัติไม่สำเร็จ: ${escapeHtml(e.message)}</li>`;
+            }
+        }
+
         // แจ้งเตือนแบบสั้นมุมจอ (ไม่ขวางการทำงาน)
         function showToast(message, type = 'success') {
             let wrap = document.getElementById('toastWrap');
@@ -3618,9 +3743,29 @@
             }
         }
 
+        // ฟอร์มเดียวใช้ 2 โหมด: 'new' = ยื่นใบสมัครใหม่, 'edit' = โรงเรียนเครือข่ายแก้ไขข้อมูลตนเอง
+        let regMode = 'new';
+        let schoolEditSession = null;   // { id, token, school }
+
+        function setRegModalMode(mode, school) {
+            regMode = mode;
+            const isEdit = mode === 'edit';
+            const set = (id, text) => { const el = document.getElementById(id); if (el) el.textContent = text; };
+            set('regModalTitle', isEdit ? 'แก้ไขข้อมูลโรงเรียนเครือข่าย' : 'ยื่นใบสมัครโรงเรียนเครือข่าย');
+            set('regModalSubtitle', isEdit
+                ? `${school.name} · ข้อมูลที่บันทึกจะแสดงในทำเนียบทันที (สถานะการรับรองไม่เปลี่ยน)`
+                : 'คณะครุศาสตร์ มหาวิทยาลัยราชภัฏเลย ร่วมส่งเสริมวิชาชีพครูร่วมกัน');
+            set('regSubmitText', isEdit ? 'บันทึกการแก้ไขข้อมูล' : 'ส่งใบสมัครความร่วมมือ');
+            set('regLoaderText', isEdit ? 'กำลังบันทึกข้อมูล...' : 'กำลังส่งใบสมัคร...');
+            set('regEvidenceLabel', isEdit ? 'ลิงก์แนบหลักฐาน (ไม่กรอก = ใช้ลิงก์เดิม)' : 'ลิงก์แนบหลักฐาน (ใบสมัครโรงเรียนเครือข่ายฯ) *');
+            const ev = document.getElementById('regEvidenceUrl');
+            if (ev) ev.required = !isEdit;
+        }
+
         function openSchoolRegisterModal() {
             const modal = document.getElementById('schoolRegisterModal');
             if(modal) {
+                schoolEditSession = null;
                 modal.classList.remove('hidden');
                 modal.style.display = 'flex';
                 initMajorsUI();
@@ -3628,7 +3773,31 @@
                 if (form) form.reset();
                 renderSchoolFormFields('reg'); // สังกัด / ปุ่มระดับการศึกษา / ปีการศึกษา
                 calculateTotalQuota('reg');
+                setRegModalMode('new');
             }
+        }
+
+        // เปิดฟอร์มพร้อมข้อมูลเดิมของโรงเรียน (หลังยืนยันรหัสแก้ไขแล้ว)
+        function openSchoolEditForm(school) {
+            const modal = document.getElementById('schoolRegisterModal');
+            if (!modal) return;
+            closeSchoolDetail();
+            modal.classList.remove('hidden');
+            modal.style.display = 'flex';
+            initMajorsUI();
+            const form = modal.querySelector('form');
+            if (form) form.reset();
+            document.getElementById('regSchoolName').value = school.name || '';
+            setSchoolFormValues('reg', school);
+            document.getElementById('regAddress').value = school.address || '';
+            document.getElementById('regMapUrl').value = school.mapUrl || '';
+            document.getElementById('regCoordinator').value = school.coordinator || '';
+            document.getElementById('regPhone').value = school.phone || '';
+            document.getElementById('regEvidenceUrl').value = school.evidenceUrl || '';
+            deserializeMajorsData('reg', school.majors);
+            setRegModalMode('edit', school);
+            modal.querySelector('.overflow-y-auto')?.scrollTo(0, 0);
+            safeCreateIcons();
         }
 
         function closeSchoolRegisterModal() {
@@ -3636,6 +3805,66 @@
             if(modal) {
                 modal.classList.add('hidden');
                 modal.style.display = '';
+            }
+            if (regMode === 'edit') setRegModalMode('new');
+        }
+
+        // --- หน้าต่างใส่รหัสแก้ไข ---
+        function openSchoolEditCode(id) {
+            const s = schoolsData.find(x => sameId(x.id, id));
+            if (!s) return;
+            // ยืนยันรหัสไว้แล้ว (ยังไม่หมดเวลา) เปิดฟอร์มได้เลย
+            if (schoolEditSession && sameId(schoolEditSession.id, id) && schoolEditSession.expires > Date.now()) {
+                openSchoolEditForm(schoolEditSession.school);
+                return;
+            }
+            schoolEditSession = { id: s.id, pendingName: s.name };
+            document.getElementById('schoolEditCodeSchool').textContent = s.name;
+            document.getElementById('schoolEditCodeError').classList.add('hidden');
+            const input = document.getElementById('schoolEditCodeInput');
+            input.value = '';
+            input.type = 'password';
+            document.getElementById('schoolEditCodeModal').style.display = 'flex';
+            safeCreateIcons();
+            setTimeout(() => input.focus(), 50);
+        }
+
+        function closeSchoolEditCode() {
+            const m = document.getElementById('schoolEditCodeModal');
+            if (m) m.style.display = 'none';
+        }
+
+        async function submitSchoolEditCode(event) {
+            event.preventDefault();
+            if (!schoolEditSession) return;
+            const btn = document.getElementById('schoolEditCodeBtn');
+            const err = document.getElementById('schoolEditCodeError');
+            const code = document.getElementById('schoolEditCodeInput').value.trim();
+            if (!code) return;
+            btn.disabled = true;
+            err.classList.add('hidden');
+            try {
+                const r = await callApi('verifySchoolEditCode', { id: schoolEditSession.id, code });
+                if (!r || !r.ok) {
+                    err.textContent = 'รหัสแก้ไขไม่ถูกต้อง กรุณาตรวจสอบกับศูนย์ฝึกประสบการณ์วิชาชีพครู';
+                    err.classList.remove('hidden');
+                    return;
+                }
+                schoolEditSession = { id: r.school.id, token: r.editToken, school: r.school, expires: Date.now() + (r.expiresIn || 3600) * 1000 - 60000 };
+                closeSchoolEditCode();
+                const formOpen = regMode === 'edit' && document.getElementById('schoolRegisterModal').style.display === 'flex';
+                if (formOpen) {
+                    // ยืนยันใหม่ระหว่างกรอกฟอร์ม (หมดเวลา): คงข้อมูลที่กรอกไว้ ไม่โหลดทับ
+                    showToast('ยืนยันรหัสแล้ว กด "บันทึกการแก้ไขข้อมูล" อีกครั้ง');
+                } else {
+                    openSchoolEditForm(r.school);
+                    showToast('ยืนยันรหัสแล้ว แก้ไขข้อมูลได้ภายใน 1 ชั่วโมง');
+                }
+            } catch (e) {
+                err.textContent = e.message;
+                err.classList.remove('hidden');
+            } finally {
+                btn.disabled = false;
             }
         }
 
@@ -3668,6 +3897,7 @@
             event.preventDefault();
             const submitBtn = document.getElementById('schoolRegBtn');
             const loader = document.getElementById('schoolRegLoader');
+            const isEdit = regMode === 'edit' && schoolEditSession && schoolEditSession.token;
 
             const formError = validateSchoolFormFields('reg');
             if (formError) { alertMessageBox(formError, 'กรุณากรอกข้อมูลให้ครบถ้วน', 'error', 'bg-amber-100 text-amber-600'); return; }
@@ -3679,30 +3909,46 @@
                 const schoolType = document.getElementById('regSchoolType').value;
                 const typeName = formTypeName('reg'); // "อื่นๆ" ใช้ข้อความที่ระบุ
 
+                // โควตา = ผลรวมรายสาขา (แก้ไข: ถ้าไม่ได้เลือกสาขาเลย คงโควตาเดิมไว้)
                 const quotaLabel = document.getElementById('regTotalQuotaLabel');
-                const finalQuota = quotaLabel ? (parseInt(quotaLabel.textContent) || 0) : 0;
+                const majorsTotal = quotaLabel ? (parseInt(quotaLabel.textContent) || 0) : 0;
+                const finalQuota = majorsTotal || (isEdit ? (parseInt(schoolEditSession.school.quota) || 0) : 0);
 
-                const payload = {
-                    data: {
-                        id: Date.now().toString(),
-                        name: document.getElementById('regSchoolName').value,
-                        affiliation: document.getElementById('regSchoolAffiliation').value,
-                        affiliationGroup: document.getElementById('regAffiliationGroup').value,
-                        academicYear: document.getElementById('regAcademicYear').value,
-                        type: schoolType,
-                        typeName: typeName,
-                        quota: finalQuota,
-                        address: document.getElementById('regAddress').value,
-                        mapUrl: document.getElementById('regMapUrl').value,
-                        majors: getSelectedRegisterMajors(),
-                        coordinator: document.getElementById('regCoordinator').value,
-                        phone: document.getElementById('regPhone').value,
-                        status: "Pending",
-                        evidenceUrl: document.getElementById('regEvidenceUrl').value
-                    }
+                const data = {
+                    name: document.getElementById('regSchoolName').value,
+                    affiliation: document.getElementById('regSchoolAffiliation').value,
+                    affiliationGroup: document.getElementById('regAffiliationGroup').value,
+                    academicYear: document.getElementById('regAcademicYear').value,
+                    type: schoolType,
+                    typeName: typeName,
+                    quota: finalQuota,
+                    address: document.getElementById('regAddress').value,
+                    mapUrl: document.getElementById('regMapUrl').value,
+                    majors: getSelectedRegisterMajors(),
+                    coordinator: document.getElementById('regCoordinator').value,
+                    phone: document.getElementById('regPhone').value,
+                    evidenceUrl: document.getElementById('regEvidenceUrl').value
                 };
 
-                await callApi('registerSchool', payload);
+                if (isEdit) {
+                    const res = await callApi('updateSchoolPublic', { editToken: schoolEditSession.token, data });
+                    // อัปเดตข้อมูลบนหน้าจอทันที แล้วโหลดใหม่จากเซิร์ฟเวอร์เบื้องหลัง
+                    const i = schoolsData.findIndex(s => sameId(s.id, res.school.id));
+                    if (i >= 0) schoolsData[i] = Object.assign({}, schoolsData[i], res.school);
+                    schoolEditSession.school = Object.assign({}, schoolEditSession.school, res.school, { evidenceUrl: data.evidenceUrl || schoolEditSession.school.evidenceUrl });
+                    if(submitBtn) submitBtn.classList.remove('hidden');
+                    if(loader) loader.classList.add('hidden');
+                    closeSchoolRegisterModal();
+                    renderSchools();
+                    updateChart();
+                    openSchoolDetail(res.school.id);
+                    showToast(res.changedFields && res.changedFields.length
+                        ? `บันทึกการแก้ไขแล้ว (${res.changedFields.length} รายการ)` : 'บันทึกแล้ว (ไม่มีข้อมูลที่เปลี่ยนแปลง)');
+                    fetchLatestData();
+                    return;
+                }
+
+                await callApi('registerSchool', { data: Object.assign({ id: Date.now().toString(), status: 'Pending' }, data) });
 
                 if(submitBtn) submitBtn.classList.remove('hidden');
                 if(loader) loader.classList.add('hidden');
@@ -3714,7 +3960,16 @@
             } catch (err) {
                 if(submitBtn) submitBtn.classList.remove('hidden');
                 if(loader) loader.classList.add('hidden');
-                alertMessageBox('ลงสมัครขัดข้อง: ' + err.message, 'เกิดข้อผิดพลาด', 'error');
+                if (err.editExpired && schoolEditSession) {
+                    // หมดเวลาแก้ไข: ขอรหัสใหม่โดยไม่ปิดฟอร์ม ข้อมูลที่กรอกไว้ยังอยู่ครบ
+                    const id = schoolEditSession.id;
+                    schoolEditSession.expires = 0;
+                    openSchoolEditCode(id);
+                    document.getElementById('schoolEditCodeError').textContent = 'หมดเวลาแก้ไข กรุณาใส่รหัสอีกครั้ง แล้วกด "บันทึกการแก้ไขข้อมูล" ใหม่ (ข้อมูลที่กรอกไว้ยังอยู่)';
+                    document.getElementById('schoolEditCodeError').classList.remove('hidden');
+                    return;
+                }
+                alertMessageBox((isEdit ? 'บันทึกการแก้ไขไม่สำเร็จ: ' : 'ลงสมัครขัดข้อง: ') + err.message, 'เกิดข้อผิดพลาด', 'error');
             }
         }
 
