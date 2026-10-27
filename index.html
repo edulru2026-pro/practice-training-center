@@ -110,6 +110,11 @@
             to { opacity: 1; transform: translateY(0); }
         }
         .animate-fadeIn { animation: fadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        /* เมนูแอดมิน */
+        .admin-tab-btn { display: flex; align-items: center; justify-content: center; gap: .4rem; padding: .65rem .5rem; border-radius: .9rem; border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-muted); font-size: .8rem; font-weight: 700; text-align: center; line-height: 1.2; transition: all .15s; }
+        .admin-tab-btn:hover { color: var(--text-main); border-color: var(--primary); }
+        .admin-tab-btn.active { background: var(--primary); border-color: var(--primary); color: #fff; box-shadow: 0 4px 10px -4px var(--primary); }
+        .ann-body { white-space: pre-line; overflow-wrap: anywhere; }
         /* โลโก้คณะครุศาสตร์ มหาวิทยาลัยราชภัฏเลย (ฝังในไฟล์ ใช้ได้ทั้งเว็บภายนอกและ Apps Script) */
         .edu-logo { background: url("data:image/webp;base64,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") center / contain no-repeat; }
     </style>
@@ -169,9 +174,13 @@
                                 </a>
                             </div>
                         </div>
-
-                        <button type="button" onclick="openLoginModal()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-semibold px-5 py-2.5 rounded-xl text-sm transition duration-200 shadow-md flex items-center gap-2">
-                            <i data-lucide="shield-alert" class="w-4 h-4"></i> Admin
+                        <button type="button" onclick="openLoginModal()" id="headerAdminBtn" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-semibold px-5 py-2.5 rounded-xl text-sm transition duration-200 shadow-md flex items-center gap-2">
+                            <i data-lucide="shield-alert" class="w-4 h-4"></i> <span id="headerAdminText">Admin</span>
+                        </button>
+                        <!-- แสดงเมื่อเข้าสู่ระบบแอดมินแล้ว -->
+                        <button type="button" onclick="logout()" id="headerLogoutBtn" title="ออกจากระบบผู้ดูแล" class="hidden bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-2.5 rounded-xl text-sm transition duration-200 shadow-md items-center gap-2">
+                            <i data-lucide="log-out" class="w-4 h-4"></i> ออกจากระบบ
+                        </button>
                         </button>
                     </nav>
 
@@ -236,9 +245,12 @@
                 <a href="https://edulru2026-pro.github.io/recording-system01/" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 px-3 py-2.5 rounded-md text-sm hover:bg-white/10 transition"><i data-lucide="file-text" class="w-4 h-4"></i> บันทึกข้อความภายใน</a>
                 <a href="https://edulru2026-pro.github.io/recording-system02/" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 px-3 py-2.5 rounded-md text-sm hover:bg-white/10 transition"><i data-lucide="file-text" class="w-4 h-4"></i> หนังสือราชการภายนอก</a>
             </div>
-            <div class="border-t border-white/10 my-2 pt-2">
                 <button type="button" onclick="openLoginModal()" class="w-full text-left flex items-center px-3 py-2.5 rounded-md text-sm hover:bg-white/10 text-amber-300 font-bold transition">
-                    <i data-lucide="shield-alert" class="w-4 h-4 mr-2"></i> Admin
+                    <i data-lucide="shield-alert" class="w-4 h-4 mr-2"></i> <span id="mobileAdminText">Admin</span>
+                </button>
+                <button type="button" onclick="logout()" id="mobileLogoutBtn" class="hidden w-full text-left items-center px-3 py-2.5 rounded-md text-sm hover:bg-white/10 text-red-300 font-bold transition">
+                    <i data-lucide="log-out" class="w-4 h-4 mr-2"></i> ออกจากระบบผู้ดูแล
+                </button>
                 </button>
             </div>
         </div>
@@ -300,6 +312,18 @@
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <!-- SECTION: 📢 ประกาศ / ข่าวประชาสัมพันธ์ (ข้อมูลจากชีต Announcements) -->
+            <div id="homeAnnouncements" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12">
+                <div class="flex items-end justify-between gap-3 mb-4">
+                    <div>
+                        <h2 class="text-2xl font-extrabold text-themeText">📢 ประกาศ / ข่าวประชาสัมพันธ์</h2>
+                        <p class="text-sm text-themeMuted mt-0.5">ข่าวสารล่าสุดจากศูนย์ฝึกประสบการณ์วิชาชีพครู คณะครุศาสตร์</p>
+                    </div>
+                    <button type="button" id="homeAnnToggle" onclick="toggleAllAnnouncements()" class="hidden text-sm font-bold text-themePrimary hover:underline shrink-0"></button>
+                </div>
+                <div id="homeAnnList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
             </div>
 
             <!-- SECTION: ภาพรวมสถิติโรงเรียนเครือข่าย (รวมทุกข้อมูลไว้ในแผงเดียว) -->
@@ -555,11 +579,17 @@
 
         <!-- SECTION: DASHBOARD (ADMIN PANEL) -->
         <section id="tab-dashboard" class="tab-content hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 animate-fadeIn">
-            <div class="flex justify-between items-center mb-6">
-                <button type="button" onclick="logout()" class="flex items-center gap-1.5 text-themeMuted hover:text-red-600 font-semibold transition">
-                    <i data-lucide="log-out" class="w-4 h-4"></i> ออกจากระบบหลังบ้าน
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+                <div class="flex items-center gap-3 text-sm">
+                    <span class="w-9 h-9 rounded-full bg-themePrimary/10 text-themePrimary flex items-center justify-center"><i data-lucide="user-cog" class="w-5 h-5"></i></span>
+                    <div>
+                        <p class="font-bold text-themeText">ผู้ดูแลระบบ: <span id="adminUserLabel">admin</span></p>
+                        <p class="text-xs text-themeMuted" id="dbIndicator">เซสชันมีอายุ 6 ชั่วโมง · ข้อมูลจาก Google Sheets</p>
+                    </div>
+                </div>
+                <button type="button" onclick="logout()" class="self-start sm:self-auto bg-red-500 hover:bg-red-600 text-white font-bold px-5 py-2.5 rounded-xl text-sm shadow-md flex items-center gap-2 transition">
+                    <i data-lucide="log-out" class="w-4 h-4"></i> ออกจากระบบผู้ดูแล
                 </button>
-                <span class="text-xs text-themeMuted" id="dbIndicator">สิทธิ์ระบบ: คณะครุศาสตร์ มรล. (Google Sheets Database)</span>
             </div>
 
             <div class="bg-gradient-to-r from-slate-800 to-indigo-950 rounded-2xl p-8 text-white shadow-lg mb-8 border border-indigo-900/40">
@@ -610,18 +640,18 @@
                 </div>
             </div>
 
-            <!-- Admin Nav Tabs -->
-            <div class="flex border-b border-themeBorder mb-6 overflow-x-auto gap-4">
-                <button type="button" onclick="switchAdminTab('schools')" id="admin-tab-schools" class="admin-tab-btn py-2.5 px-4 font-bold text-sm text-themePrimary border-b-2 border-themePrimary flex items-center gap-2 whitespace-nowrap transition-all duration-150">
-                    <i data-lucide="school" class="w-4 h-4"></i> จัดการโรงเรียนเครือข่าย
-                </button>
-                <button type="button" onclick="switchAdminTab('links')" id="admin-tab-links" class="admin-tab-btn py-2.5 px-4 font-bold text-sm text-themeMuted flex items-center gap-2 whitespace-nowrap transition-all duration-150">
-                    <i data-lucide="users-round" class="w-4 h-4"></i> ผู้ประเมินและลิงก์แบบประเมิน
-                </button>
-                <button type="button" onclick="switchAdminTab('maintenance')" id="admin-tab-maintenance" class="admin-tab-btn py-2.5 px-4 font-bold text-sm text-themeMuted flex items-center gap-2 whitespace-nowrap transition-all duration-150">
-                    <i data-lucide="wrench" class="w-4 h-4"></i> ซ่อมบำรุงฐานข้อมูล
-                </button>
-            </div>
+            <!-- เมนูผู้ดูแลระบบ -->
+            <nav class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-9 gap-2 mb-6" aria-label="เมนูผู้ดูแลระบบ">
+                <button type="button" onclick="switchAdminTab('schools')" id="admin-tab-schools" class="admin-tab-btn"><i data-lucide="school" class="w-4 h-4"></i><span>โรงเรียนเครือข่าย</span></button>
+                <button type="button" onclick="switchAdminTab('links')" id="admin-tab-links" class="admin-tab-btn"><i data-lucide="users-round" class="w-4 h-4"></i><span>ผู้ประเมิน/ลิงก์</span></button>
+                <button type="button" onclick="switchAdminTab('announcements')" id="admin-tab-announcements" class="admin-tab-btn"><span aria-hidden="true">📢</span><span>ประกาศ</span></button>
+                <button type="button" onclick="switchAdminTab('maintenance')" id="admin-tab-maintenance" class="admin-tab-btn"><span aria-hidden="true">🩺</span><span>ตรวจสุขภาพ/ซ่อมบำรุง</span></button>
+                <button type="button" onclick="switchAdminTab('speed')" id="admin-tab-speed" class="admin-tab-btn"><span aria-hidden="true">⚡</span><span>เร่งความเร็ว</span></button>
+                <button type="button" onclick="switchAdminTab('settings')" id="admin-tab-settings" class="admin-tab-btn"><span aria-hidden="true">⚙️</span><span>ตั้งค่าระบบ</span></button>
+                <button type="button" onclick="switchAdminTab('activity')" id="admin-tab-activity" class="admin-tab-btn"><span aria-hidden="true">🕒</span><span>ประวัติการใช้งาน</span></button>
+                <button type="button" onclick="switchAdminTab('workflow')" id="admin-tab-workflow" class="admin-tab-btn"><span aria-hidden="true">🧭</span><span>ขั้นตอนระบบ</span></button>
+                <button type="button" onclick="switchAdminTab('manual')" id="admin-tab-manual" class="admin-tab-btn"><span aria-hidden="true">📖</span><span>คู่มือการใช้งาน</span></button>
+            </nav>
 
             <!-- SUB-SECTION 1: Manage Schools -->
             <div id="admin-sub-schools" class="admin-sub-content space-y-6">
@@ -771,33 +801,286 @@
                         </div>
                     </div>
                 </div>
-                <!-- รหัสแก้ไขข้อมูลของโรงเรียน + ประวัติการแก้ไข -->
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div class="bg-themeCard rounded-2xl shadow-md border border-themeBorder p-5 sm:p-6 h-fit">
-                        <h3 class="font-bold text-themeText text-base flex items-center gap-2"><i data-lucide="key-round" class="w-5 h-5 text-themePrimary"></i> รหัสแก้ไขข้อมูลสำหรับโรงเรียน</h3>
-                        <p class="text-xs text-themeMuted mt-1 mb-4">โรงเรียนเครือข่ายที่ผ่านการรับรองแล้ว ใช้รหัสนี้แก้ไขข้อมูลของตนเองในหน้าทำเนียบ (ตรวจรหัสที่เซิร์ฟเวอร์เท่านั้น)</p>
-                        <label class="block text-xs font-semibold text-themeMuted mb-1">รหัสปัจจุบัน</label>
-                        <div class="flex gap-2">
-                            <input type="text" id="schoolEditCodeAdmin" maxlength="50" autocomplete="off" spellcheck="false" class="flex-1 min-w-0 px-3 py-2.5 text-sm font-mono border border-themeBorder rounded-xl bg-themeBg text-themeText focus:outline-none focus:ring-2 focus:ring-themePrimary" placeholder="กำลังโหลด...">
-                            <button type="button" id="schoolEditCodeSaveBtn" onclick="saveSchoolEditCodeAdmin()" class="shrink-0 bg-themePrimary hover:bg-themePrimaryHover text-white text-xs font-bold px-4 rounded-xl disabled:opacity-50">บันทึก</button>
-                        </div>
-                        <p class="text-[11px] text-themeMuted mt-2">อย่างน้อย 6 ตัวอักษร ไม่มีช่องว่าง · เปลี่ยนรหัสแล้ว รหัสเดิมใช้ไม่ได้ทันที (ผู้ที่ยืนยันไว้แล้วแก้ต่อได้จนครบ 1 ชั่วโมง)</p>
+            </div>
+
+            <!-- ================= 📢 ประกาศ / ข่าวประชาสัมพันธ์ ================= -->
+            <div id="admin-sub-announcements" class="admin-sub-content hidden space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                        <h3 class="text-lg font-bold text-themeText">📢 ประกาศ / ข่าวประชาสัมพันธ์</h3>
+                        <p class="text-xs text-themeMuted mt-0.5">พิมพ์ข้อความประกาศ แนบลิงก์ไฟล์ PDF หรือ Google Drive ที่เปิดแชร์ แสดงที่หน้าแรกของเว็บทันทีหลังบันทึก</p>
                     </div>
-                    <div class="lg:col-span-2 bg-themeCard rounded-2xl shadow-md border border-themeBorder overflow-hidden">
-                        <div class="p-5 border-b border-themeBorder flex items-center justify-between gap-3">
-                            <h3 class="font-bold text-themeText text-base flex items-center gap-2"><i data-lucide="history" class="w-5 h-5 text-themePrimary"></i> ประวัติการแก้ไขข้อมูลโดยโรงเรียน</h3>
-                            <button type="button" onclick="loadSchoolEditLog()" class="text-xs font-bold px-3 py-1.5 rounded-lg border border-themeBorder hover:bg-themePrimary/10 flex items-center gap-1"><i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> โหลดใหม่</button>
+                    <button type="button" onclick="openAnnouncementForm()" class="bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-bold px-5 py-2.5 rounded-xl shadow-md flex items-center gap-2 self-start"><span aria-hidden="true">➕</span> สร้างประกาศ</button>
+                </div>
+
+                <!-- ฟอร์มสร้าง/แก้ไขประกาศ -->
+                <form id="announcementForm" onsubmit="saveAnnouncementForm(event)" class="hidden bg-themeCard rounded-2xl shadow-md border border-themePrimary/40 p-5 sm:p-6 space-y-4">
+                    <div class="flex items-center justify-between">
+                        <h4 class="font-bold text-themeText" id="announcementFormTitle">สร้างประกาศใหม่</h4>
+                        <button type="button" onclick="closeAnnouncementForm()" class="p-1.5 rounded-full hover:bg-themeBg text-themeMuted" aria-label="ปิดฟอร์ม"><i data-lucide="x" class="w-5 h-5"></i></button>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-semibold text-themeMuted mb-1">หัวข้อประกาศ *</label>
+                            <input type="text" id="annTitle" required maxlength="200" class="w-full px-4 py-2.5 text-sm border border-themeBorder rounded-xl bg-themeBg text-themeText focus:outline-none focus:ring-2 focus:ring-themePrimary" placeholder="เช่น กำหนดการปฐมนิเทศนักศึกษาฝึกประสบการณ์ ภาคเรียนที่ 2/2569">
                         </div>
-                        <ul id="schoolEditLogList" class="divide-y divide-themeBorder max-h-[28rem] overflow-y-auto text-xs">
-                            <li class="p-5 text-themeMuted">กำลังโหลด...</li>
-                        </ul>
+                        <div>
+                            <label class="block text-xs font-semibold text-themeMuted mb-1">ประเภท</label>
+                            <select id="annCategory" class="w-full px-3 py-2.5 text-sm border border-themeBorder rounded-xl bg-themeBg text-themeText focus:outline-none focus:ring-2 focus:ring-themePrimary">
+                                <option value="general">📌 ประกาศทั่วไป</option>
+                                <option value="news">📰 ข่าวประชาสัมพันธ์</option>
+                                <option value="schedule">📅 กำหนดการ</option>
+                                <option value="urgent">🔴 ด่วน</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-themeMuted mb-1">ข้อความประกาศ *</label>
+                        <textarea id="annBody" rows="6" maxlength="5000" class="w-full px-4 py-3 text-sm border border-themeBorder rounded-xl bg-themeBg text-themeText focus:outline-none focus:ring-2 focus:ring-themePrimary leading-relaxed" placeholder="พิมพ์รายละเอียดประกาศ (ขึ้นบรรทัดใหม่ได้ตามต้องการ)"></textarea>
+                    </div>
+                    <div>
+                        <div class="flex items-center justify-between mb-1">
+                            <label class="block text-xs font-semibold text-themeMuted">ลิงก์ไฟล์แนบ (PDF / Google Drive / Google Docs) <span class="font-normal">— สูงสุด 5 ลิงก์</span></label>
+                            <button type="button" onclick="addAnnouncementLinkRow()" class="text-xs font-bold text-themePrimary hover:underline">+ เพิ่มลิงก์</button>
+                        </div>
+                        <div id="annLinks" class="space-y-2"></div>
+                        <p class="text-[11px] text-amber-700 dark:text-amber-300 bg-amber-500/10 border border-amber-500/20 rounded-lg px-3 py-2 mt-2">
+                            ⚠️ ไฟล์ใน Google Drive ต้องเปิดแชร์ก่อน: คลิกขวาที่ไฟล์ → <b>แชร์</b> → การเข้าถึงทั่วไป เลือก <b>"ทุกคนที่มีลิงก์"</b> → บทบาท <b>"ผู้มีสิทธิ์อ่าน"</b> → <b>คัดลอกลิงก์</b> มาวางที่นี่
+                        </p>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+                        <div>
+                            <label class="block text-xs font-semibold text-themeMuted mb-1">วันเริ่มแสดง <span class="font-normal">(ว่าง = ทันที)</span></label>
+                            <input type="date" id="annStart" class="w-full px-3 py-2.5 text-sm border border-themeBorder rounded-xl bg-themeBg text-themeText focus:outline-none focus:ring-2 focus:ring-themePrimary">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-themeMuted mb-1">วันสิ้นสุด <span class="font-normal">(ว่าง = ไม่มีกำหนด)</span></label>
+                            <input type="date" id="annEnd" class="w-full px-3 py-2.5 text-sm border border-themeBorder rounded-xl bg-themeBg text-themeText focus:outline-none focus:ring-2 focus:ring-themePrimary">
+                        </div>
+                        <label class="flex items-center gap-2 text-sm font-semibold cursor-pointer py-2.5"><input type="checkbox" id="annPinned" class="h-4 w-4 rounded border-themeBorder text-themePrimary"> 📌 ปักหมุดไว้บนสุด</label>
+                        <label class="flex items-center gap-2 text-sm font-semibold cursor-pointer py-2.5"><input type="checkbox" id="annActive" checked class="h-4 w-4 rounded border-themeBorder text-emerald-600"> เผยแพร่ (แสดงบนเว็บ)</label>
+                    </div>
+                    <div class="flex flex-wrap gap-2 justify-end pt-3 border-t border-themeBorder">
+                        <button type="button" onclick="previewAnnouncementForm()" class="px-5 py-2.5 border border-themeBorder rounded-xl text-sm font-semibold hover:bg-themeBg">👁️ ดูตัวอย่าง</button>
+                        <button type="button" onclick="closeAnnouncementForm()" class="px-5 py-2.5 border border-themeBorder rounded-xl text-sm font-semibold hover:bg-themeBg">ยกเลิก</button>
+                        <button type="submit" id="annSaveBtn" class="px-6 py-2.5 bg-themePrimary hover:bg-themePrimaryHover text-white rounded-xl text-sm font-bold shadow-md disabled:opacity-50 flex items-center gap-2"><i data-lucide="save" class="w-4 h-4"></i> บันทึกประกาศ</button>
+                    </div>
+                </form>
+
+                <!-- รายการประกาศทั้งหมด -->
+                <div class="bg-themeCard rounded-2xl shadow-md border border-themeBorder overflow-hidden">
+                    <div class="px-5 py-3 border-b border-themeBorder flex flex-wrap items-center justify-between gap-2 text-xs">
+                        <span class="font-bold text-themeText" id="annCountText">ประกาศทั้งหมด</span>
+                        <span class="text-themeMuted">สถานะ: <b class="text-emerald-600">แสดงอยู่</b> · <b class="text-blue-600">ตั้งเวลาไว้</b> · <b class="text-themeMuted">ซ่อน/หมดอายุ</b></span>
+                    </div>
+                    <ul id="adminAnnouncementList" class="divide-y divide-themeBorder"></ul>
+                </div>
+            </div>
+
+            <!-- ================= ⚡ เร่งความเร็วฐานข้อมูล ================= -->
+            <div id="admin-sub-speed" class="admin-sub-content hidden space-y-6">
+                <div class="bg-themeCard rounded-2xl shadow-md border border-themeBorder overflow-hidden">
+                    <div class="p-5 sm:p-6 border-b border-themeBorder flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                        <div>
+                            <h3 class="text-lg font-bold text-themeText">⚡ เร่งความเร็วฐานข้อมูล</h3>
+                            <p class="text-xs text-themeMuted mt-0.5">วัดความเร็วจริงของการโหลดข้อมูล และปรับให้เร็วขึ้นด้วยแคช + ย่อขนาดชีต + ตัวเร่งอัตโนมัติ</p>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            <button type="button" id="speedMeasureBtn" onclick="loadSystemStatus()" class="px-4 py-2.5 border border-themeBorder rounded-xl text-sm font-bold hover:bg-themePrimary/10 flex items-center gap-2 disabled:opacity-50"><i data-lucide="gauge" class="w-4 h-4"></i> วัดความเร็วตอนนี้</button>
+                            <button type="button" id="speedUpBtn" onclick="runSpeedUp()" class="px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 rounded-xl text-sm font-bold shadow-md flex items-center gap-2 disabled:opacity-50">⚡ เร่งความเร็วฐานข้อมูล</button>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 lg:grid-cols-5 gap-px bg-themeBorder">
+                        <div class="bg-themeCard px-5 py-4"><p class="text-[11px] font-semibold text-themeMuted">โหลดจากแคช</p><p class="mt-1 text-2xl font-extrabold tabular-nums" id="spCache">–</p><p class="text-[11px] text-themeMuted">ผู้ใช้ทั่วไปได้ความเร็วนี้</p></div>
+                        <div class="bg-themeCard px-5 py-4"><p class="text-[11px] font-semibold text-themeMuted">อ่านชีตโดยตรง</p><p class="mt-1 text-2xl font-extrabold tabular-nums" id="spSheet">–</p><p class="text-[11px] text-themeMuted">กรณีแคชว่าง</p></div>
+                        <div class="bg-themeCard px-5 py-4"><p class="text-[11px] font-semibold text-themeMuted">เวลารอบเครือข่ายของท่าน</p><p class="mt-1 text-2xl font-extrabold tabular-nums" id="spRound">–</p><p class="text-[11px] text-themeMuted">เบราว์เซอร์ ↔ Apps Script</p></div>
+                        <div class="bg-themeCard px-5 py-4"><p class="text-[11px] font-semibold text-themeMuted">แคช / ตัวเร่งอัตโนมัติ</p><p class="mt-1 text-sm font-extrabold" id="spCacheState">–</p><p class="text-[11px] text-themeMuted" id="spWarm">–</p></div>
+                        <div class="bg-themeCard px-5 py-4 col-span-2 lg:col-span-1"><p class="text-[11px] font-semibold text-themeMuted">ขนาดชีตรวม</p><p class="mt-1 text-2xl font-extrabold tabular-nums" id="spCells">–</p><p class="text-[11px] text-themeMuted" id="spRows">–</p></div>
+                    </div>
+                    <div class="p-5 sm:p-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="text-xs font-bold text-themeMuted uppercase tracking-wider mb-2">ขนาดแต่ละชีต</h4>
+                            <table class="w-full text-xs text-themeText"><thead class="text-themeMuted"><tr><th class="text-left font-semibold pb-1.5">ชีต</th><th class="text-right font-semibold pb-1.5">ข้อมูล (แถว)</th><th class="text-right font-semibold pb-1.5">จองไว้ (แถว×คอลัมน์)</th></tr></thead><tbody id="spSheets" class="divide-y divide-themeBorder"><tr><td colspan="3" class="py-4 text-themeMuted">กด "วัดความเร็วตอนนี้"</td></tr></tbody></table>
+                        </div>
+                        <div>
+                            <h4 class="text-xs font-bold text-themeMuted uppercase tracking-wider mb-2">ปุ่ม ⚡ ทำอะไรบ้าง</h4>
+                            <ol class="text-xs text-themeText space-y-1.5 list-decimal pl-5">
+                                <li><b>ย่อขนาดชีต</b> — ลบแถว/คอลัมน์ว่างที่จองไว้เกินจำเป็น (Google Sheets อ่านช้าลงตามจำนวนเซลล์ที่จองไว้)</li>
+                                <li><b>ตัดประวัติเก่า</b> — เก็บประวัติการใช้งานล่าสุดไม่เกิน 5,000 รายการ</li>
+                                <li><b>ติดตั้งตัวเร่งอัตโนมัติ</b> — เตรียมแคชให้ใหม่ทุก 10 นาที ผู้ใช้จึงไม่ต้องรออ่านชีต</li>
+                                <li><b>สร้างแคชใหม่ทันที</b> — หน้าเว็บเห็นข้อมูลล่าสุดและโหลดเร็วที่สุด</li>
+                            </ol>
+                            <p class="text-[11px] text-themeMuted mt-2">ไม่ลบหรือแก้ไขข้อมูลโรงเรียน ผู้ประเมิน หรือประกาศ</p>
+                            <div id="speedLog" class="hidden mt-4 bg-themeBg rounded-xl border border-themeBorder p-3">
+                                <h5 class="text-xs font-bold mb-1.5">ผลการเร่งความเร็วล่าสุด</h5>
+                                <ul id="speedLogList" class="space-y-1 text-xs font-mono"></ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
+            </div>
+
+            <!-- ================= ⚙️ ตั้งค่าระบบ ================= -->
+            <div id="admin-sub-settings" class="admin-sub-content hidden space-y-6">
+                <form id="settingsForm" onsubmit="saveSettingsForm(event)" class="space-y-6">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <section class="bg-themeCard rounded-2xl shadow-md border border-themeBorder p-5 sm:p-6 space-y-3">
+                            <h3 class="font-bold text-themeText flex items-center gap-2"><i data-lucide="clipboard-signature" class="w-5 h-5 text-themePrimary"></i> การรับสมัครโรงเรียนเครือข่าย</h3>
+                            <label class="flex items-center justify-between gap-3 p-3 rounded-xl bg-themeBg border border-themeBorder cursor-pointer">
+                                <span class="text-sm font-semibold">เปิดรับสมัครออนไลน์</span>
+                                <input type="checkbox" id="setRegistrationOpen" class="h-5 w-5 rounded border-themeBorder text-emerald-600">
+                            </label>
+                            <div>
+                                <label class="block text-xs font-semibold text-themeMuted mb-1">ข้อความเมื่อปิดรับสมัคร</label>
+                                <textarea id="setRegistrationClosedMessage" rows="2" maxlength="300" class="w-full px-3 py-2 text-sm border border-themeBorder rounded-xl bg-themeBg text-themeText focus:outline-none focus:ring-2 focus:ring-themePrimary"></textarea>
+                            </div>
+                        </section>
+                        <section class="bg-themeCard rounded-2xl shadow-md border border-themeBorder p-5 sm:p-6 space-y-3">
+                            <h3 class="font-bold text-themeText flex items-center gap-2"><i data-lucide="key-round" class="w-5 h-5 text-themePrimary"></i> การแก้ไขข้อมูลโดยโรงเรียน</h3>
+                            <label class="flex items-center justify-between gap-3 p-3 rounded-xl bg-themeBg border border-themeBorder cursor-pointer">
+                                <span class="text-sm font-semibold">อนุญาตให้โรงเรียนแก้ไขข้อมูลตนเอง</span>
+                                <input type="checkbox" id="setSchoolEditEnabled" class="h-5 w-5 rounded border-themeBorder text-emerald-600">
+                            </label>
+                            <div>
+                                <label class="block text-xs font-semibold text-themeMuted mb-1">รหัสแก้ไขข้อมูล (ให้เฉพาะผู้ประสานงานของโรงเรียน)</label>
+                                <input type="text" id="schoolEditCodeAdmin" maxlength="50" autocomplete="off" spellcheck="false" class="w-full px-3 py-2.5 text-sm font-mono border border-themeBorder rounded-xl bg-themeBg text-themeText focus:outline-none focus:ring-2 focus:ring-themePrimary">
+                                <p class="text-[11px] text-themeMuted mt-1">อย่างน้อย 6 ตัวอักษร ไม่มีช่องว่าง · เปลี่ยนแล้วรหัสเดิมใช้ไม่ได้ทันที · แนะนำให้เปลี่ยนทุกภาคเรียน</p>
+                            </div>
+                        </section>
+                        <section class="bg-themeCard rounded-2xl shadow-md border border-themeBorder p-5 sm:p-6 space-y-3">
+                            <h3 class="font-bold text-themeText flex items-center gap-2"><i data-lucide="phone" class="w-5 h-5 text-themePrimary"></i> ข้อมูลติดต่อศูนย์ฝึกฯ <span class="text-xs font-normal text-themeMuted">(แสดงท้ายหน้าเว็บ)</span></h3>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <div class="sm:col-span-2"><label class="block text-xs font-semibold text-themeMuted mb-1">ชื่อหน่วยงาน</label><input type="text" id="setContactName" maxlength="200" class="w-full px-3 py-2 text-sm border border-themeBorder rounded-xl bg-themeBg text-themeText focus:outline-none focus:ring-2 focus:ring-themePrimary"></div>
+                                <div><label class="block text-xs font-semibold text-themeMuted mb-1">โทรศัพท์</label><input type="text" id="setContactPhone" maxlength="100" class="w-full px-3 py-2 text-sm border border-themeBorder rounded-xl bg-themeBg text-themeText focus:outline-none focus:ring-2 focus:ring-themePrimary" placeholder="042-xxx-xxx"></div>
+                                <div><label class="block text-xs font-semibold text-themeMuted mb-1">อีเมล</label><input type="email" id="setContactEmail" maxlength="150" class="w-full px-3 py-2 text-sm border border-themeBorder rounded-xl bg-themeBg text-themeText focus:outline-none focus:ring-2 focus:ring-themePrimary"></div>
+                                <div><label class="block text-xs font-semibold text-themeMuted mb-1">LINE OA / Facebook</label><input type="text" id="setContactLine" maxlength="100" class="w-full px-3 py-2 text-sm border border-themeBorder rounded-xl bg-themeBg text-themeText focus:outline-none focus:ring-2 focus:ring-themePrimary"></div>
+                                <div><label class="block text-xs font-semibold text-themeMuted mb-1">หมายเหตุ / เวลาทำการ</label><input type="text" id="setContactNote" maxlength="300" class="w-full px-3 py-2 text-sm border border-themeBorder rounded-xl bg-themeBg text-themeText focus:outline-none focus:ring-2 focus:ring-themePrimary"></div>
+                            </div>
+                        </section>
+                        <section class="bg-themeCard rounded-2xl shadow-md border border-themeBorder p-5 sm:p-6 space-y-3">
+                            <h3 class="font-bold text-themeText flex items-center gap-2">📢 การแสดงประกาศหน้าแรก</h3>
+                            <div><label class="block text-xs font-semibold text-themeMuted mb-1">จำนวนประกาศที่แสดงก่อนกด "ดูทั้งหมด"</label><input type="number" id="setAnnouncementsOnHome" min="1" max="30" class="w-32 px-3 py-2 text-sm border border-themeBorder rounded-xl bg-themeBg text-themeText focus:outline-none focus:ring-2 focus:ring-themePrimary"></div>
+                        </section>
+                    </div>
+                    <div class="flex justify-end">
+                        <button type="submit" id="settingsSaveBtn" class="px-8 py-3 bg-themePrimary hover:bg-themePrimaryHover text-white rounded-xl font-bold shadow-md flex items-center gap-2 disabled:opacity-50"><i data-lucide="save" class="w-4 h-4"></i> บันทึกการตั้งค่า</button>
+                    </div>
+                </form>
+
+                <form onsubmit="changePasswordForm(event)" class="bg-themeCard rounded-2xl shadow-md border border-themeBorder p-5 sm:p-6 space-y-3">
+                    <h3 class="font-bold text-themeText flex items-center gap-2"><i data-lucide="lock-keyhole" class="w-5 h-5 text-themePrimary"></i> เปลี่ยนรหัสผ่านผู้ดูแลระบบ</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <input type="password" id="pwCurrent" required autocomplete="current-password" placeholder="รหัสผ่านปัจจุบัน" class="px-3 py-2.5 text-sm border border-themeBorder rounded-xl bg-themeBg text-themeText focus:outline-none focus:ring-2 focus:ring-themePrimary">
+                        <input type="password" id="pwNew" required minlength="8" autocomplete="new-password" placeholder="รหัสผ่านใหม่ (≥ 8 ตัว มีตัวอักษร+ตัวเลข)" class="px-3 py-2.5 text-sm border border-themeBorder rounded-xl bg-themeBg text-themeText focus:outline-none focus:ring-2 focus:ring-themePrimary">
+                        <input type="password" id="pwConfirm" required minlength="8" autocomplete="new-password" placeholder="ยืนยันรหัสผ่านใหม่" class="px-3 py-2.5 text-sm border border-themeBorder rounded-xl bg-themeBg text-themeText focus:outline-none focus:ring-2 focus:ring-themePrimary">
+                    </div>
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <p class="text-[11px] text-themeMuted">เปลี่ยนรหัสแล้ว เครื่องอื่นที่ล็อกอินค้างไว้จะถูกออกจากระบบทันที (เครื่องนี้ใช้งานต่อได้)</p>
+                        <button type="submit" id="pwSaveBtn" class="px-5 py-2.5 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-sm font-bold disabled:opacity-50">เปลี่ยนรหัสผ่าน</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- ================= 🕒 ประวัติการใช้งาน ================= -->
+            <div id="admin-sub-activity" class="admin-sub-content hidden space-y-6">
+                <div class="bg-themeCard rounded-2xl shadow-md border border-themeBorder overflow-hidden">
+                    <div class="p-5 border-b border-themeBorder flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+                        <div>
+                            <h3 class="text-lg font-bold text-themeText">🕒 ประวัติการใช้งานระบบ</h3>
+                            <p class="text-xs text-themeMuted" id="activityCountText">บันทึกทุกการเพิ่ม/แก้ไข/ลบ การเข้าสู่ระบบ การสมัคร และการแก้ไขข้อมูลโดยโรงเรียน</p>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            <select id="activityFilter" onchange="renderActivityLog()" class="px-3 py-2 text-sm border border-themeBorder rounded-xl bg-themeBg text-themeText">
+                                <option value="all">ทุกประเภท</option>
+                                <option value="login">🔐 เข้าสู่ระบบ/ออก</option>
+                                <option value="school">🏫 โรงเรียน</option>
+                                <option value="public">🌐 สมัคร/โรงเรียนแก้เอง</option>
+                                <option value="evaluator">👥 ผู้ประเมิน/ลิงก์</option>
+                                <option value="announcement">📢 ประกาศ</option>
+                                <option value="settings">⚙️ ตั้งค่า</option>
+                                <option value="maintenance">🩺 ซ่อมบำรุง/ความเร็ว</option>
+                            </select>
+                            <input type="search" id="activitySearch" oninput="renderActivityLog()" placeholder="ค้นหา..." class="px-3 py-2 text-sm border border-themeBorder rounded-xl bg-themeBg text-themeText w-40">
+                            <button type="button" onclick="loadActivityLog()" class="px-3 py-2 border border-themeBorder rounded-xl text-sm font-semibold hover:bg-themePrimary/10 flex items-center gap-1"><i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> โหลดใหม่</button>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full text-xs text-left text-themeText">
+                            <thead class="bg-themeBg text-themeMuted"><tr><th class="px-4 py-2.5 font-semibold w-40">เวลา</th><th class="px-4 py-2.5 font-semibold w-36">ผู้ใช้</th><th class="px-4 py-2.5 font-semibold w-48">การกระทำ</th><th class="px-4 py-2.5 font-semibold">รายละเอียด</th></tr></thead>
+                            <tbody id="activityBody" class="divide-y divide-themeBorder"><tr><td colspan="4" class="px-4 py-6 text-themeMuted">กำลังโหลด...</td></tr></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="bg-themeCard rounded-2xl shadow-md border border-themeBorder overflow-hidden">
+                    <div class="p-5 border-b border-themeBorder flex items-center justify-between gap-3">
+                        <h3 class="font-bold text-themeText text-base flex items-center gap-2"><i data-lucide="history" class="w-5 h-5 text-themePrimary"></i> รายละเอียดการแก้ไขข้อมูลโดยโรงเรียน (ก่อน → หลัง)</h3>
+                        <button type="button" onclick="loadSchoolEditLog()" class="text-xs font-bold px-3 py-1.5 rounded-lg border border-themeBorder hover:bg-themePrimary/10 flex items-center gap-1"><i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> โหลดใหม่</button>
+                    </div>
+                    <ul id="schoolEditLogList" class="divide-y divide-themeBorder max-h-[28rem] overflow-y-auto text-xs"><li class="p-5 text-themeMuted">กำลังโหลด...</li></ul>
+                </div>
+            </div>
+
+            <!-- ================= 🧭 ขั้นตอนระบบ ================= -->
+            <div id="admin-sub-workflow" class="admin-sub-content hidden space-y-6">
+                <div class="bg-themeCard rounded-2xl shadow-md border border-themeBorder p-5 sm:p-6">
+                    <h3 class="text-lg font-bold text-themeText">🧭 ขั้นตอนการทำงานของระบบ</h3>
+                    <p class="text-xs text-themeMuted mt-0.5 mb-5">ภาพรวมตั้งแต่โรงเรียนสมัคร จนถึงการประเมินนักศึกษา และการดูแลระบบ — กดปุ่มในแต่ละขั้นเพื่อไปยังเมนูที่เกี่ยวข้อง</p>
+                    <ol id="workflowSteps" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4"></ol>
+                </div>
+                <div class="bg-themeCard rounded-2xl shadow-md border border-themeBorder p-5 sm:p-6">
+                    <h3 class="font-bold text-themeText mb-4">เส้นทางของข้อมูล</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr_auto_1fr] gap-3 items-center text-center text-xs">
+                        <div class="rounded-2xl border border-themeBorder p-4 bg-themeBg"><div class="text-2xl">🌐</div><b class="block mt-1">หน้าเว็บ (index.html)</b><span class="text-themeMuted">ผู้ใช้ / โรงเรียน / แอดมิน<br>จำข้อมูลล่าสุดไว้ในเครื่อง</span></div>
+                        <div class="text-themeMuted text-lg">⇄</div>
+                        <div class="rounded-2xl border border-themePrimary/40 p-4 bg-themePrimary/5"><div class="text-2xl">⚙️</div><b class="block mt-1">Google Apps Script (Code.gs)</b><span class="text-themeMuted">ตรวจสิทธิ์ · ตรวจข้อมูล · แคช 15 นาที<br>ตัวเร่งสร้างแคชทุก 10 นาที</span></div>
+                        <div class="text-themeMuted text-lg">⇄</div>
+                        <div class="rounded-2xl border border-themeBorder p-4 bg-themeBg"><div class="text-2xl">📊</div><b class="block mt-1">Google Sheets + Drive</b><span class="text-themeMuted">Schools · Evaluators · Announcements<br>ActivityLog · SchoolEditLog · ไฟล์สำรอง</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= 📖 คู่มือการใช้งาน ================= -->
+            <div id="admin-sub-manual" class="admin-sub-content hidden space-y-4">
+                <div class="bg-themeCard rounded-2xl shadow-md border border-themeBorder p-5 sm:p-6 flex flex-col md:flex-row md:items-center justify-between gap-3">
+                    <div>
+                        <h3 class="text-lg font-bold text-themeText">📖 คู่มือการใช้งานระบบ (สำหรับผู้ดูแล)</h3>
+                        <p class="text-xs text-themeMuted mt-0.5">อธิบายทุกเมนูแบบทีละขั้น พร้อมวิธีแก้ปัญหาที่พบบ่อย</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <input type="search" id="manualSearch" oninput="filterManual()" placeholder="🔎 ค้นหาในคู่มือ เช่น ประกาศ, รหัสผ่าน" class="px-3 py-2 text-sm border border-themeBorder rounded-xl bg-themeBg text-themeText w-64">
+                        <button type="button" onclick="document.querySelectorAll('#manualBody details').forEach(d => d.open = true); window.print();" class="px-3 py-2 border border-themeBorder rounded-xl text-sm font-semibold hover:bg-themePrimary/10 flex items-center gap-1"><i data-lucide="printer" class="w-4 h-4"></i> พิมพ์</button>
+                    </div>
+                </div>
+                <div id="manualBody" class="space-y-3"></div>
+                <p id="manualEmpty" class="hidden text-sm text-themeMuted text-center py-6">ไม่พบหัวข้อที่ค้นหา</p>
             </div>
 
         </section>
 
     </main>
+
+    <!-- FOOTER: ข้อมูลติดต่อ (ตั้งค่าได้ที่ แอดมิน > ตั้งค่าระบบ) -->
+    <footer class="bg-themeCard border-t border-themeBorder mt-12 no-print">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 grid grid-cols-1 md:grid-cols-[auto_1fr] gap-6 items-start text-sm">
+            <div class="flex items-center gap-3">
+                <div class="bg-white p-1.5 rounded-xl shadow-sm border border-themeBorder"><div class="edu-logo w-9 h-11" role="img" aria-label="ตราคณะครุศาสตร์"></div></div>
+                <div>
+                    <p class="font-bold text-themeText" id="footerName">ศูนย์ฝึกประสบการณ์วิชาชีพครู คณะครุศาสตร์ มหาวิทยาลัยราชภัฏเลย</p>
+                    <p class="text-xs text-themeMuted" id="footerNote"></p>
+                </div>
+            </div>
+            <div class="flex flex-wrap md:justify-end gap-x-6 gap-y-2 text-themeMuted" id="footerContacts"></div>
+        </div>
+    </footer>
+
+    <!-- MODAL อ่านประกาศ -->
+    <div id="announcementModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4" style="z-index: 9998; display: none;" onclick="if(event.target===this) closeAnnouncementModal()">
+        <div class="bg-themeCard rounded-3xl max-w-2xl w-full shadow-2xl border border-themeBorder relative flex flex-col max-h-[90vh] text-themeText" role="dialog" aria-modal="true" aria-labelledby="annModalTitle">
+            <button type="button" onclick="closeAnnouncementModal()" class="absolute top-4 right-4 p-1.5 rounded-full hover:bg-themeBg text-themeMuted transition z-10" aria-label="ปิด"><i data-lucide="x" class="w-5 h-5"></i></button>
+            <div id="announcementModalBody" class="p-6 sm:p-8 overflow-y-auto"></div>
+        </div>
+    </div>
+
 
     <!-- DYNAMIC LOGIN DIALOG / MODAL (แอดมินเท่านั้น) -->
     <div id="loginModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[115] flex items-center justify-center p-4" style="display: none;">
@@ -1270,6 +1553,8 @@
         // ตัวแปรเก็บข้อมูล
         let schoolsData = [];
         let evaluatorsData = [];                       // ปุ่มผู้ประเมิน + ลิงก์ (จากชีต Evaluators)
+        let announcementsData = [];                    // 📢 ประกาศ (สาธารณะ: เฉพาะที่เผยแพร่, แอดมิน: ทั้งหมด)
+        let siteSettings = { registrationOpen: true, schoolEditEnabled: true, announcementsOnHome: 6 };   // ⚙️ ค่าตั้งระบบ
         let adminToken = sessionGet('adminToken');     // โทเคนแอดมิน (หมดอายุใน 6 ชม. หรือเมื่อปิดแท็บ)
         const DATA_CACHE_KEY = 'lruPublicData_v3';     // จำข้อมูลล่าสุดไว้ในเครื่อง เพื่อแสดงผลได้ทันที
 
@@ -1474,6 +1759,7 @@
             closeEvaluatorModal();
             closeSchoolDetail();
             closeSchoolEditCode();
+            closeAnnouncementModal();
         });
 
         // สร้าง Checkbox ตัวเลือกสาขาวิชาแบบ Dynamic
@@ -1752,9 +2038,28 @@
             }, 50);
         }
 
-        function setAdminToken(token) {
+        function setAdminToken(token, username) {
             adminToken = token || null;
             sessionSet('adminToken', adminToken);
+            if (username) sessionSet('adminUser', username);
+            if (!adminToken) sessionSet('adminUser', null);
+            updateAdminHeader();
+        }
+
+        // ปุ่มบนแถบด้านบน: ล็อกอินแล้วเปลี่ยนเป็น "แผงควบคุม" + แสดงปุ่มออกจากระบบ
+        function updateAdminHeader() {
+            const loggedIn = !!adminToken;
+            const user = sessionGet('adminUser') || 'admin';
+            const set = (id, t) => { const el = document.getElementById(id); if (el) el.textContent = t; };
+            set('headerAdminText', loggedIn ? 'แผงควบคุม' : 'Admin');
+            set('mobileAdminText', loggedIn ? 'แผงควบคุมผู้ดูแล' : 'Admin');
+            set('adminUserLabel', user);
+            ['headerLogoutBtn', 'mobileLogoutBtn'].forEach(id => {
+                const b = document.getElementById(id);
+                if (!b) return;
+                b.classList.toggle('hidden', !loggedIn);
+                b.classList.toggle('flex', loggedIn);
+            });
         }
 
         // รองรับ Code.gs เวอร์ชันเก่า (ยังไม่มีชีต Evaluators): สร้างปุ่มจาก EvaluationLinks เดิมแบบอ่านอย่างเดียว
@@ -1784,10 +2089,15 @@
             else if (legacyBackend) evaluatorsData = legacyEvaluatorsFrom(data.evaluationLinks);
             const banner = document.getElementById('legacyBackendBanner');
             if (banner) banner.classList.toggle('hidden', !legacyBackend);
+            if (Array.isArray(data.announcements)) announcementsData = data.announcements;
+            if (data.settings) siteSettings = Object.assign({}, siteSettings, data.settings);
             renderSchools();
             renderEvaluatorButtons();
             renderAdminDashboard();
             updateChart();
+            renderHomeAnnouncements();
+            renderFooter();
+            if (adminToken && !document.getElementById('admin-sub-announcements').classList.contains('hidden')) renderAdminAnnouncements();
         }
 
         // แสดงข้อมูลที่จำไว้ในเครื่องทันที (ไม่ต้องรอเซิร์ฟเวอร์)
@@ -2406,7 +2716,7 @@
                         ${missing.length ? `<div class="mt-4 text-[11px] bg-amber-500/10 border border-amber-500/20 text-amber-700 dark:text-amber-300 rounded-xl p-3">ข้อมูลที่ยังไม่ครบ: ${missing.join(', ')}<br>หากเป็นโรงเรียนนี้ กด "แก้ไขข้อมูลโรงเรียนนี้" ด้านล่างเพื่อเพิ่มข้อมูลได้ทันที</div>` : ''}
                     </div>
                 </div>
-                ${s.status === 'Approved' ? `
+                ${s.status === 'Approved' && siteSettings.schoolEditEnabled !== false ? `
                 <div class="px-6 sm:px-8 py-4 border-t border-themeBorder bg-themeBg/60 rounded-b-3xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <p class="text-xs text-themeMuted"><b class="text-themeText">เป็นเจ้าหน้าที่ของโรงเรียนนี้?</b> อัปเดตข้อมูลได้ตลอดเวลาด้วยรหัสแก้ไขข้อมูลที่ได้รับจากศูนย์ฝึกฯ</p>
                     <button type="button" onclick="openSchoolEditCode('${escapeHtml(s.id)}')" class="shrink-0 bg-themePrimary hover:bg-themePrimaryHover text-white text-sm font-bold px-5 py-2.5 rounded-xl shadow-md flex items-center justify-center gap-2 transition">
@@ -2773,25 +3083,26 @@
         function switchAdminTab(subTabId) {
             document.querySelectorAll('.admin-sub-content').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.admin-tab-btn').forEach(btn => {
-                btn.classList.remove('text-themePrimary', 'border-b-2', 'border-themePrimary');
-                btn.classList.add('text-themeMuted');
+                const on = btn.id === 'admin-tab-' + subTabId;
+                btn.classList.toggle('active', on);
+                btn.setAttribute('aria-current', on ? 'page' : 'false');
             });
-
             const targetSection = document.getElementById('admin-sub-' + subTabId);
             if (targetSection) targetSection.classList.remove('hidden');
-            
-            const activeBtn = document.getElementById('admin-tab-' + subTabId);
-            if(activeBtn) {
-                activeBtn.classList.remove('text-themeMuted');
-                activeBtn.classList.add('text-themePrimary', 'border-b-2', 'border-themePrimary');
-            }
-            // เปิดแท็บซ่อมบำรุงครั้งแรก: ตรวจสุขภาพฐานข้อมูลให้อัตโนมัติ
-            if (subTabId === 'maintenance' && !window.__maintChecked && adminToken) {
-                window.__maintChecked = true;
-                runDatabaseCheck();
-                loadSchoolEditCodeAdmin();
-                loadSchoolEditLog();
-            }
+            storageSet('adminLastTab', subTabId);
+            if (!adminToken) return;
+
+            // โหลดข้อมูลของแต่ละแท็บเมื่อเปิดครั้งแรก
+            window.__adminLoaded = window.__adminLoaded || {};
+            const first = !window.__adminLoaded[subTabId];
+            window.__adminLoaded[subTabId] = true;
+            if (subTabId === 'maintenance' && first) runDatabaseCheck();
+            if (subTabId === 'announcements') renderAdminAnnouncements();
+            if (subTabId === 'speed' && first) loadSystemStatus();
+            if (subTabId === 'settings') loadSettingsForm();
+            if (subTabId === 'activity') { loadActivityLog(); loadSchoolEditLog(); }
+            if (subTabId === 'workflow') renderWorkflow();
+            if (subTabId === 'manual') renderManual();
         }
 
         function renderAdminDashboard() {
@@ -3495,6 +3806,583 @@
             }
         }
 
+        // =========================================================================
+        // 📢 ประกาศ / ข่าวประชาสัมพันธ์
+        // =========================================================================
+        const ANN_CATEGORIES = {
+            general:  { label: 'ประกาศทั่วไป', icon: '📌', cls: 'bg-slate-500/10 text-themeText' },
+            news:     { label: 'ข่าวประชาสัมพันธ์', icon: '📰', cls: 'bg-blue-500/10 text-blue-700 dark:text-blue-300' },
+            schedule: { label: 'กำหนดการ', icon: '📅', cls: 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300' },
+            urgent:   { label: 'ด่วน', icon: '🔴', cls: 'bg-red-500/10 text-red-700 dark:text-red-300' }
+        };
+        const annCat = (c) => ANN_CATEGORIES[c] || ANN_CATEGORIES.general;
+        const todayISO = () => { const d = new Date(); return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10); };
+        const thaiDate = (iso) => { if (!iso) return ''; const d = new Date(String(iso).length === 10 ? iso + 'T00:00:00' : iso); return isNaN(d) ? '' : d.toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric' }); };
+
+        // สถานะการแสดงผลของประกาศ (ใช้ทั้งหน้าแรกและหน้าแอดมิน)
+        function announcementState(a) {
+            const t = todayISO();
+            if (!a.active) return { key: 'hidden', label: 'ซ่อนอยู่', cls: 'bg-slate-500/15 text-themeMuted' };
+            if (a.endDate && a.endDate < t) return { key: 'expired', label: 'หมดอายุแล้ว', cls: 'bg-slate-500/15 text-themeMuted' };
+            if (a.startDate && a.startDate > t) return { key: 'scheduled', label: 'ตั้งเวลา ' + thaiDate(a.startDate), cls: 'bg-blue-500/15 text-blue-700 dark:text-blue-300' };
+            return { key: 'live', label: 'แสดงอยู่', cls: 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300' };
+        }
+
+        // ชนิดไฟล์แนบจากลิงก์ (ใช้เลือกไอคอน)
+        function linkKind(url) {
+            const u = String(url || '').toLowerCase();
+            if (/\.pdf($|\?)/.test(u)) return { icon: 'file-text', label: 'PDF' };
+            if (/docs\.google\.com\/document/.test(u)) return { icon: 'file-type', label: 'Google Docs' };
+            if (/docs\.google\.com\/spreadsheets/.test(u)) return { icon: 'sheet', label: 'Google Sheets' };
+            if (/docs\.google\.com\/presentation/.test(u)) return { icon: 'presentation', label: 'Google Slides' };
+            if (/docs\.google\.com\/forms|forms\.gle/.test(u)) return { icon: 'clipboard-list', label: 'Google Forms' };
+            if (/drive\.google\.com/.test(u)) return { icon: 'hard-drive', label: 'Google Drive' };
+            return { icon: 'link', label: 'ลิงก์' };
+        }
+
+        function announcementLinksHtml(links, size = 'sm') {
+            const valid = (links || []).filter(l => safeUrl(l.url));
+            if (!valid.length) return '';
+            return `<div class="flex flex-wrap gap-2">${valid.map(l => {
+                const k = linkKind(l.url);
+                return `<a href="${escapeHtml(safeUrl(l.url))}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()"
+                    class="inline-flex items-center gap-1.5 ${size === 'lg' ? 'px-4 py-2.5 text-sm' : 'px-2.5 py-1.5 text-xs'} rounded-lg bg-themePrimary/10 text-themePrimary font-bold hover:bg-themePrimary hover:text-white transition">
+                    <i data-lucide="${k.icon}" class="w-3.5 h-3.5"></i> ${escapeHtml(l.label || k.label)} <span class="opacity-60 font-normal">(${k.label})</span></a>`;
+            }).join('')}</div>`;
+        }
+
+        let showAllAnnouncements = false;
+        function publicAnnouncements() {
+            return announcementsData.filter(a => announcementState(a).key === 'live');
+        }
+
+        function renderHomeAnnouncements() {
+            const box = document.getElementById('homeAnnouncements');
+            const list = document.getElementById('homeAnnList');
+            if (!box || !list) return;
+            const items = publicAnnouncements();
+            box.classList.toggle('hidden', items.length === 0);
+            const limit = Math.max(1, parseInt(siteSettings.announcementsOnHome) || 6);
+            const shown = showAllAnnouncements ? items : items.slice(0, limit);
+            list.innerHTML = shown.map(a => {
+                const c = annCat(a.category);
+                return `
+                <article tabindex="0" role="button" onclick="openAnnouncementModal('${escapeHtml(a.id)}')" onkeydown="if(event.key==='Enter'){openAnnouncementModal('${escapeHtml(a.id)}')}"
+                    class="bg-themeCard rounded-2xl border ${a.pinned ? 'border-amber-400/60' : 'border-themeBorder'} shadow-sm hover:shadow-lg hover:border-themePrimary/50 p-5 flex flex-col gap-2 cursor-pointer transition">
+                    <div class="flex items-center justify-between gap-2 text-[11px]">
+                        <span class="px-2 py-0.5 rounded-md font-bold ${c.cls}">${c.icon} ${c.label}</span>
+                        <span class="text-themeMuted">${a.pinned ? '📌 ปักหมุด · ' : ''}${escapeHtml(thaiDate(a.startDate || a.createdAt))}</span>
+                    </div>
+                    <h3 class="font-bold text-themeText leading-snug">${escapeHtml(a.title)}</h3>
+                    <p class="text-sm text-themeMuted line-clamp-3 ann-body">${escapeHtml(a.body)}</p>
+                    <div class="mt-auto pt-2 flex items-center justify-between gap-2">
+                        <span class="text-[11px] text-themeMuted">${(a.links || []).length ? '📎 ไฟล์แนบ ' + a.links.length + ' รายการ' : ''}</span>
+                        <span class="text-xs font-bold text-themePrimary">อ่านต่อ →</span>
+                    </div>
+                </article>`;
+            }).join('');
+            const toggle = document.getElementById('homeAnnToggle');
+            if (toggle) {
+                toggle.classList.toggle('hidden', items.length <= limit);
+                toggle.textContent = showAllAnnouncements ? 'แสดงน้อยลง' : `ดูทั้งหมด (${items.length}) →`;
+            }
+            safeCreateIcons();
+        }
+
+        function toggleAllAnnouncements() {
+            showAllAnnouncements = !showAllAnnouncements;
+            renderHomeAnnouncements();
+        }
+
+        function announcementDetailHtml(a) {
+            const c = annCat(a.category);
+            return `
+                <div class="flex flex-wrap items-center gap-2 mb-3 pr-8 text-xs">
+                    <span class="px-2 py-0.5 rounded-md font-bold ${c.cls}">${c.icon} ${c.label}</span>
+                    ${a.pinned ? '<span class="px-2 py-0.5 rounded-md font-bold bg-amber-500/15 text-amber-700 dark:text-amber-300">📌 ปักหมุด</span>' : ''}
+                    <span class="text-themeMuted">${escapeHtml(thaiDate(a.startDate || a.createdAt))}${a.endDate ? ' – ' + escapeHtml(thaiDate(a.endDate)) : ''}</span>
+                </div>
+                <h3 id="annModalTitle" class="text-xl sm:text-2xl font-extrabold leading-snug mb-4">${escapeHtml(a.title)}</h3>
+                <div class="text-sm leading-relaxed text-themeText ann-body">${escapeHtml(a.body)}</div>
+                ${(a.links || []).length ? `<div class="mt-6 pt-4 border-t border-themeBorder"><p class="text-xs font-bold text-themeMuted mb-2">📎 ไฟล์แนบ / ลิงก์ที่เกี่ยวข้อง</p>${announcementLinksHtml(a.links, 'lg')}</div>` : ''}
+                <p class="mt-6 text-[11px] text-themeMuted">ประกาศโดย ${escapeHtml(siteSettings.contactName || 'ศูนย์ฝึกประสบการณ์วิชาชีพครู')}</p>`;
+        }
+
+        function openAnnouncementModal(id, preview) {
+            const a = preview || announcementsData.find(x => sameId(x.id, id));
+            if (!a) return;
+            document.getElementById('announcementModalBody').innerHTML = announcementDetailHtml(a);
+            document.getElementById('announcementModal').style.display = 'flex';
+            safeCreateIcons();
+        }
+
+        function closeAnnouncementModal() {
+            const m = document.getElementById('announcementModal');
+            if (m) m.style.display = 'none';
+        }
+
+        // --- แอดมิน: รายการ + ฟอร์ม ---
+        let editingAnnouncementId = null;
+
+        function renderAdminAnnouncements() {
+            const list = document.getElementById('adminAnnouncementList');
+            if (!list) return;
+            const counts = { live: 0, scheduled: 0, hidden: 0, expired: 0 };
+            announcementsData.forEach(a => counts[announcementState(a).key]++);
+            document.getElementById('annCountText').textContent =
+                `ประกาศทั้งหมด ${announcementsData.length} รายการ · แสดงอยู่ ${counts.live} · ตั้งเวลา ${counts.scheduled} · ซ่อน/หมดอายุ ${counts.hidden + counts.expired}`;
+            if (!announcementsData.length) {
+                list.innerHTML = `<li class="p-10 text-center text-sm text-themeMuted">ยังไม่มีประกาศ — กด <b>➕ สร้างประกาศ</b> เพื่อเริ่ม</li>`;
+                return;
+            }
+            list.innerHTML = announcementsData.map(a => {
+                const st = announcementState(a), c = annCat(a.category), id = escapeHtml(a.id);
+                return `
+                <li class="p-4 sm:p-5 flex flex-col lg:flex-row lg:items-center gap-3 ${st.key === 'live' ? '' : 'opacity-75'}">
+                    <div class="min-w-0 flex-1">
+                        <div class="flex flex-wrap items-center gap-2 text-[11px] mb-1">
+                            <span class="px-2 py-0.5 rounded-md font-bold ${st.cls}">${st.label}</span>
+                            <span class="px-2 py-0.5 rounded-md font-bold ${c.cls}">${c.icon} ${c.label}</span>
+                            ${a.pinned ? '<span class="px-2 py-0.5 rounded-md font-bold bg-amber-500/15 text-amber-700 dark:text-amber-300">📌 ปักหมุด</span>' : ''}
+                            <span class="text-themeMuted">${a.startDate ? 'เริ่ม ' + escapeHtml(thaiDate(a.startDate)) : 'แสดงทันที'}${a.endDate ? ' · ถึง ' + escapeHtml(thaiDate(a.endDate)) : ''}</span>
+                        </div>
+                        <p class="font-bold text-themeText">${escapeHtml(a.title)}</p>
+                        <p class="text-xs text-themeMuted line-clamp-2 ann-body">${escapeHtml(a.body)}</p>
+                        ${(a.links || []).length ? `<div class="mt-2">${announcementLinksHtml(a.links)}</div>` : ''}
+                    </div>
+                    <div class="flex flex-wrap gap-1.5 shrink-0">
+                        <button type="button" onclick="openAnnouncementModal('${id}')" class="px-3 py-2 rounded-lg border border-themeBorder text-xs font-semibold hover:bg-themeBg">👁️ ดู</button>
+                        <button type="button" onclick="openAnnouncementForm('${id}')" class="px-3 py-2 rounded-lg border border-themeBorder text-xs font-semibold hover:border-blue-500 hover:text-blue-600">✏️ แก้ไข</button>
+                        <button type="button" onclick="quickUpdateAnnouncement('${id}', { pinned: ${!a.pinned} })" class="px-3 py-2 rounded-lg border border-themeBorder text-xs font-semibold hover:bg-themeBg">${a.pinned ? 'เลิกปักหมุด' : '📌 ปักหมุด'}</button>
+                        <button type="button" onclick="quickUpdateAnnouncement('${id}', { active: ${!a.active} })" class="px-3 py-2 rounded-lg border border-themeBorder text-xs font-semibold hover:bg-themeBg">${a.active ? '🙈 ซ่อน' : '👁️ เผยแพร่'}</button>
+                        <button type="button" onclick="deleteAnnouncementAdmin('${id}')" class="px-3 py-2 rounded-lg border border-themeBorder text-xs font-semibold text-red-500 hover:border-red-500">🗑️ ลบ</button>
+                    </div>
+                </li>`;
+            }).join('');
+            safeCreateIcons();
+        }
+
+        function addAnnouncementLinkRow(label = '', url = '') {
+            const box = document.getElementById('annLinks');
+            if (box.children.length >= 5) { showToast('แนบลิงก์ได้สูงสุด 5 รายการ', 'error'); return; }
+            const row = document.createElement('div');
+            row.className = 'ann-link-row grid grid-cols-1 sm:grid-cols-[14rem_1fr_auto] gap-2';
+            row.innerHTML = `
+                <input type="text" maxlength="100" placeholder="ชื่อไฟล์ เช่น คู่มือฝึกสอน (PDF)" class="ann-link-label px-3 py-2 text-sm border border-themeBorder rounded-xl bg-themeBg text-themeText focus:outline-none focus:ring-2 focus:ring-themePrimary">
+                <input type="url" maxlength="2000" placeholder="https://drive.google.com/file/d/.../view?usp=sharing" class="ann-link-url px-3 py-2 text-sm font-mono border border-themeBorder rounded-xl bg-themeBg text-themeText focus:outline-none focus:ring-2 focus:ring-themePrimary">
+                <button type="button" onclick="this.parentElement.remove()" class="px-3 py-2 rounded-xl border border-themeBorder text-red-500 text-sm hover:border-red-500" aria-label="ลบลิงก์">✕</button>`;
+            row.querySelector('.ann-link-label').value = label;
+            row.querySelector('.ann-link-url').value = url;
+            box.appendChild(row);
+        }
+
+        function openAnnouncementForm(id = null) {
+            const a = id ? announcementsData.find(x => sameId(x.id, id)) : null;
+            editingAnnouncementId = a ? a.id : null;
+            const form = document.getElementById('announcementForm');
+            form.reset();
+            document.getElementById('announcementFormTitle').textContent = a ? 'แก้ไขประกาศ' : 'สร้างประกาศใหม่';
+            document.getElementById('annTitle').value = a ? a.title : '';
+            document.getElementById('annBody').value = a ? a.body : '';
+            document.getElementById('annCategory').value = a ? a.category : 'general';
+            document.getElementById('annStart').value = a ? (a.startDate || '') : '';
+            document.getElementById('annEnd').value = a ? (a.endDate || '') : '';
+            document.getElementById('annPinned').checked = a ? a.pinned : false;
+            document.getElementById('annActive').checked = a ? a.active : true;
+            document.getElementById('annLinks').innerHTML = '';
+            (a && a.links.length ? a.links : [{ label: '', url: '' }]).forEach(l => addAnnouncementLinkRow(l.label, l.url));
+            form.classList.remove('hidden');
+            form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            setTimeout(() => document.getElementById('annTitle').focus(), 300);
+            safeCreateIcons();
+        }
+
+        function closeAnnouncementForm() {
+            document.getElementById('announcementForm').classList.add('hidden');
+            editingAnnouncementId = null;
+        }
+
+        function readAnnouncementForm() {
+            const links = [...document.querySelectorAll('#annLinks .ann-link-row')].map(r => ({
+                label: r.querySelector('.ann-link-label').value.trim(),
+                url: r.querySelector('.ann-link-url').value.trim()
+            })).filter(l => l.url || l.label);
+            return {
+                id: editingAnnouncementId || undefined,
+                title: document.getElementById('annTitle').value.trim(),
+                body: document.getElementById('annBody').value.trim(),
+                category: document.getElementById('annCategory').value,
+                startDate: document.getElementById('annStart').value,
+                endDate: document.getElementById('annEnd').value,
+                pinned: document.getElementById('annPinned').checked,
+                active: document.getElementById('annActive').checked,
+                links
+            };
+        }
+
+        function validateAnnouncement(d) {
+            if (!d.title) return 'กรุณาใส่หัวข้อประกาศ';
+            if (!d.body && !d.links.length) return 'กรุณาพิมพ์ข้อความประกาศ หรือแนบลิงก์อย่างน้อย 1 รายการ';
+            const bad = d.links.find(l => !safeUrl(l.url));
+            if (bad) return `ลิงก์ "${bad.label || bad.url}" ไม่ถูกต้อง (ต้องขึ้นต้นด้วย https://)`;
+            if (d.startDate && d.endDate && d.endDate < d.startDate) return 'วันสิ้นสุดต้องไม่ก่อนวันเริ่มแสดง';
+            return '';
+        }
+
+        function previewAnnouncementForm() {
+            const d = readAnnouncementForm();
+            openAnnouncementModal(null, Object.assign({ createdAt: new Date().toISOString() }, d, { title: d.title || '(ยังไม่มีหัวข้อ)' }));
+        }
+
+        function upsertLocalAnnouncement(saved) {
+            const i = announcementsData.findIndex(a => sameId(a.id, saved.id));
+            if (i >= 0) announcementsData[i] = saved; else announcementsData.unshift(saved);
+            announcementsData.sort((a, b) => (Number(b.pinned) - Number(a.pinned)) || String(b.startDate || b.createdAt).localeCompare(String(a.startDate || a.createdAt)));
+            renderAdminAnnouncements();
+            renderHomeAnnouncements();
+        }
+
+        async function saveAnnouncementForm(event) {
+            event.preventDefault();
+            const d = readAnnouncementForm();
+            const err = validateAnnouncement(d);
+            if (err) { showToast(err, 'error'); return; }
+            const btn = document.getElementById('annSaveBtn');
+            btn.disabled = true;
+            try {
+                const saved = await callApi('saveAnnouncement', { data: d });
+                upsertLocalAnnouncement(saved);
+                closeAnnouncementForm();
+                showToast(d.id ? 'บันทึกการแก้ไขประกาศแล้ว' : 'สร้างประกาศแล้ว — แสดงที่หน้าแรกทันที');
+            } catch (e) {
+                showToast('บันทึกประกาศไม่สำเร็จ: ' + e.message, 'error');
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        async function quickUpdateAnnouncement(id, changes) {
+            const a = announcementsData.find(x => sameId(x.id, id));
+            if (!a) return;
+            try {
+                const saved = await callApi('saveAnnouncement', { data: Object.assign({}, a, changes) });
+                upsertLocalAnnouncement(saved);
+                showToast('อัปเดตประกาศแล้ว');
+            } catch (e) { showToast('อัปเดตไม่สำเร็จ: ' + e.message, 'error'); }
+        }
+
+        async function deleteAnnouncementAdmin(id) {
+            const a = announcementsData.find(x => sameId(x.id, id));
+            if (!a || !confirm(`ลบประกาศ "${a.title}" ?\n(หากต้องการซ่อนชั่วคราว ให้กด "ซ่อน" แทน)`)) return;
+            try {
+                await callApi('deleteAnnouncement', { id: a.id });
+                announcementsData = announcementsData.filter(x => !sameId(x.id, id));
+                renderAdminAnnouncements();
+                renderHomeAnnouncements();
+                showToast('ลบประกาศแล้ว');
+            } catch (e) { showToast('ลบไม่สำเร็จ: ' + e.message, 'error'); }
+        }
+
+        // =========================================================================
+        // ท้ายหน้าเว็บ + ผลของการตั้งค่า (เปิด/ปิดรับสมัคร, การแก้ไขโดยโรงเรียน)
+        // =========================================================================
+        function renderFooter() {
+            const s = siteSettings;
+            const set = (id, t) => { const el = document.getElementById(id); if (el) el.textContent = t; };
+            set('footerName', s.contactName || 'ศูนย์ฝึกประสบการณ์วิชาชีพครู คณะครุศาสตร์ มหาวิทยาลัยราชภัฏเลย');
+            set('footerNote', s.contactNote || '');
+            const box = document.getElementById('footerContacts');
+            if (!box) return;
+            const items = [];
+            if (s.contactPhone) items.push(`<a href="tel:${escapeHtml(String(s.contactPhone).replace(/[^\d+]/g, ''))}" class="hover:text-themePrimary flex items-center gap-1.5"><i data-lucide="phone" class="w-4 h-4"></i>${escapeHtml(s.contactPhone)}</a>`);
+            if (s.contactEmail) items.push(`<a href="mailto:${escapeHtml(s.contactEmail)}" class="hover:text-themePrimary flex items-center gap-1.5"><i data-lucide="mail" class="w-4 h-4"></i>${escapeHtml(s.contactEmail)}</a>`);
+            if (s.contactLine) items.push(`<span class="flex items-center gap-1.5"><i data-lucide="message-circle" class="w-4 h-4"></i>${escapeHtml(s.contactLine)}</span>`);
+            items.push(`<span class="text-xs">© ${new Date().getFullYear() + 543} คณะครุศาสตร์ มหาวิทยาลัยราชภัฏเลย</span>`);
+            box.innerHTML = items.join('');
+            safeCreateIcons();
+        }
+
+        // =========================================================================
+        // ⚙️ ตั้งค่าระบบ
+        // =========================================================================
+        async function loadSettingsForm() {
+            try {
+                const s = await callApi('getSettings');
+                siteSettings = Object.assign({}, siteSettings, s);
+                document.getElementById('setRegistrationOpen').checked = !!s.registrationOpen;
+                document.getElementById('setRegistrationClosedMessage').value = s.registrationClosedMessage || '';
+                document.getElementById('setSchoolEditEnabled').checked = !!s.schoolEditEnabled;
+                document.getElementById('schoolEditCodeAdmin').value = s.schoolEditCode || '';
+                ['contactName', 'contactPhone', 'contactEmail', 'contactLine', 'contactNote'].forEach(k => {
+                    document.getElementById('set' + k[0].toUpperCase() + k.slice(1)).value = s[k] || '';
+                });
+                document.getElementById('setAnnouncementsOnHome').value = s.announcementsOnHome || 6;
+            } catch (e) { showToast('โหลดการตั้งค่าไม่สำเร็จ: ' + e.message, 'error'); }
+        }
+
+        async function saveSettingsForm(event) {
+            event.preventDefault();
+            const code = document.getElementById('schoolEditCodeAdmin').value.trim();
+            if (code.length < 6 || /\s/.test(code)) { showToast('รหัสแก้ไขข้อมูลต้องมีอย่างน้อย 6 ตัวอักษร และไม่มีช่องว่าง', 'error'); return; }
+            const settings = {
+                registrationOpen: document.getElementById('setRegistrationOpen').checked,
+                registrationClosedMessage: document.getElementById('setRegistrationClosedMessage').value.trim(),
+                schoolEditEnabled: document.getElementById('setSchoolEditEnabled').checked,
+                schoolEditCode: code,
+                contactName: document.getElementById('setContactName').value.trim(),
+                contactPhone: document.getElementById('setContactPhone').value.trim(),
+                contactEmail: document.getElementById('setContactEmail').value.trim(),
+                contactLine: document.getElementById('setContactLine').value.trim(),
+                contactNote: document.getElementById('setContactNote').value.trim(),
+                announcementsOnHome: parseInt(document.getElementById('setAnnouncementsOnHome').value) || 6
+            };
+            const btn = document.getElementById('settingsSaveBtn');
+            btn.disabled = true;
+            try {
+                const saved = await callApi('saveSettings', { settings });
+                siteSettings = Object.assign({}, siteSettings, saved);
+                renderFooter();
+                renderHomeAnnouncements();
+                showToast('บันทึกการตั้งค่าแล้ว มีผลกับหน้าเว็บทันที');
+            } catch (e) {
+                showToast('บันทึกการตั้งค่าไม่สำเร็จ: ' + e.message, 'error');
+            } finally { btn.disabled = false; }
+        }
+
+        async function changePasswordForm(event) {
+            event.preventDefault();
+            const cur = document.getElementById('pwCurrent').value, next = document.getElementById('pwNew').value, conf = document.getElementById('pwConfirm').value;
+            if (next !== conf) { showToast('ยืนยันรหัสผ่านใหม่ไม่ตรงกัน', 'error'); return; }
+            if (next.length < 8 || !/[A-Za-z]/.test(next) || !/\d/.test(next)) { showToast('รหัสผ่านใหม่ต้องมีอย่างน้อย 8 ตัว และมีทั้งตัวอักษรภาษาอังกฤษและตัวเลข', 'error'); return; }
+            const btn = document.getElementById('pwSaveBtn');
+            btn.disabled = true;
+            try {
+                const r = await callApi('changeAdminPassword', { currentPassword: cur, newPassword: next });
+                setAdminToken(r.token);
+                event.target.reset();
+                alertMessageBox('เปลี่ยนรหัสผ่านเรียบร้อยแล้ว เครื่องอื่นที่ล็อกอินค้างไว้ถูกออกจากระบบแล้ว ครั้งต่อไปให้ใช้รหัสผ่านใหม่', 'เปลี่ยนรหัสผ่านสำเร็จ', 'success', 'bg-emerald-100 text-emerald-600');
+            } catch (e) {
+                showToast('เปลี่ยนรหัสผ่านไม่สำเร็จ: ' + e.message, 'error');
+            } finally { btn.disabled = false; }
+        }
+
+        // =========================================================================
+        // 🕒 ประวัติการใช้งาน
+        // =========================================================================
+        let activityRows = [];
+        const ACTIVITY_ICON = { login: '🔐', school: '🏫', public: '🌐', evaluator: '👥', announcement: '📢', settings: '⚙️', maintenance: '🩺', other: '•' };
+
+        async function loadActivityLog() {
+            const body = document.getElementById('activityBody');
+            if (!body) return;
+            body.innerHTML = '<tr><td colspan="4" class="px-4 py-6 text-themeMuted">กำลังโหลด...</td></tr>';
+            try {
+                activityRows = await callApi('getActivityLog', { limit: 500 });
+                renderActivityLog();
+            } catch (e) {
+                body.innerHTML = `<tr><td colspan="4" class="px-4 py-6 text-red-500">โหลดประวัติไม่สำเร็จ: ${escapeHtml(e.message)}</td></tr>`;
+            }
+        }
+
+        function renderActivityLog() {
+            const body = document.getElementById('activityBody');
+            if (!body) return;
+            const cat = document.getElementById('activityFilter').value;
+            const q = document.getElementById('activitySearch').value.trim().toLowerCase();
+            const rows = activityRows.filter(r => (cat === 'all' || r.category === cat) &&
+                (!q || [r.actor, r.action, r.detail].join(' ').toLowerCase().includes(q)));
+            document.getElementById('activityCountText').textContent = `แสดง ${rows.length} จาก ${activityRows.length} รายการล่าสุด · บันทึกทุกการเพิ่ม/แก้ไข/ลบ การเข้าสู่ระบบ การสมัคร และการแก้ไขโดยโรงเรียน`;
+            body.innerHTML = rows.length ? rows.map(r => {
+                const failed = /ไม่สำเร็จ/.test(r.action);
+                return `<tr class="${failed ? 'bg-red-500/5' : ''}">
+                    <td class="px-4 py-2.5 whitespace-nowrap text-themeMuted">${escapeHtml(r.timestamp ? new Date(r.timestamp).toLocaleString('th-TH', { dateStyle: 'short', timeStyle: 'medium' }) : '')}</td>
+                    <td class="px-4 py-2.5">${escapeHtml(r.actor || '')}</td>
+                    <td class="px-4 py-2.5 font-semibold ${failed ? 'text-red-600' : ''}">${ACTIVITY_ICON[r.category] || '•'} ${escapeHtml(r.action || '')}</td>
+                    <td class="px-4 py-2.5 text-themeMuted break-words">${escapeHtml(r.detail || '')}</td>
+                </tr>`;
+            }).join('') : '<tr><td colspan="4" class="px-4 py-6 text-themeMuted">ไม่พบรายการ</td></tr>';
+        }
+
+        // =========================================================================
+        // ⚡ เร่งความเร็วฐานข้อมูล
+        // =========================================================================
+        const fmtMs = (ms) => ms === null || ms === undefined ? '–' : (ms < 1000 ? ms + ' ms' : (ms / 1000).toFixed(1) + ' วิ');
+
+        function renderSystemStatus(s, roundMs) {
+            document.getElementById('spCache').textContent = s.cacheWarm ? fmtMs(s.cacheReadMs) : 'ว่าง';
+            document.getElementById('spSheet').textContent = fmtMs(s.sheetReadMs);
+            if (roundMs !== undefined) document.getElementById('spRound').textContent = fmtMs(roundMs);
+            const st = document.getElementById('spCacheState');
+            st.innerHTML = `${s.cacheWarm ? '<span class="text-emerald-600">● แคชพร้อม</span>' : '<span class="text-amber-600">○ แคชว่าง</span>'}<br>${s.triggerInstalled ? '<span class="text-emerald-600">● ตัวเร่งทำงาน</span>' : '<span class="text-red-600">○ ยังไม่ติดตั้งตัวเร่ง</span>'}`;
+            document.getElementById('spWarm').textContent = s.cacheBuiltAt ? 'สร้างแคชล่าสุด ' + new Date(s.cacheBuiltAt).toLocaleString('th-TH', { dateStyle: 'short', timeStyle: 'short' }) : 'ยังไม่เคยสร้างแคช';
+            document.getElementById('spCells').textContent = Number(s.totalCells || 0).toLocaleString('th-TH');
+            document.getElementById('spRows').textContent = `ใช้จริง ${Number(s.usedRows || 0).toLocaleString('th-TH')} จาก ${Number(s.allocatedRows || 0).toLocaleString('th-TH')} แถวที่จองไว้`;
+            document.getElementById('spSheets').innerHTML = (s.sheets || []).map(x => `
+                <tr><td class="py-1.5 font-semibold">${escapeHtml(x.name)}</td>
+                <td class="py-1.5 text-right tabular-nums">${x.missing ? '<span class="text-red-500">ไม่มีชีต</span>' : x.rows.toLocaleString('th-TH')}</td>
+                <td class="py-1.5 text-right tabular-nums ${x.maxRows > x.rows + 150 ? 'text-amber-600 font-bold' : 'text-themeMuted'}">${x.missing ? '–' : x.maxRows.toLocaleString('th-TH') + '×' + x.maxCols}</td></tr>`).join('');
+        }
+
+        async function loadSystemStatus() {
+            const btn = document.getElementById('speedMeasureBtn');
+            if (btn) btn.disabled = true;
+            try {
+                const t = performance.now();
+                await callApi('getAllData');                     // วัดเวลารอบจริงที่ผู้ใช้ได้รับ
+                const roundMs = Math.round(performance.now() - t);
+                renderSystemStatus(await callApi('getSystemStatus'), roundMs);
+            } catch (e) { showToast('วัดความเร็วไม่สำเร็จ: ' + e.message, 'error'); }
+            finally { if (btn) btn.disabled = false; }
+        }
+
+        async function runSpeedUp() {
+            if (!confirm('เร่งความเร็วฐานข้อมูลตอนนี้?\n• ย่อขนาดชีต (ลบแถว/คอลัมน์ว่างส่วนเกิน)\n• ตัดประวัติเก่าที่เกิน 5,000 รายการ\n• ติดตั้งตัวเร่งอัตโนมัติ + สร้างแคชใหม่\n\n(ไม่ลบข้อมูลโรงเรียน ผู้ประเมิน หรือประกาศ)')) return;
+            const btn = document.getElementById('speedUpBtn');
+            btn.disabled = true;
+            btn.textContent = '⏳ กำลังเร่งความเร็ว...';
+            try {
+                const r = await callApi('speedUpDatabase');
+                renderSystemStatus(r.after);
+                const saved = r.before.totalCells - r.after.totalCells;
+                document.getElementById('speedLog').classList.remove('hidden');
+                document.getElementById('speedLogList').innerHTML = r.log.map(l => `<li>${escapeHtml(l)}</li>`).join('') +
+                    `<li class="text-themeMuted">อ่านชีต: ${fmtMs(r.before.sheetReadMs)} → ${fmtMs(r.after.sheetReadMs)} · เซลล์ลดลง ${Math.max(0, saved).toLocaleString('th-TH')}</li>`;
+                showToast('เร่งความเร็วฐานข้อมูลเรียบร้อยแล้ว');
+            } catch (e) { showToast('เร่งความเร็วไม่สำเร็จ: ' + e.message, 'error'); }
+            finally { btn.disabled = false; btn.textContent = '⚡ เร่งความเร็วฐานข้อมูล'; }
+        }
+
+        // =========================================================================
+        // 🧭 ขั้นตอนระบบ
+        // =========================================================================
+        const WORKFLOW = [
+            { icon: '📝', title: 'โรงเรียนยื่นใบสมัคร', who: 'โรงเรียน', text: 'กรอกข้อมูลโรงเรียน สังกัด ระดับการศึกษา ปีการศึกษา สาขา/โควตา พิกัด และแนบลิงก์หลักฐาน สถานะเริ่มต้นเป็น "รออนุมัติ"', tab: 'settings', btn: 'เปิด/ปิดรับสมัคร' },
+            { icon: '🔎', title: 'ตรวจสอบและอนุมัติ', who: 'แอดมิน', text: 'เปิดหลักฐาน ตรวจข้อมูล แล้วกด ✓ อนุมัติ (หรือแก้ไข/ลบ) ระบบคำนวณพิกัดแผนที่ให้อัตโนมัติ', tab: 'schools', btn: 'ไปที่โรงเรียนเครือข่าย' },
+            { icon: '🏫', title: 'แสดงในทำเนียบ', who: 'อัตโนมัติ', text: 'โรงเรียนที่อนุมัติแล้วปรากฏในทำเนียบ แผนที่ และรายงานสถิติทันที (ข้อมูลอัปเดตภายใน 1 นาที)', tab: null },
+            { icon: '✏️', title: 'โรงเรียนอัปเดตข้อมูลเอง', who: 'โรงเรียน', text: 'ค้นหาโรงเรียน → แก้ไขข้อมูลโรงเรียนนี้ → ใส่รหัสแก้ไข ทุกการแก้ไขถูกบันทึกในประวัติ', tab: 'activity', btn: 'ดูประวัติการแก้ไข' },
+            { icon: '👥', title: 'ตั้งค่าผู้ประเมินและลิงก์', who: 'แอดมิน', text: 'กำหนดปุ่มผู้ประเมินของแต่ละชั้นปี วางลิงก์ Google Form เปิด-ปิด และจัดลำดับ', tab: 'links', btn: 'ไปที่ผู้ประเมิน/ลิงก์' },
+            { icon: '✅', title: 'ครู/อาจารย์ประเมินนักศึกษา', who: 'ผู้ประเมิน', text: 'กดปุ่มตามชั้นปีและบทบาทในหน้าแรก ระบบเปิดแบบประเมินในแท็บใหม่', tab: null },
+            { icon: '📢', title: 'ประชาสัมพันธ์', who: 'แอดมิน', text: 'สร้างประกาศ แนบไฟล์ PDF/Google Drive ปักหมุด และกำหนดช่วงวันแสดงผล', tab: 'announcements', btn: 'ไปที่ประกาศ' },
+            { icon: '🩺', title: 'ดูแลระบบสม่ำเสมอ', who: 'แอดมิน', text: 'ตรวจสุขภาพ/ซ่อมบำรุงเดือนละครั้ง เร่งความเร็วเมื่อรู้สึกช้า ระบบสำรองไฟล์ให้ก่อนซ่อมทุกครั้ง', tab: 'maintenance', btn: 'ไปที่ตรวจสุขภาพ' }
+        ];
+
+        function renderWorkflow() {
+            const box = document.getElementById('workflowSteps');
+            if (!box || box.children.length) return;
+            box.innerHTML = WORKFLOW.map((s, i) => `
+                <li class="relative rounded-2xl border border-themeBorder bg-themeBg p-4 flex flex-col gap-2">
+                    <div class="flex items-center gap-2">
+                        <span class="w-7 h-7 rounded-full bg-themePrimary text-white text-xs font-extrabold flex items-center justify-center shrink-0">${i + 1}</span>
+                        <span class="text-xl" aria-hidden="true">${s.icon}</span>
+                        <span class="ml-auto text-[10px] font-bold px-2 py-0.5 rounded-md bg-themePrimary/10 text-themePrimary">${s.who}</span>
+                    </div>
+                    <h4 class="font-bold text-themeText">${s.title}</h4>
+                    <p class="text-xs text-themeMuted leading-relaxed">${s.text}</p>
+                    ${s.tab ? `<button type="button" onclick="switchAdminTab('${s.tab}')" class="mt-auto self-start text-xs font-bold text-themePrimary hover:underline">${s.btn} →</button>` : ''}
+                </li>`).join('');
+        }
+
+        // =========================================================================
+        // 📖 คู่มือการใช้งาน
+        // =========================================================================
+        const MANUAL = [
+            { icon: '🚀', title: 'เริ่มต้นใช้งาน: เข้าสู่ระบบ / ออกจากระบบ', body: `
+                <ol><li>กดปุ่ม <b>Admin</b> มุมขวาบน → กรอกชื่อผู้ใช้และรหัสผ่าน → <b>ยืนยันสิทธิ์แอดมิน</b></li>
+                <li>เมื่อเข้าสู่ระบบแล้ว ปุ่มจะเปลี่ยนเป็น <b>แผงควบคุม</b> และมีปุ่มสีแดง <b>ออกจากระบบ</b> ทั้งแถบด้านบนและในแผงควบคุม</li>
+                <li>การเข้าสู่ระบบมีอายุ <b>6 ชั่วโมง</b> หรือจนกว่าจะปิดแท็บ หากหมดเวลา ระบบจะพาไปหน้าล็อกอินใหม่</li>
+                <li>ใส่รหัสผิด 10 ครั้ง ระบบระงับการเข้าสู่ระบบ 10 นาที</li>
+                <li><b>ใช้เครื่องสาธารณะ ให้กดออกจากระบบทุกครั้ง</b></li></ol>` },
+            { icon: '🏫', title: 'จัดการโรงเรียนเครือข่าย (อนุมัติ / แก้ไข / ลบ / เพิ่ม)', body: `
+                <ol><li>เมนู <b>โรงเรียนเครือข่าย</b> แสดงทุกโรงเรียน ทั้งที่อนุมัติแล้วและรออนุมัติ</li>
+                <li><b>อนุมัติ:</b> กด "เปิดดู" ในช่องหลักฐานเพื่อตรวจใบสมัคร แล้วกดปุ่มสีเขียว ✓ — โรงเรียนจะขึ้นในทำเนียบทันที</li>
+                <li><b>ยกเลิกอนุมัติ:</b> กดปุ่มสีส้ม ↺ (เปลี่ยนเป็นรออนุมัติ)</li>
+                <li><b>แก้ไข:</b> กดไอคอนดินสอ แก้ได้ทุกช่อง รวมถึงสาขาวิชาและโควตา (ถ้าไม่เลือกสาขา ระบบคงโควตาเดิมไว้)</li>
+                <li><b>เพิ่มโรงเรียน:</b> ปุ่ม "+ เพิ่มโรงเรียน" (สถานะอนุมัติทันที)</li>
+                <li><b>ลบ:</b> ไอคอนถังขยะ — ลบถาวร (มีไฟล์สำรองจากการซ่อมบำรุงครั้งล่าสุด)</li>
+                <li><b>อัปเดตพิกัดแผนที่:</b> ใช้เมื่อโรงเรียนส่งลิงก์ย่อ / Plus Code / Longdo แล้วหมุดยังไม่ขึ้น</li></ol>` },
+            { icon: '👥', title: 'ผู้ประเมินและลิงก์แบบประเมิน', body: `
+                <ol><li>เลือกแท็บชั้นปี 1–4 แต่ละแถวคือปุ่ม 1 ปุ่มในหน้าแรก</li>
+                <li><b>วางลิงก์:</b> คัดลอกลิงก์ Google Form (ปุ่ม "ส่ง" → ไอคอนลิงก์) วางในช่อง แล้วกด <b>บันทึก</b> หรือกด Enter</li>
+                <li><b>เปิด-ปิด:</b> สวิตช์สีเขียว ปิดแล้วปุ่มในหน้าแรกจะขึ้น "ปิดรับ"</li>
+                <li><b>เพิ่ม/แก้ไข:</b> ปุ่ม "เพิ่มผู้ประเมิน" หรือไอคอนดินสอ — กำหนดชื่อ กลุ่ม ไอคอน สี รูปแบบปุ่ม</li>
+                <li><b>จัดลำดับ:</b> ↑↓ ที่แต่ละแถว หรือ ⇈⇊ ที่หัวกลุ่มเพื่อย้ายทั้งกลุ่ม</li>
+                <li>แถบ "พร้อมใช้งาน" บอกจำนวนปุ่มที่เปิดอยู่และมีลิงก์แล้ว</li></ol>` },
+            { icon: '📢', title: 'ประกาศ / ข่าวประชาสัมพันธ์ (สร้าง แนบไฟล์ ปักหมุด ตั้งเวลา)', body: `
+                <ol><li>เมนู <b>ประกาศ</b> → กด <b>➕ สร้างประกาศ</b></li>
+                <li>ใส่ <b>หัวข้อ</b> เลือก <b>ประเภท</b> (ทั่วไป / ข่าวประชาสัมพันธ์ / กำหนดการ / ด่วน) และพิมพ์ <b>ข้อความ</b> (ขึ้นบรรทัดใหม่ได้)</li>
+                <li><b>แนบไฟล์ PDF / Google Drive:</b><br>
+                    ① เปิดไฟล์ใน Google Drive → คลิกขวา → <b>แชร์</b><br>
+                    ② "การเข้าถึงทั่วไป" เลือก <b>ทุกคนที่มีลิงก์</b> บทบาท <b>ผู้มีสิทธิ์อ่าน</b><br>
+                    ③ กด <b>คัดลอกลิงก์</b> → วางในช่องลิงก์ และตั้งชื่อไฟล์ให้อ่านง่าย (แนบได้ 5 ลิงก์)</li>
+                <li><b>วันเริ่มแสดง / วันสิ้นสุด:</b> เว้นว่างได้ — ระบบซ่อนประกาศที่หมดอายุให้อัตโนมัติ</li>
+                <li><b>📌 ปักหมุด:</b> ประกาศจะอยู่บนสุดเสมอ</li>
+                <li>กด <b>👁️ ดูตัวอย่าง</b> ก่อน แล้วกด <b>บันทึกประกาศ</b> → แสดงที่หน้าแรกทันที</li>
+                <li>ในรายการ: ✏️ แก้ไข · 📌 ปักหมุด · 🙈 ซ่อน/เผยแพร่ · 🗑️ ลบ</li></ol>` },
+            { icon: '🩺', title: 'ตรวจสุขภาพ / ซ่อมบำรุงฐานข้อมูล', body: `
+                <ol><li>เปิดเมนูแล้วระบบตรวจให้อัตโนมัติ: <span class="text-red-600">ข้อผิดพลาด</span> · <span class="text-amber-600">คำเตือน</span> · <span class="text-blue-600">ข้อแนะนำ</span></li>
+                <li>รายการที่มี "✓ ซ่อมอัตโนมัติได้" → กด <b>ซ่อมแซมอัตโนมัติ</b></li>
+                <li>ระบบ<b>สำรองไฟล์ Google Sheets ลงโฟลเดอร์สำรองก่อนซ่อมทุกครั้ง</b> แล้วจึงเติม id ที่ขาด แก้ id ซ้ำ ลบแถวว่าง ปรับชื่อสังกัด/สถานะให้เป็นมาตรฐาน คำนวณพิกัด และสร้างแคชใหม่</li>
+                <li>ไม่ลบข้อมูลโรงเรียน ผู้ประเมิน หรือประกาศ · แนะนำให้ทำเดือนละครั้ง</li>
+                <li><b>รีเฟรชแคช:</b> ใช้เมื่อแก้ข้อมูลในชีตโดยตรงแล้วอยากให้หน้าเว็บเห็นทันที</li></ol>` },
+            { icon: '⚡', title: 'เร่งความเร็วฐานข้อมูล', body: `
+                <ol><li>กด <b>วัดความเร็วตอนนี้</b> เพื่อดูเวลาโหลดจากแคช / จากชีตโดยตรง / เวลารอบเครือข่าย</li>
+                <li>ถ้าช่อง "แคช/ตัวเร่ง" ขึ้นสีส้มหรือแดง หรือขนาดชีต "จองไว้" มากกว่าที่ใช้จริงมาก → กด <b>⚡ เร่งความเร็วฐานข้อมูล</b></li>
+                <li>ระบบจะย่อชีต ตัดประวัติเก่า ติดตั้งตัวเร่ง (สร้างแคชทุก 10 นาที) และสร้างแคชใหม่ แล้วแสดงผลก่อน/หลัง</li></ol>` },
+            { icon: '⚙️', title: 'ตั้งค่าระบบ', body: `
+                <ul><li><b>เปิด/ปิดรับสมัคร:</b> ปิดแล้วปุ่มสมัครจะแสดงข้อความที่กำหนดแทนฟอร์ม</li>
+                <li><b>การแก้ไขข้อมูลโดยโรงเรียน:</b> เปิด/ปิด และเปลี่ยน<b>รหัสแก้ไข</b> (แนะนำเปลี่ยนทุกภาคเรียน แล้วแจ้งผู้ประสานงานของโรงเรียน)</li>
+                <li><b>ข้อมูลติดต่อ:</b> แสดงที่ท้ายหน้าเว็บ</li>
+                <li><b>จำนวนประกาศหน้าแรก:</b> ที่เหลือดูได้จาก "ดูทั้งหมด"</li>
+                <li><b>เปลี่ยนรหัสผ่านแอดมิน:</b> ต้องใส่รหัสเดิม รหัสใหม่อย่างน้อย 8 ตัว มีตัวอักษรและตัวเลข — เครื่องอื่นที่ล็อกอินค้างจะถูกออกจากระบบ</li></ul>` },
+            { icon: '🕒', title: 'ประวัติการใช้งาน', body: `
+                <ul><li>บันทึกอัตโนมัติ: การเข้าสู่ระบบ (รวมครั้งที่ไม่สำเร็จ) การเพิ่ม/แก้ไข/ลบโรงเรียน ผู้ประเมิน ประกาศ การตั้งค่า การซ่อมบำรุง การสมัคร และการแก้ไขโดยโรงเรียน</li>
+                <li>กรองตามประเภท หรือค้นหาด้วยชื่อ — รายการ "ไม่สำเร็จ" แสดงเป็นสีแดง</li>
+                <li>ส่วนล่างแสดงรายละเอียดการแก้ไขของโรงเรียนแบบ <span class="line-through text-red-500">ค่าเดิม</span> → <span class="text-emerald-600">ค่าใหม่</span></li>
+                <li>เก็บล่าสุดไม่เกิน 5,000 รายการ (ส่วนเกินถูกตัดเมื่อซ่อมบำรุง/เร่งความเร็ว)</li></ul>` },
+            { icon: '🏫', title: 'สำหรับโรงเรียน: การสมัครและการแก้ไขข้อมูล (แนะนำให้โรงเรียน)', body: `
+                <ol><li><b>สมัคร:</b> หน้าแรก → "ลงทะเบียนสมัครโรงเรียนเครือข่าย" → กรอกข้อมูลให้ครบ → ส่งใบสมัคร → รอศูนย์ฯ อนุมัติ</li>
+                <li><b>แก้ไขข้อมูล (เฉพาะโรงเรียนที่อนุมัติแล้ว):</b> เมนู "โรงเรียนเครือข่าย" → ค้นหาชื่อโรงเรียน → กดการ์ด → <b>แก้ไขข้อมูลโรงเรียนนี้</b> → ใส่รหัสแก้ไข → แก้ไข → บันทึก</li>
+                <li>หลังใส่รหัส แก้ไขซ้ำได้ภายใน 1 ชั่วโมงโดยไม่ต้องใส่รหัสใหม่</li></ol>` },
+            { icon: '🛠️', title: 'การติดตั้ง / อัปเดตระบบบน Google Apps Script', body: `
+                <ol><li>วางโค้ด <b>Code.gs</b> และไฟล์ HTML ชื่อ <b>Index</b> (เนื้อหาจาก index.html) ใน Apps Script</li>
+                <li>เลือกฟังก์ชัน <b>setup</b> → เรียกใช้ → อนุญาตสิทธิ์ (รันซ้ำได้ปลอดภัย ทุกครั้งที่อัปเดตเวอร์ชัน)</li>
+                <li><b>ทำให้ใช้งานได้ → จัดการ → ✏️ แก้ไข → เวอร์ชันใหม่</b> (URL /exec คงเดิม)</li>
+                <li>ค่าลับเก็บใน ⚙️ การตั้งค่าโปรเจกต์ → พร็อพเพอร์ตี้ของสคริปต์: ADMIN_USERNAME, ADMIN_PASSWORD, SCHOOL_EDIT_CODE</li></ol>` },
+            { icon: '❓', title: 'แก้ปัญหาที่พบบ่อย', body: `
+                <ul><li><b>หน้าเว็บไม่แสดงข้อมูลล่าสุด:</b> ซ่อมบำรุง → รีเฟรชแคช (หรือรอไม่เกิน 10 นาที)</li>
+                <li><b>ผู้ใช้เปิดไฟล์แนบไม่ได้ / ขอสิทธิ์เข้าถึง:</b> ไฟล์ใน Drive ยังไม่ได้ตั้ง "ทุกคนที่มีลิงก์" ดูหัวข้อประกาศ</li>
+                <li><b>ลืมรหัสผ่านแอดมิน:</b> เจ้าของ Apps Script แก้ค่า ADMIN_PASSWORD ในพร็อพเพอร์ตี้ของสคริปต์</li>
+                <li><b>ขึ้น "ระบบยังไม่พร้อมใช้งาน":</b> รัน setup() ใน Apps Script</li>
+                <li><b>หมุดโรงเรียนไม่ขึ้นบนแผนที่:</b> โรงเรียนเครือข่าย → อัปเดตพิกัดแผนที่ หรือแก้ลิงก์แผนที่ของโรงเรียน</li>
+                <li><b>ระบบช้า:</b> เมนูเร่งความเร็ว → ⚡ เร่งความเร็วฐานข้อมูล</li>
+                <li><b>โรงเรียนแจ้งว่ารหัสแก้ไขใช้ไม่ได้:</b> ตรวจว่าเปิดการแก้ไขอยู่ และรหัสตรงกับในเมนูตั้งค่าระบบ</li></ul>` }
+        ];
+
+        function renderManual() {
+            const box = document.getElementById('manualBody');
+            if (!box || box.children.length) return;
+            box.innerHTML = MANUAL.map((m, i) => `
+                <details class="manual-item group bg-themeCard rounded-2xl border border-themeBorder shadow-sm" ${i === 0 ? 'open' : ''}>
+                    <summary class="flex items-center gap-3 px-5 py-4 cursor-pointer list-none font-bold text-themeText">
+                        <span class="text-xl" aria-hidden="true">${m.icon}</span><span class="flex-1">${m.title}</span>
+                        <i data-lucide="chevron-down" class="w-4 h-4 text-themeMuted transition group-open:rotate-180"></i>
+                    </summary>
+                    <div class="manual-content px-5 pb-5 text-sm text-themeText leading-relaxed [&_ol]:list-decimal [&_ul]:list-disc [&_ol]:pl-5 [&_ul]:pl-5 [&_li]:mb-1.5">${m.body}</div>
+                </details>`).join('');
+            safeCreateIcons();
+        }
+
+        function filterManual() {
+            const q = document.getElementById('manualSearch').value.trim().toLowerCase();
+            let shown = 0;
+            document.querySelectorAll('#manualBody .manual-item').forEach(d => {
+                const hit = !q || d.textContent.toLowerCase().includes(q);
+                d.classList.toggle('hidden', !hit);
+                if (hit) { shown++; if (q) d.open = true; }
+            });
+            document.getElementById('manualEmpty').classList.toggle('hidden', shown > 0);
+        }
+
         // แจ้งเตือนแบบสั้นมุมจอ (ไม่ขวางการทำงาน)
         function showToast(message, type = 'success') {
             let wrap = document.getElementById('toastWrap');
@@ -3666,7 +4554,7 @@
                     alertMessageBox('รหัสผ่านถูกต้อง แต่ Google Apps Script ยังเป็นเวอร์ชันเก่า กรุณาอัปเดต Code.gs เป็นเวอร์ชันใหม่และ Deploy ใหม่ก่อน จึงจะใช้งานหลังบ้านได้', 'ต้องอัปเดตฝั่งเซิร์ฟเวอร์', 'error', 'bg-amber-100 text-amber-600');
                 } else if (response && response.authenticated && response.token) {
                     document.getElementById('passwordInput').value = ''; // ไม่เก็บรหัสผ่านค้างไว้ในฟอร์ม
-                    setAdminToken(response.token);
+                    setAdminToken(response.token, response.username);
                     closeLoginModal();
                     switchTab('dashboard');
                     showToast('เข้าสู่ระบบแอดมินสำเร็จ กำลังโหลดข้อมูลล่าสุด...');
@@ -3689,7 +4577,9 @@
             setAdminToken(null);
             loadCachedData(); // กลับไปใช้ข้อมูลสาธารณะ
             switchTab('home');
-            alertMessageBox('ออกจากระบบผู้ดูแลหลังบ้านเรียบร้อยแล้ว', 'เรียบร้อย', 'info');
+            window.__adminLoaded = {};
+            ["announcementForm"].forEach(id => { const el = document.getElementById(id); if (el) el.classList.add("hidden"); });
+            showToast("ออกจากระบบผู้ดูแลเรียบร้อยแล้ว");
         }
 
         function alertMessageBox(message, title = 'แจ้งเตือนจากระบบ', icon = 'info', colorClass = 'bg-blue-100 text-blue-600', linkUrl = null, linkText = 'คลิกเปิดลิงก์') {
@@ -3763,6 +4653,11 @@
         }
 
         function openSchoolRegisterModal() {
+            // ปิดรับสมัคร (ตั้งค่าได้ที่ แอดมิน > ตั้งค่าระบบ)
+            if (siteSettings.registrationOpen === false) {
+                alertMessageBox(siteSettings.registrationClosedMessage || 'ขณะนี้ปิดรับสมัครโรงเรียนเครือข่าย', 'ปิดรับสมัคร', 'info', 'bg-amber-100 text-amber-600');
+                return;
+            }
             const modal = document.getElementById('schoolRegisterModal');
             if(modal) {
                 schoolEditSession = null;
@@ -3813,6 +4708,10 @@
         function openSchoolEditCode(id) {
             const s = schoolsData.find(x => sameId(x.id, id));
             if (!s) return;
+            if (siteSettings.schoolEditEnabled === false) {
+                alertMessageBox('ขณะนี้ปิดการแก้ไขข้อมูลโดยโรงเรียน กรุณาติดต่อศูนย์ฝึกประสบการณ์วิชาชีพครู', 'ปิดการแก้ไขชั่วคราว', 'info', 'bg-amber-100 text-amber-600');
+                return;
+            }
             // ยืนยันรหัสไว้แล้ว (ยังไม่หมดเวลา) เปิดฟอร์มได้เลย
             if (schoolEditSession && sameId(schoolEditSession.id, id) && schoolEditSession.expires > Date.now()) {
                 openSchoolEditForm(schoolEditSession.school);
@@ -3989,6 +4888,9 @@
             initMajorsUI();
             renderSchoolFormFields('reg');
             renderSchoolFormFields('admin');
+            updateAdminHeader();      // ล็อกอินค้างไว้ในแท็บนี้: แสดงปุ่มออกจากระบบ
+            renderFooter();
+            switchAdminTab('schools');
             safeCreateIcons();
 
             const mobileMenuBtn = document.getElementById('mobileMenuBtn');
