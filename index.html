@@ -115,6 +115,17 @@
         .admin-tab-btn:hover { color: var(--text-main); border-color: var(--primary); }
         .admin-tab-btn.active { background: var(--primary); border-color: var(--primary); color: #fff; box-shadow: 0 4px 10px -4px var(--primary); }
         .ann-body { white-space: pre-line; overflow-wrap: anywhere; }
+        /* ---------- รองรับโทรศัพท์ / แท็บเล็ต ---------- */
+        html { -webkit-text-size-adjust: 100%; }
+        body { overflow-x: hidden; }
+        /* iPhone/iPad ซูมหน้าจออัตโนมัติเมื่อแตะช่องที่ตัวอักษรเล็กกว่า 16px: กำหนดขนาดขั้นต่ำบนจอเล็ก */
+        @media (max-width: 1023px) { input:not([type=checkbox]):not([type=radio]), select, textarea { font-size: 16px !important; } }
+        /* ปุ่มกดง่ายบนจอสัมผัส */
+        @media (pointer: coarse) { button, a, summary, select { touch-action: manipulation; } }
+        /* หน้าต่างป๊อปอัปไม่ล้นจอบนมือถือ (รองรับแถบที่อยู่ของเบราว์เซอร์ที่ยืด/หดได้) */
+        @supports (height: 100dvh) { .max-h-[95vh] { max-height: 95dvh !important; } .max-h-[90vh] { max-height: 90dvh !important; } .h-[85vh] { height: 85dvh !important; } }
+        /* ตารางกว้างเลื่อนแนวนอนได้ลื่นบน iOS */
+        .overflow-x-auto { -webkit-overflow-scrolling: touch; }
         /* โลโก้คณะครุศาสตร์ มหาวิทยาลัยราชภัฏเลย (ฝังในไฟล์ ใช้ได้ทั้งเว็บภายนอกและ Apps Script) */
         .edu-logo { background: url("data:image/webp;base64,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") center / contain no-repeat; }
     </style>
@@ -139,7 +150,7 @@
 
                 <!-- ฝั่งขวาของบาร์นำทาง: เมนูและตัวปรับเปลี่ยนธีม -->
                 <div class="flex items-center space-x-3 sm:space-x-4">
-                    <nav class="hidden md:flex items-center space-x-3">
+                    <nav class="hidden lg:flex items-center space-x-3">
                         <button type="button" onclick="switchTab('home')" class="hover:bg-white/10 px-4 py-2.5 rounded-xl text-sm font-medium transition duration-200 flex items-center gap-1.5">
                             <i data-lucide="home" class="w-4 h-4"></i> หน้าแรก
                         </button>
@@ -227,7 +238,7 @@
                         </div>
                     </div>
 
-                    <div class="md:hidden">
+                    <div class="lg:hidden">
                         <button type="button" id="mobileMenuBtn" aria-label="เปิดเมนู" class="p-2.5 rounded-xl hover:bg-white/10 bg-white/5 border border-white/10 shadow-inner focus:outline-none">
                             <i data-lucide="menu" id="menuIcon" class="w-6 h-6"></i>
                         </button>
@@ -237,7 +248,7 @@
         </div>
 
         <!-- Mobile Menu -->
-        <div id="mobileMenu" class="hidden md:hidden bg-themePrimaryDark text-white px-4 pt-2 pb-4 space-y-2 border-t border-white/10">
+        <div id="mobileMenu" class="hidden lg:hidden bg-themePrimaryDark text-white px-4 pt-2 pb-4 space-y-2 border-t border-white/10">
             <button type="button" onclick="switchTab('home')" class="w-full text-left flex items-center gap-2 px-3 py-2.5 rounded-md text-base font-medium hover:bg-white/10 transition"><i data-lucide="home" class="w-4 h-4"></i> หน้าแรก</button>
             <button type="button" onclick="switchTab('schools')" class="w-full text-left flex items-center gap-2 px-3 py-2.5 rounded-md text-base font-medium hover:bg-white/10 transition"><i data-lucide="school" class="w-4 h-4"></i> โรงเรียนเครือข่าย</button>
             <div class="border-t border-white/10 my-2 pt-2">
@@ -255,6 +266,12 @@
             </div>
         </div>
     </header>
+
+    <!-- แถบแจ้งเมื่อเชื่อมต่อเซิร์ฟเวอร์ไม่ได้ (ระบบยังแสดงข้อมูลล่าสุดที่จำไว้ในเครื่อง) -->
+    <div id="connectionBar" class="hidden sticky top-20 z-40 bg-amber-500 text-slate-950 text-xs sm:text-sm font-semibold text-center px-4 py-2 no-print" role="status">
+        ⚠️ ขาดการเชื่อมต่ออินเทอร์เน็ต/เซิร์ฟเวอร์ — กำลังแสดงข้อมูลล่าสุดที่บันทึกไว้ในเครื่อง ระบบจะเชื่อมต่อใหม่ให้อัตโนมัติ
+        <button type="button" onclick="fetchLatestData()" class="ml-2 underline font-bold">ลองอีกครั้ง</button>
+    </div>
 
     <!-- MAIN CONTENT VIEWPORTS -->
     <main class="flex-grow">
@@ -656,9 +673,9 @@
             <!-- SUB-SECTION 1: Manage Schools -->
             <div id="admin-sub-schools" class="admin-sub-content space-y-6">
                 <div class="bg-themeCard rounded-2xl shadow-md border border-themeBorder overflow-hidden">
-                    <div class="p-5 border-b border-themeBorder bg-themeBg flex justify-between items-center">
+                    <div class="p-5 border-b border-themeBorder bg-themeBg flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                         <h3 class="font-bold text-themeText flex items-center gap-2"><i data-lucide="sliders" class="text-themePrimary"></i> อนุมัติและจัดการข้อมูลโรงเรียน</h3>
-                        <div class="flex gap-2">
+                        <div class="flex flex-wrap gap-2">
                             <button type="button" onclick="openAdminSchoolModal()" class="bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold py-1.5 px-3 rounded-lg flex items-center gap-1 transition">
                                 <i data-lucide="plus" class="w-3.5 h-3.5"></i> เพิ่มโรงเรียน
                             </button>
@@ -886,6 +903,7 @@
                             <p class="text-xs text-themeMuted mt-0.5">วัดความเร็วจริงของการโหลดข้อมูล และปรับให้เร็วขึ้นด้วยแคช + ย่อขนาดชีต + ตัวเร่งอัตโนมัติ</p>
                         </div>
                         <div class="flex flex-wrap gap-2">
+                            <button type="button" id="pingBtn" onclick="testConnection()" class="px-4 py-2.5 border border-themeBorder rounded-xl text-sm font-bold hover:bg-themePrimary/10 flex items-center gap-2 disabled:opacity-50">📶 ตรวจการเชื่อมต่อ</button>
                             <button type="button" id="speedMeasureBtn" onclick="loadSystemStatus()" class="px-4 py-2.5 border border-themeBorder rounded-xl text-sm font-bold hover:bg-themePrimary/10 flex items-center gap-2 disabled:opacity-50"><i data-lucide="gauge" class="w-4 h-4"></i> วัดความเร็วตอนนี้</button>
                             <button type="button" id="speedUpBtn" onclick="runSpeedUp()" class="px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 rounded-xl text-sm font-bold shadow-md flex items-center gap-2 disabled:opacity-50">⚡ เร่งความเร็วฐานข้อมูล</button>
                         </div>
@@ -893,7 +911,7 @@
                     <div class="grid grid-cols-2 lg:grid-cols-5 gap-px bg-themeBorder">
                         <div class="bg-themeCard px-5 py-4"><p class="text-[11px] font-semibold text-themeMuted">โหลดจากแคช</p><p class="mt-1 text-2xl font-extrabold tabular-nums" id="spCache">–</p><p class="text-[11px] text-themeMuted">ผู้ใช้ทั่วไปได้ความเร็วนี้</p></div>
                         <div class="bg-themeCard px-5 py-4"><p class="text-[11px] font-semibold text-themeMuted">อ่านชีตโดยตรง</p><p class="mt-1 text-2xl font-extrabold tabular-nums" id="spSheet">–</p><p class="text-[11px] text-themeMuted">กรณีแคชว่าง</p></div>
-                        <div class="bg-themeCard px-5 py-4"><p class="text-[11px] font-semibold text-themeMuted">เวลารอบเครือข่ายของท่าน</p><p class="mt-1 text-2xl font-extrabold tabular-nums" id="spRound">–</p><p class="text-[11px] text-themeMuted">เบราว์เซอร์ ↔ Apps Script</p></div>
+                        <div class="bg-themeCard px-5 py-4"><p class="text-[11px] font-semibold text-themeMuted">เวลารอบเครือข่ายของท่าน</p><p class="mt-1 text-2xl font-extrabold tabular-nums" id="spRound">–</p><p class="text-[11px] text-themeMuted" id="spRoundNote">เบราว์เซอร์ ↔ Apps Script</p></div>
                         <div class="bg-themeCard px-5 py-4"><p class="text-[11px] font-semibold text-themeMuted">แคช / ตัวเร่งอัตโนมัติ</p><p class="mt-1 text-sm font-extrabold" id="spCacheState">–</p><p class="text-[11px] text-themeMuted" id="spWarm">–</p></div>
                         <div class="bg-themeCard px-5 py-4 col-span-2 lg:col-span-1"><p class="text-[11px] font-semibold text-themeMuted">ขนาดชีตรวม</p><p class="mt-1 text-2xl font-extrabold tabular-nums" id="spCells">–</p><p class="text-[11px] text-themeMuted" id="spRows">–</p></div>
                     </div>
@@ -1046,8 +1064,8 @@
                         <h3 class="text-lg font-bold text-themeText">📖 คู่มือการใช้งานระบบ (สำหรับผู้ดูแล)</h3>
                         <p class="text-xs text-themeMuted mt-0.5">อธิบายทุกเมนูแบบทีละขั้น พร้อมวิธีแก้ปัญหาที่พบบ่อย</p>
                     </div>
-                    <div class="flex gap-2">
-                        <input type="search" id="manualSearch" oninput="filterManual()" placeholder="🔎 ค้นหาในคู่มือ เช่น ประกาศ, รหัสผ่าน" class="px-3 py-2 text-sm border border-themeBorder rounded-xl bg-themeBg text-themeText w-64">
+                    <div class="flex flex-wrap sm:flex-nowrap gap-2 w-full md:w-auto">
+                        <input type="search" id="manualSearch" oninput="filterManual()" placeholder="🔎 ค้นหาในคู่มือ เช่น ประกาศ, รหัสผ่าน" class="flex-1 min-w-0 sm:w-64 px-3 py-2 text-sm border border-themeBorder rounded-xl bg-themeBg text-themeText">
                         <button type="button" onclick="document.querySelectorAll('#manualBody details').forEach(d => d.open = true); window.print();" class="px-3 py-2 border border-themeBorder rounded-xl text-sm font-semibold hover:bg-themePrimary/10 flex items-center gap-1"><i data-lucide="printer" class="w-4 h-4"></i> พิมพ์</button>
                     </div>
                 </div>
@@ -1102,11 +1120,11 @@
             <form onsubmit="handleLoginSubmit(event)" class="space-y-4">
                 <div>
                     <label class="block text-xs font-semibold text-themeMuted mb-1">ชื่อผู้ใช้งาน (Admin Username) *</label>
-                    <input type="text" id="usernameInput" required class="w-full px-4 py-2.5 text-sm border border-themeBorder rounded-xl focus:outline-none focus:ring-2 focus:ring-themePrimary bg-themeBg text-themeText" placeholder="admin">
+                    <input type="text" id="usernameInput" required autocomplete="username" autocapitalize="off" spellcheck="false" class="w-full px-4 py-2.5 text-sm border border-themeBorder rounded-xl focus:outline-none focus:ring-2 focus:ring-themePrimary bg-themeBg text-themeText" placeholder="admin">
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-themeMuted mb-1">รหัสผ่านสำหรับเจ้าหน้าที่ (Password) *</label>
-                    <input type="password" id="passwordInput" required class="w-full px-4 py-2.5 text-sm border border-themeBorder rounded-xl focus:outline-none focus:ring-2 focus:ring-themePrimary bg-themeBg text-themeText" placeholder="••••••••">
+                    <input type="password" id="passwordInput" required autocomplete="current-password" class="w-full px-4 py-2.5 text-sm border border-themeBorder rounded-xl focus:outline-none focus:ring-2 focus:ring-themePrimary bg-themeBg text-themeText" placeholder="••••••••">
                 </div>
                 <div class="pt-4">
                     <button type="submit" id="loginSubmitBtn" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold py-2.5 rounded-xl transition duration-200 shadow-lg flex items-center justify-center gap-2">
@@ -1986,46 +2004,78 @@
         // API BRIDGE: เชื่อมต่อ Google Sheets (ทั้งโฮสต์บน Apps Script และเว็บภายนอก)
         // =========================================================================
         const API_TIMEOUT_MS = 30000;
+        // คำสั่งอ่านอย่างเดียว: ส่งซ้ำได้อย่างปลอดภัยเมื่อเครือข่ายสะดุด
+        const SAFE_RETRY_ACTIONS = new Set(['ping', 'getAllData', 'getAdminData', 'checkDatabase', 'getSchoolEditLog', 'getSettings', 'getActivityLog', 'getSystemStatus']);
+        // ข้อผิดพลาดชั่วคราวของเครือข่าย/Google ที่ควรลองใหม่
+        const TRANSIENT_RE = /BUSY:|Failed to fetch|NetworkError|Load failed|network|timeout|ช้าเกินไป|Service invoked too many times|Too many simultaneous|Service Spreadsheets timed out|Internal error|Server error|Unexpected token|JSON|status 5\d\d/i;
+
+        async function callApiOnce(payload) {
+            if (isGAS) {
+                return await new Promise((resolve, reject) => {
+                    google.script.run.withSuccessHandler(resolve).withFailureHandler(reject).api(JSON.stringify(payload));
+                });
+            }
+            const controller = new AbortController();
+            const timer = setTimeout(() => controller.abort(), API_TIMEOUT_MS);
+            let response;
+            try {
+                response = await fetch(WEB_APP_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // ไม่ต้องทำ CORS preflight จึงเร็วขึ้น
+                    body: JSON.stringify(payload),
+                    signal: controller.signal
+                });
+            } finally {
+                clearTimeout(timer);
+            }
+            if (!response.ok) throw new Error('Server error status ' + response.status);
+            const json = await response.json();
+            if (json.status !== 'success') throw new Error(json.message || 'เกิดข้อผิดพลาดจากเซิร์ฟเวอร์');
+            return json.data;
+        }
 
         async function callApi(action, params = {}) {
             const payload = { action, ...params };
             if (adminToken) payload.token = adminToken; // คำสั่งของแอดมินต้องมีโทเคนเสมอ
-
-            let result;
-            try {
-                if (isGAS) {
-                    result = await new Promise((resolve, reject) => {
-                        google.script.run.withSuccessHandler(resolve).withFailureHandler(reject).api(JSON.stringify(payload));
-                    });
-                } else {
-                    const controller = new AbortController();
-                    const timer = setTimeout(() => controller.abort(), API_TIMEOUT_MS);
-                    let response;
-                    try {
-                        response = await fetch(WEB_APP_URL, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // ไม่ต้องทำ CORS preflight จึงเร็วขึ้น
-                            body: JSON.stringify(payload),
-                            signal: controller.signal
-                        });
-                    } finally {
-                        clearTimeout(timer);
+            const maxAttempts = 3;
+            for (let attempt = 1; ; attempt++) {
+                try {
+                    if (!navigator.onLine && !isGAS) throw new Error('NetworkError: ไม่มีการเชื่อมต่ออินเทอร์เน็ต');
+                    const result = await callApiOnce(payload);
+                    setConnectionState(true);
+                    return result;
+                } catch (err) {
+                    const raw = err && err.name === 'AbortError'
+                        ? 'timeout: เซิร์ฟเวอร์ตอบสนองช้าเกินไป'
+                        : (err && err.message) || String(err);
+                    const transient = TRANSIENT_RE.test(raw);
+                    // อ่านอย่างเดียว: ลองใหม่ทุกกรณีชั่วคราว / เขียนข้อมูล: ลองใหม่เฉพาะ BUSY (ยืนยันว่ายังไม่ได้เขียน)
+                    const canRetry = attempt < maxAttempts && transient && (SAFE_RETRY_ACTIONS.has(action) || /BUSY:/.test(raw));
+                    if (canRetry) {
+                        await new Promise(r => setTimeout(r, attempt * 800 + Math.random() * 400));
+                        continue;
                     }
-                    const json = await response.json();
-                    if (json.status !== 'success') throw new Error(json.message || 'เกิดข้อผิดพลาดจากเซิร์ฟเวอร์');
-                    result = json.data;
+                    if (/NetworkError|Failed to fetch|Load failed|timeout/i.test(raw)) setConnectionState(false);
+                    const message = /NetworkError|Failed to fetch|Load failed/i.test(raw)
+                        ? 'เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ กรุณาตรวจสอบอินเทอร์เน็ตแล้วลองใหม่'
+                        : /^timeout/i.test(raw) ? 'เซิร์ฟเวอร์ตอบสนองช้าเกินไป กรุณาลองใหม่อีกครั้ง' : raw;
+                    if (message.indexOf('SESSION_EXPIRED') !== -1) handleSessionExpired();
+                    const error = new Error(message.replace(/^(SESSION_EXPIRED|SETUP_REQUIRED|EDIT_EXPIRED|BUSY): /, ''));
+                    error.setupRequired = message.indexOf('SETUP_REQUIRED') !== -1; // ผู้ดูแลยังไม่ได้รัน setup()
+                    error.editExpired = message.indexOf('EDIT_EXPIRED') !== -1;   // รหัสแก้ไขของโรงเรียนหมดเวลา
+                    throw error;
                 }
-            } catch (err) {
-                const message = err && err.name === 'AbortError'
-                    ? 'เซิร์ฟเวอร์ตอบสนองช้าเกินไป กรุณาลองใหม่อีกครั้ง'
-                    : (err && err.message) || String(err);
-                if (message.indexOf('SESSION_EXPIRED') !== -1) handleSessionExpired();
-                const error = new Error(message.replace(/^(SESSION_EXPIRED|SETUP_REQUIRED|EDIT_EXPIRED): /, ''));
-                error.setupRequired = message.indexOf('SETUP_REQUIRED') !== -1; // ผู้ดูแลยังไม่ได้รัน setup()
-                error.editExpired = message.indexOf('EDIT_EXPIRED') !== -1;   // รหัสแก้ไขของโรงเรียนหมดเวลา
-                throw error;
             }
-            return result;
+        }
+
+        // แถบแจ้งสถานะการเชื่อมต่อ (ออฟไลน์ / กลับมาออนไลน์)
+        let connectionOk = true;
+        function setConnectionState(ok) {
+            const bar = document.getElementById('connectionBar');
+            if (!bar || ok === connectionOk) return;
+            connectionOk = ok;
+            bar.classList.toggle('hidden', ok);
+            if (ok) showToast('เชื่อมต่อเซิร์ฟเวอร์ได้แล้ว');
         }
 
         // โทเคนหมดอายุ: กลับไปหน้าแรกและเปิดหน้าต่างล็อกอินใหม่
@@ -2754,13 +2804,15 @@
 
         // ลิงก์ตรงถึงโรงเรียน เช่น ...#school-1712345678901
         let hashHandled = false;
+        // ตรวจลิงก์ตรงถึงโรงเรียน "ครั้งเดียว" ตอนเปิดหน้าเว็บที่มีข้อมูลแล้ว
+        // (ไม่ทำซ้ำตอนรีเฟรชข้อมูลเบื้องหลัง มิฉะนั้นจะดึงผู้ใช้กลับไปหน้าโรงเรียนเองระหว่างใช้งาน)
         function openSchoolFromHash() {
-            if (hashHandled) return;
+            if (hashHandled || !schoolsData.length) return;
+            hashHandled = true;
             const m = (location.hash || '').match(/^#school-(.+)$/);
             if (!m) return;
             const id = decodeURIComponent(m[1]);
             if (!schoolsData.some(s => sameId(s.id, id))) return;
-            hashHandled = true;
             switchTab('schools');
             openSchoolDetail(id);
         }
@@ -4235,6 +4287,29 @@
             finally { if (btn) btn.disabled = false; }
         }
 
+        // ตรวจการเชื่อมต่อ: ping 3 ครั้ง (ไม่แตะชีต) วัดเวลาตอบสนองของเครือข่าย + Apps Script
+        async function testConnection() {
+            const btn = document.getElementById('pingBtn');
+            btn.disabled = true;
+            const times = [];
+            let server = null;
+            try {
+                for (let i = 0; i < 3; i++) {
+                    const t = performance.now();
+                    server = await callApi('ping');
+                    times.push(Math.round(performance.now() - t));
+                }
+                const avg = Math.round(times.reduce((a, b) => a + b, 0) / times.length);
+                const level = avg < 800 ? ['ดีมาก', 'text-emerald-600'] : avg < 2000 ? ['ปกติ', 'text-amber-600'] : ['ช้า', 'text-red-600'];
+                document.getElementById('spRound').innerHTML = `<span class="${level[1]}">${fmtMs(avg)}</span>`;
+                document.getElementById('spRoundNote').textContent = `ping 3 ครั้ง: ${times.map(fmtMs).join(' / ')} · ${level[0]} · เซิร์ฟเวอร์ v${server.version}`;
+                showToast(`เชื่อมต่อได้ปกติ เฉลี่ย ${fmtMs(avg)} (${level[0]})`);
+            } catch (e) {
+                document.getElementById('spRound').innerHTML = '<span class="text-red-600">เชื่อมต่อไม่ได้</span>';
+                document.getElementById('spRoundNote').textContent = e.message;
+            } finally { btn.disabled = false; }
+        }
+
         async function runSpeedUp() {
             if (!confirm('เร่งความเร็วฐานข้อมูลตอนนี้?\n• ย่อขนาดชีต (ลบแถว/คอลัมน์ว่างส่วนเกิน)\n• ตัดประวัติเก่าที่เกิน 5,000 รายการ\n• ติดตั้งตัวเร่งอัตโนมัติ + สร้างแคชใหม่\n\n(ไม่ลบข้อมูลโรงเรียน ผู้ประเมิน หรือประกาศ)')) return;
             const btn = document.getElementById('speedUpBtn');
@@ -4517,7 +4592,13 @@
                 if(modal) {
                     modal.classList.remove('hidden');
                     modal.style.display = 'flex';
+                    // เติมชื่อผู้ใช้ล่าสุด แล้ววางเคอร์เซอร์ที่ช่องที่ต้องกรอก
+                    const u = document.getElementById('usernameInput');
+                    if (!u.value) u.value = storageGet('lastAdminUser') || '';
+                    setTimeout(() => (u.value ? document.getElementById('passwordInput') : u).focus(), 50);
                 }
+                // ปลุกเซิร์ฟเวอร์ล่วงหน้าระหว่างที่ผู้ใช้กำลังพิมพ์รหัส (ลดเวลารอตอนกดเข้าสู่ระบบ)
+                callApi('ping').catch(() => {});
             } catch (error) {
                 console.error("Open Login Error:", error);
             }
@@ -4538,36 +4619,49 @@
                 const loader = document.getElementById('loginLoader');
                 
                 const username = document.getElementById('usernameInput').value.trim();
-                const password = document.getElementById('passwordInput').value.trim();
+                const password = document.getElementById('passwordInput').value;   // ไม่ตัดช่องว่าง: เป็นส่วนหนึ่งของรหัสผ่านได้
 
-                if (!username || !password) return;
+                if (!username || !password || loginInFlight) return;
+                loginInFlight = true;                                               // กันกดซ้ำ
 
                 if (btn) btn.classList.add('hidden');
                 if (loader) loader.classList.remove('hidden');
 
+                const t0 = performance.now();
                 const response = await callApi('authenticateAdmin', { username, password });
-                
+                loginInFlight = false;
+
                 if (btn) btn.classList.remove('hidden');
                 if (loader) loader.classList.add('hidden');
-                
+
                 if (response && response.authenticated && !response.token) {
                     alertMessageBox('รหัสผ่านถูกต้อง แต่ Google Apps Script ยังเป็นเวอร์ชันเก่า กรุณาอัปเดต Code.gs เป็นเวอร์ชันใหม่และ Deploy ใหม่ก่อน จึงจะใช้งานหลังบ้านได้', 'ต้องอัปเดตฝั่งเซิร์ฟเวอร์', 'error', 'bg-amber-100 text-amber-600');
                 } else if (response && response.authenticated && response.token) {
                     document.getElementById('passwordInput').value = ''; // ไม่เก็บรหัสผ่านค้างไว้ในฟอร์ม
+                    storageSet('lastAdminUser', username);                // จำชื่อผู้ใช้ไว้ (ไม่จำรหัสผ่าน)
                     setAdminToken(response.token, response.username);
                     closeLoginModal();
                     switchTab('dashboard');
-                    showToast('เข้าสู่ระบบแอดมินสำเร็จ กำลังโหลดข้อมูลล่าสุด...');
-                    fetchLatestData(); // ข้อมูลฉบับเต็มสำหรับแอดมิน (รวมลิงก์หลักฐาน)
+                    if (response.data) {
+                        // เซิร์ฟเวอร์ส่งข้อมูลแอดมินมาพร้อมผลล็อกอินแล้ว ไม่ต้องโหลดอีกรอบ
+                        applyData(response.data);
+                        setSyncState('ok');
+                        showToast(`เข้าสู่ระบบสำเร็จ (${((performance.now() - t0) / 1000).toFixed(1)} วินาที)`);
+                    } else {
+                        showToast('เข้าสู่ระบบแอดมินสำเร็จ กำลังโหลดข้อมูลล่าสุด...');
+                        fetchLatestData();
+                    }
                 } else {
                     alertMessageBox('ชื่อผู้ใช้งานหรือรหัสผ่านไม่ถูกต้อง!', 'ล้มเหลว', 'error', 'bg-red-100 text-red-600');
                 }
             } catch (error) {
+                loginInFlight = false;
                 document.getElementById('loginSubmitBtn').classList.remove('hidden');
                 document.getElementById('loginLoader').classList.add('hidden');
                 alertMessageBox('ระบบตรวจสอบล้มเหลว: ' + error.message, 'ข้อผิดพลาดเครือข่าย', 'error');
             }
         }
+        let loginInFlight = false;
 
         function logout() {
             const pw = document.getElementById('passwordInput');
@@ -4890,6 +4984,16 @@
             renderSchoolFormFields('admin');
             updateAdminHeader();      // ล็อกอินค้างไว้ในแท็บนี้: แสดงปุ่มออกจากระบบ
             renderFooter();
+
+            // การเชื่อมต่อ: เน็ตหลุด -> แจ้งเตือน / กลับมาออนไลน์ -> โหลดข้อมูลใหม่ทันที
+            window.addEventListener('offline', () => setConnectionState(false));
+            window.addEventListener('online', () => { setConnectionState(true); fetchLatestData(); });
+            // ผู้ใช้หลายคนแก้ข้อมูลพร้อมกัน: กลับมาที่แท็บนี้หลังหายไปเกิน 3 นาที ให้ดึงข้อมูลล่าสุด
+            let hiddenAt = 0;
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) { hiddenAt = Date.now(); return; }
+                if (hiddenAt && Date.now() - hiddenAt > 180000) fetchLatestData();
+            });
             switchAdminTab('schools');
             safeCreateIcons();
 
